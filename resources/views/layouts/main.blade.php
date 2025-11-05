@@ -8,12 +8,12 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link 
-        href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" 
-        rel="stylesheet" 
+    <link
+        href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600"
+        rel="stylesheet"
     />
-    <link 
-        href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;600;700&display=swap" 
+    <link
+        href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;600;700&display=swap"
         rel="stylesheet"
     />
 
@@ -24,8 +24,8 @@
     </style>
 
     <!-- Bootstrap Icons -->
-    <link 
-        rel="stylesheet" 
+    <link
+        rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
     >
 
@@ -43,7 +43,7 @@
     <div class="container w-full min-h-screen flex justify-center items-center bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]">
         @yield('content')
     </div>
-    <div id="global-loading" 
+    <div id="global-loading"
          class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
         <div class="w-6 h-6 border-4 rounded-full animate-spin border-sky-600 border-t-transparent"></div>
     </div>

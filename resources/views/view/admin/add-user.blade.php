@@ -18,7 +18,7 @@
             {{$message}}
         </div>
         @enderror
-        <input type="tel" name="phone_number" id="" placeholder="phone number" class="@error('phone_number') is-invalid @enderror()" value="{{old('phone_number')}}"> 
+        <input type="tel" name="phone_number" id="" placeholder="phone number" class="@error('phone_number') is-invalid @enderror()" value="{{old('phone_number')}}">
         @error('phone_number')
         <div class="invalid-feedback">
             {{$message}}

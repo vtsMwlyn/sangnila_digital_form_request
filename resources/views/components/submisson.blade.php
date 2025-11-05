@@ -9,7 +9,7 @@
     <h1 class="mb-1 border-2 py-2 px-3 rounded-md">{{auth()->user()->department}}</h1>
     @if (request()->segment(1) === 'leave')
         @php
-            $leaveBalance = $allowance - $leave_period;
+            $leaveBalance = $allowance /8;
             $balance = floor($leaveBalance) . ' days ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
         @endphp
         <x-input-label for="department" class="font-bold text-md">Leave Balance:</x-input-label>

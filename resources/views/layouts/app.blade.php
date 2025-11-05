@@ -5,14 +5,63 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="icon" href="{{ asset('img/icon.png') }}" type="image/png">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
         <title>Sangnila E-Form</title>
-            <style>
-        body {
-            font-family: 'Geologica', sans-serif;
-            scroll-behavior: smooth;
-        }
-    </style>
+        <style>
+            body {
+                font-family: 'Geologica', sans-serif;
+                scroll-behavior: smooth;
+            }
+
+            /* ===============================
+               RESPONSIVE LAYOUT SETTINGS
+               =============================== */
+
+            /* Untuk tablet (<=1024px) dan HP */
+            @media (max-width: 1024px) {
+                /* Sidebar */
+                [x-data] > .sidebar {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 70%;
+                    max-width: 280px;
+                    height: 100%;
+                    background-color: #fff;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+                    z-index: 50;
+                    transform: translateX(-100%);
+                    transition: transform 0.3s ease-in-out;
+                }
+
+                [x-data] > .sidebar[x-show="sidebarOpen"] {
+                    transform: translateX(0);
+                }
+
+                /* Main content */
+                main {
+                    margin-left: 0 !important;
+                    width: 100%;
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                }
+
+                /* Navbar and footer padding */
+                .navbar, .footer {
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                }
+            }
+
+            /* Untuk layar sangat kecil (HP <640px) */
+            @media (max-width: 640px) {
+                main {
+                    padding-left: 0.75rem;
+                    padding-right: 0.75rem;
+                }
+            }
+        </style>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -35,8 +84,9 @@
             <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 transition-all duration-300 ease-in-out pb-10">
                 {{ $slot }}
             </main>
+            @include('layouts.footer')
         </div>
-        <div id="global-loading" 
+        <div id="global-loading"
          class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
         <div class="w-6 h-6 border-4 rounded-full animate-spin border-sky-600 border-t-transparent"></div>
     </div>

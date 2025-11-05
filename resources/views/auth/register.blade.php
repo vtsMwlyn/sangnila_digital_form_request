@@ -3,7 +3,7 @@
     .ts-wrapper {
         border: none;
     }
-    
+
     .ts-wrapper .ts-control {
         padding-inline: 11px;
         padding-block: 13px;
@@ -174,58 +174,97 @@
                             class="align-top w-1/2"
                             :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'pl-4' : ''"
                         >
-                            <!-- Position -->
-                            <div class="mb-4">
-                                <label
-                                    for="position"
-                                    class="font-semibold text-sm block mb-1"
-                                    >Position</label
-                                >
-                                <select
-                                    placeholder="Select New User Position"
-                                    id="position"
-                                    name="position"
-                                    required
-                                    class="text-lg w-full rounded border border-black px-0 py-0 shadow-sm"
-                                >
-                                    <option disabled hidden selected></option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Concept Art and Illustration">Concept Art and Illustration</option>
-                                    <option value="Web Programmer">Web Programmer</option>
-                                    <option value="3D Artist">3D Artist</option>
-                                </select>
-                                <x-input-error
-                                    :messages="$errors->get('position')"
-                                    class="mt-1 text-red-600"
-                                />
+                        <div class="mb-4">
+                            <label
+                                for="overwork_allowance"
+                                class="font-semibold text-sm block mb-1"
+                                >Overwork Allowance</label
+                            >
+                            <x-text-input
+                                placeholder="Enter Overwork Allowance"
+                                id="overwork_allowance"
+                                type="text"
+                                name="overwork_allowance"
+                                :value="old('overwork_allowance')"
+                                required
+                                autofocus
+                                class="w-full rounded border px-3 py-2"
+                            />
+                            <x-input-error
+                                :messages="$errors->get('overwork_allowance')"
+                                class="mt-1 text-red-600"
+                            />
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="positionSelect" class="font-semibold text-sm block mb-1">Position</label>
+
+                            <select
+                              id="positionSelect"
+                              name="position"
+                              required
+                              onchange="handleSelectChange('position')"
+                              placeholder= "Select Position"
+                              class="w-full rounded border border-black px-3 py-2 shadow-sm"
+                            >
+                              <option disabled hidden selected></option>
+                              <option value="Admin">Admin</option>
+                              <option value="CEO/Director">CEO/Director</option>
+                              <option value="Human Resources">Human Resources</option>
+                              <option value="3D Artist">3D Artist</option>
+                              <option value="Finance and Accountant">Finance and Accountant</option>
+                              <option value="Concept Artist">Concept Artist</option>
+                              <option value="Animator">Animator</option>
+                              <option value="Graphic Designer">Graphic Designer</option>
+                              <option value="Sales and Marketing">Sales and Marketing</option>
+                              <option value="other">Other</option>
+                            </select>
+
+                            <input
+                              type="text"
+                              id="positionInput"
+                              name="position_other"
+                              placeholder="Enter custom position"
+                              class="hidden w-full rounded border border-black px-3 py-2 shadow-sm"
+                            />
+
+                            <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
                             </div>
 
-                            <!-- Department -->
-                            <div class="mb-4">
-                                <label
-                                    for="department"
-                                    class="font-semibold text-sm block mb-1"
-                                    >Department</label
-                                >
-                                <select
-                                    placeholder="Select New User Department"
-                                    id="department"
-                                    name="department"
-                                    required
-                                    class="w-full rounded border border-black px-0 py-0 shadow-sm"
-                                >
-                                    <option disabled hidden selected></option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Digital Art">
-                                        Digital Art
-                                    </option>
-                                    <option value="IT">IT</option>
-                                    <option value="Animasi">Animation</option>
-                                </select>
-                                <x-input-error
-                                    :messages="$errors->get('department')"
-                                    class="mt-1 text-red-600"
-                                />
+                          <!-- DEPARTMENT -->
+                          <div class="mb-4">
+                            <label for="departmentSelect" class="font-semibold text-sm block mb-1">Department</label>
+
+                            <select
+                              id="departmentSelect"
+                              name="department"
+                              required
+                              onchange="handleSelectChange('department')"
+                              placeholder= "Select Department"
+                              class="w-full rounded border border-black px-3 py-2 shadow-sm"
+                            >
+                              <option disabled hidden selected></option>
+                              <option value="Admin">Admin</option>
+                              <option value="Executive">Executive</option>
+                              <option value="Human Resources">Human Resources</option>
+                              <option value="Finance">Finance</option>
+                              <option value="3D">3D</option>
+                              <option value="Concept Art">Concept Art</option>
+                              <option value="Animation">Animation</option>
+                              <option value="Graphic Design">Graphic Design</option>
+                              <option value="Marketing">Marketing</option>
+                              <option value="other">Other</option>
+                            </select>
+
+                            <input
+                              type="text"
+                              id="departmentInput"
+                              name="department_other"
+                              placeholder="Enter custom department"
+                              class="hidden w-full rounded border border-black px-3 py-2 shadow-sm"
+                            />
+
+                            <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600"/>
                             </div>
 
                             <!-- Role -->
@@ -316,14 +355,43 @@
 @endsection
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        new TomSelect('#position', {
-            create: false,
-        });
-        new TomSelect('#department', {
-            create: false,
-        });
         new TomSelect('#role', {
             create: false,
         });
     });
 </script>
+
+<script>
+    function toggleOther(field) {
+        const select = document.getElementById(field);
+        const input = document.getElementById(field + '_other');
+
+        if (select.value === 'other') {
+            input.classList.remove('hidden');
+            input.name = field;
+            select.name = '';
+        } else {
+            input.classList.add('hidden');
+            select.name = field;
+            input.name = field + '_other';
+        }
+    }
+    </script>
+
+<script>
+    function handleSelectChange(field) {
+      const selectEl = document.getElementById(field + "Select");
+      const inputEl = document.getElementById(field + "Input");
+
+      if (selectEl.value === "other") {
+        selectEl.classList.add("hidden");
+        inputEl.classList.remove("hidden");
+        inputEl.focus();
+      } else {
+        inputEl.classList.add("hidden");
+        selectEl.classList.remove("hidden");
+        inputEl.value = "";
+      }
+    }
+  </script>
+

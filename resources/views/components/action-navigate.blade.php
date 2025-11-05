@@ -5,7 +5,7 @@
             $finish = $start->copy();
             $periodDays = $d->leave_period / 8;
             $addDays = 0;
-            
+
             while ($addDays < floor($periodDays)) {
                 if (!$finish->isWeekend()) {
                     $addDays++;
@@ -14,7 +14,7 @@
             }
 
             $periodHours = ($periodDays - floor($periodDays) ) * 8;
-            
+
             if (floor($periodDays) == '0') {
                 $duration = $periodHours . ' hours';
             } elseif ($periodHours == '0') {
@@ -28,13 +28,13 @@
         }
     @endphp
     <button
-        class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+        class="eye-preview-btn text-gray-600 rounded px-2"
             title="Show Details"
             data-id="{{ $d->id }}"
             data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
             data-overwork_date="{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}"
-            data-start="{{ $d->type === 'overwork' 
-                                        ? Carbon\Carbon::parse($d->start_overwork)->format('H : i') 
+            data-start="{{ $d->type === 'overwork'
+                                        ? Carbon\Carbon::parse($d->start_overwork)->format('H : i')
                                         : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
             data-finished="{{ $d->type === 'overwork'
                                         ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i')
@@ -45,9 +45,10 @@
             data-duration="{{ $duration }}"
             data-admin_note="{{ ucfirst(strtolower($d->admin_note)) }}"
             @if($d->type === 'overwork') data-evidences="{{ $d->evidence->toJson() }}" @endif >
-            <i class="bi bi-eye"></i>
+
+            <img src="{{ asset('img/view.svg') }}" alt="view" >
     </button>
-        
+
     @if (auth()->user()->role === 'admin')
         <form
             action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}"
@@ -63,23 +64,30 @@
             <button
                 type="submit"
                 name="approved"
-                value="{{$d->type}}"
-                class="{{$d->request_status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                id="approved"
+                data-leave="{{ $d->id}}"
+                value="{{ $d->type }}"
+                class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }}"
                 title="Accept"
-                onclick="return confirm('Are you sure want to accept this request?')"
+                @if($d->type === 'overwork')
+                    onclick="return confirm('Are you sure want to accept this request?')"
+                @else
+                    onclick="event.preventDefault(); openChooseModal(this);"
+                @endif
             >
-                <i class="bi bi-check2-square"></i>
+                <img src="{{ asset('img/yesbox.svg') }}" alt="view">
             </button>
 
             <button
                 type="button"
                 value="{{$d->type}}"
                 id="rejectButton"
-                class="rejectButton {{$d->request_status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                class="rejectButton {{$d->request_status === 'rejected' ? 'hidden' : 'flex'}}"
                 title="Reject"
             >
-                <i class="bi bi-x"></i>
+            <img src="{{ asset('img/exit.svg') }}" alt="view" >
             </button>
+
         </form>
     @endif
 </div>

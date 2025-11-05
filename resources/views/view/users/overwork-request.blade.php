@@ -14,7 +14,7 @@
         </h2>
 
         <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto">
-            
+
             {{-- ================= Submission Section ================= --}}
             <div class="flex-1">
                 <h3 class="text-[#042E66] font-extrabold text-lg mb-4">
@@ -116,14 +116,16 @@
                     <x-input-label for="date" class="font-black text-[16px] mb-2">
                         Overwork date: <span class="text-red-500">*</span>
                     </x-input-label>
+
                     <x-text-input
                         type="date"
                         name="date"
                         id="date"
                         value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
                         class="border-2 h-[45px] px-3 rounded-md border-gray-300 w-full"
-                        />
-                        <x-unvalid-input field="date" />
+                    />
+
+                    <x-unvalid-input field="date" />
                 </div>
 
                 {{-- Start & Finish Time --}}
@@ -227,6 +229,7 @@
             </div>
         </div>
     </form>
+    <x-contact/>
 
     {{-- ================= Evidence Viewer Modal ================= --}}
     <x-modal name="evidence-viewer-modal" maxWidth="6xl">
@@ -377,4 +380,23 @@
             refreshPreview(type);
         }
     });
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateInput = document.getElementById("date");
+
+        dateInput.addEventListener("change", function() {
+            const selectedDate = new Date(this.value);
+            const today = new Date();
+
+            const oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(today.getMonth() - 1);
+
+            if (selectedDate < oneMonthAgo) {
+                alert("The selected date must not be more than one month ago.");
+                this.value = "";
+            }
+    });
+});
+
 </script>

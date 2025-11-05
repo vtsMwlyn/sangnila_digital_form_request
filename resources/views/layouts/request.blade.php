@@ -31,8 +31,9 @@
                     {{ $slot }}
                 </div>
             </main>
+            @include('layouts.footer')
         </div>
-        <div id="global-loading" 
+        <div id="global-loading"
          class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
         <div class="w-6 h-6 border-4 rounded-full animate-spin border-sky-600 border-t-transparent"></div>
     </div>

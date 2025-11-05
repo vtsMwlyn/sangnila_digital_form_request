@@ -37,6 +37,7 @@ class RegisteredUserController extends Controller
             'position' => ['required'],
             'department' => ['required'],
             'role' => ['required', 'in:admin,user'],
+            'overwork_allowance' => ['required', 'int'],
         ]);
 
         $user = User::create([
@@ -47,7 +48,7 @@ class RegisteredUserController extends Controller
             'position' => $validate['position'],
             'department' => $validate['department'],
             'role' => $validate['role'],
-            'overwork_allowance' => 40
+            'overwork_allowance' => $validate['overwork_allowance'],
         ]);
 
         event(new Registered($user));

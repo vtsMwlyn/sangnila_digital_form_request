@@ -56,7 +56,7 @@
                         {{ $duration->format('%h hours %i minutes') }}
                     @endif
                 </td>
-                
+
                 <td class="py-4 px-6">
                     <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                 </td>
@@ -92,7 +92,7 @@
                 @endphp
                 <td colspan="6" class="py-8 px-6 text-center text-gray-500">
                     <div class="flex flex-col items-center">
-                        @if ($requestType === 'overwork') 
+                        @if ($requestType === 'overwork')
                             <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <circle cx="12" cy="12" r="9" />
                                 <path d="M12 7v5l3 3" />
@@ -128,7 +128,8 @@
             </tr>
             @endforelse
         </tbody>
-    </table>
+    </table>-
+    <x-contact/>
 </div>
 
 <x-preview-data title="draft" />

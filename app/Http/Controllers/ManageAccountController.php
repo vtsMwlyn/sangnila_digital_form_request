@@ -36,6 +36,20 @@ class ManageAccountController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $validated = $request->validate([
+            'position' => 'nullable|string|max:255',
+            'department' => 'nullable|string|max:255',
+        ]);
+
+        $user->update($validated);
+
+        return redirect()->back()->with('success', 'User data updated successfully!');
+    }
+
     /**
      * Remove the specified resource from storage.
      */

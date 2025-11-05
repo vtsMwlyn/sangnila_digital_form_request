@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\Leave;
+use App\Models\Overwork;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -142,4 +144,107 @@ class LeaveController
             return redirect()->back()->withErrors(['error' => 'Failed to delete leave draft: ' . $e->getMessage()]);
         }
     }
+
+    public function approve(Request $request, $mode)
+    {
+        $leaveId = $request->leaveId;
+        $leave   = Leave::find($leaveId);
+
+        if (!$leave) {
+            return redirect()->back()->with('fail', [
+                'title'   => 'Leave not found',
+                'message' => 'The selected leave request was not found.',
+            ]);
+        }
+
+        $userId  = $leave->user_id;
+        $user    = User::findOrFail($userId);
+        $newApproval = (int) $leave->leave_period;
+
+        if ($mode === 'leave') {
+            $allowance = $user->overwork_allowance;
+
+            if ($newApproval > $allowance) {
+                return redirect()->back()->with('fail', [
+                    'title'   => 'Insufficient Balance',
+                    'message' => 'This user does not have enough leave balance.',
+                ]);
+            }
+
+            $user->overwork_allowance = $allowance - $newApproval;
+
+            // dd([
+            //     'mode' => $mode,
+            //     'totalOverwork' => $allowance,
+            //     'validateBalanceApproval' => $newApproval,
+            //     'new_balance' =>  $user->overwork_allowance,
+            //     ]);
+
+            $user->save();
+            $leave->update(['request_status' => 'approved']);
+        }
+
+
+        // elseif ($mode === 'overwork') {
+        //     $newApproval = (int) $leave->leave_period;
+        //     $totalApprovedOverwork = Overwork::getTotalApprovedHours($userId);
+        //     $maxAllowance = $user->overwork_allowance;
+
+        //     if ($totalApprovedOverwork < $newApproval) {
+        //         return redirect()->back()->with('fail', [
+        //             'title'   => 'Exceeds Limit',
+        //             'message' => 'This user exceeds the allowed overwork limit.',
+        //         ]);
+        //     }
+        //     $newTotalOverwork = max($totalApprovedOverwork - $newApproval, 0);
+
+        //     $leave->update(['request_status' => 'approved']);
+
+        //     dd([
+        //         'mode' => $mode,
+        //         'totalOverwork' => $totalApprovedOverwork,
+        //         'validateBalanceApproval' => $newApproval,
+        //         'new_balance' => $newTotalOverwork,
+        //         ]);
+
+        //     $user->total_overwork = $newTotalOverwork;
+        //     $user->save();
+
+        //     return redirect()->back()->with('success', [
+        //         'title'   => 'Overwork Approved',
+        //         'message' => 'Overwork has been approved and the balance has been updated.',
+        //     ]);
+        // }
+        elseif ($mode === 'overwork') {
+            $newApproval = (int) $leave->leave_period;
+            $totalApprovedOverwork = $user->total_overwork;
+            $maxAllowance = $user->overwork_allowance;
+
+            if ($totalApprovedOverwork < $newApproval) {
+                return redirect()->back()->with('fail', [
+                    'title'   => 'Exceeds Limit',
+                    'message' => 'This user exceeds the allowed overwork limit.',
+                ]);
+            }
+
+            $newTotalOverwork = max($totalApprovedOverwork - $newApproval, 0);
+
+
+            // dd([
+            //     'mode' => $mode,
+            //     'totalOverwork' => $totalApprovedOverwork,
+            //     'validateBalanceApproval' => $newApproval,
+            //     'new_balance' => $newTotalOverwork,
+            //     ]);
+
+            $leave->update(['request_status' => 'approved']);
+            $user->update(['total_overwork' => $newTotalOverwork]);
+        }
+
+        return redirect()->back()->with('success', [
+            'title'   => ucfirst($mode) . ' Approved!',
+            'message' => "This {$mode} request has been approved successfully.",
+        ]);
+    }
+
 }

@@ -1,6 +1,6 @@
 <script>
     console.log('hello');
-    
+
     function clearFilters() {
         document.getElementById("search").value = "";
         document.getElementById("month").value = "all";
@@ -27,14 +27,14 @@
                 parentForm.submit()
                 return
             }
-            
+
             const query = new URLSearchParams(new FormData(parentForm)).toString();
             const newUrl = new URL(window.location);
             console.log(query);
             console.log(newUrl);
             newUrl.search = query;
             window.history.pushState({}, "", newUrl);
-            
+
             const searchTerm = this.value.toLowerCase();
             const rows = document.querySelectorAll("tbody tr");
             const isAdmin = "{{ auth()->user()->role }}" === "admin";
@@ -68,7 +68,7 @@
         document.querySelectorAll(".eye-preview-btn").forEach((btn) => {
             btn.addEventListener("click", function () {
                 console.log(this.dataset);
-                
+
                 const id = this.dataset.id;
                 const date = this.dataset.date;
                 const overworkDate = this.dataset.overwork_date;
@@ -114,7 +114,7 @@
                                     : `${type} date`
                             }:</span>
                             <span class="text-gray-900 mt-2 flex gap-5">
-                                ${start} 
+                                ${start}
                                     <i class="bi bi-arrow-right text-xl font-bold"></i>
                                 ${finish}
                             </span>
@@ -248,31 +248,58 @@
             }
         });
 
-    document.querySelectorAll('.rejectButton').forEach(b => {
-        b.addEventListener('click', function () {
-            const value = this.getAttribute('value');
-            let adminNote = document.createElement('input')
-            let statusData = document.createElement('input')
+        document.querySelectorAll('.rejectButton').forEach(b => {
+            b.addEventListener('click', function () {
+                const value = this.getAttribute('value');
+                const form = this.closest('form');
 
-            let note = prompt('Sing sebutkeun alesanna mang: ');
-            if (note === null) return;
+                const rejectedInput = document.getElementById('rejectedValue');
+                const noteInput = document.getElementById('adminNoteInput');
 
-            adminNote.setAttribute('type', 'hidden')
-            adminNote.setAttribute('name', 'admin_note')
-            adminNote.setAttribute('value', note)
-            statusData.setAttribute('type', 'hidden')
-            statusData.setAttribute('name', 'rejected')
-            statusData.setAttribute('value', value)
-            
-            const form = this.closest('form')
-            form.appendChild(adminNote)
-            form.appendChild(statusData)
+                if (!rejectedInput || !noteInput) {
+                    alert('Reject modal not found. Please ensure it is included in the layout.');
+                    return;
+                }
+
+                rejectedInput.value = value;
+                window.currentRejectForm = form;
+
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'reject-modal' }));
+            });
+        });
+
+        document.getElementById('rejectForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const note = document.getElementById('adminNoteInput').value.trim();
+            if (!note) return alert('Please enter a reason.');
+
+            const form = window.currentRejectForm;
+
+            const adminNote = document.createElement('input');
+            const statusData = document.createElement('input');
+
+            adminNote.type = 'hidden';
+            adminNote.name = 'admin_note';
+            adminNote.value = note;
+
+            statusData.type = 'hidden';
+            statusData.name = 'rejected';
+            statusData.value = document.getElementById('rejectedValue').value;
+
+            form.appendChild(adminNote);
+            form.appendChild(statusData);
 
             form.submit();
-            setTimeout(() => {
-                adminNote.remove();
-                statusData.remove();
-            }, 100);
-        })
-    });
+            window.dispatchEvent(new CustomEvent('close-modal', { detail: 'reject-modal' }));
+            document.getElementById('adminNoteInput').value = '';
+        });
+
+        function openChooseModal(button) {
+            const leaveId = $(button).data('leave');
+
+            $('input[name="leaveId"]').val(leaveId)
+
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'choose-modal' }));
+        }
 </script>

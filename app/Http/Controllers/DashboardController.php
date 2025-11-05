@@ -8,9 +8,12 @@ use App\Models\Overwork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RequestController;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+
     public function dataSubmitted()
     {
         $controller = new RequestController;
@@ -34,6 +37,34 @@ class DashboardController extends Controller
         return compact('totalOverwork', 'totalLeave', 'approved', 'rejected', 'pending', 'requestData', 'result');
     }
 
+    // public function dashboard(Request $request)
+    // {
+    //     $data = $this->dataSubmitted();
+    //     $status = $request->input('status');
+    //     $type = $request->input('type');
+    //     $search = $request->input('search');
+    //     $month = $request->input('month');
+
+    //     if (Auth::user()->role === 'user') {
+    //         $data['requestData'] = $data['requestData']->take(5);
+    //         if ($type && $type != 'all') {
+    //             $data['requestData'] = $data['requestData']->where('type', $type)->take(5);
+    //         }
+    //     } elseif (Auth::user()->role === 'admin') {
+    //         $data['requestData'] = $data['requestData']->where('request_status', $status ?? 'review')->take(8);
+    //     }
+
+    //     if ($month && $month !== 'all') {
+    //         $data['requestData'] = $data['requestData']->filter(function ($item) use ($month, $search) {
+    //             return stripos($item->start_leave ?? $item->overwork_date ?? '', $month) !== false ||
+    //                 stripos($item->leave ?? '', $search) !== false ||
+    //                 stripos($item->user->name ?? '', $search) !== false ||
+    //                 stripos($item->reason ?? $item->task_description ?? $item->reason ?? '', $search) !== false;
+    //         });
+    //     }
+
+    //     return view('dashboard', compact('data'));
+    // }
     public function dashboard(Request $request)
     {
         $data = $this->dataSubmitted();
@@ -41,13 +72,49 @@ class DashboardController extends Controller
         $type = $request->input('type');
         $search = $request->input('search');
         $month = $request->input('month');
+        $user = Auth::user();
 
-        if (Auth::user()->role === 'user') {
-            $data['requestData'] = $data['requestData']->take(4);
+        $totalLeaveHours = Leave::where('user_id', $user->id)
+            ->where('request_status', 'approved')
+            ->sum('leave_period');
+
+        $totalOverworkHours = $user->total_overwork ?? 0;
+        $allowanceDays = ($user->overwork_allowance ?? 0) / 8;
+
+        $leaveDays = $totalLeaveHours / 8;
+        $overworkDays = $totalOverworkHours / 8;
+
+        $leaveBalanceDays = $user->overwork_allowance / 8;
+
+        $periodDays = floor($leaveDays);
+        $periodHours = ($leaveDays - $periodDays) * 8;
+        $totalLeaveText = $leaveDays
+            ? "{$periodDays} days {$periodHours} hours"
+            : ($periodDays > 0 ? "{$periodDays} days" : "{$periodHours} hours");
+
+        $balanceDays = floor($leaveBalanceDays);
+        $balanceHours = ($leaveBalanceDays - $balanceDays) * 8;
+        $balanceText = $leaveBalanceDays
+            ? "{$balanceDays} days {$balanceHours} hours"
+            : ($balanceDays > 0 ? "{$balanceDays} days" : "{$balanceHours} hours");
+
+        $overworkDaysInt = floor($overworkDays);
+        $overworkHours = ($overworkDays - $overworkDaysInt) * 8;
+        $totalOverworkText = $overworkDays
+            ? "{$overworkDaysInt} days {$overworkHours} hours"
+            : ($overworkDaysInt > 0 ? "{$overworkDaysInt} days" : "{$overworkHours} hours");
+
+        $data['total_leave'] = $totalLeaveText;
+        $data['total_overwork'] = $totalOverworkText;
+        $data['balance'] = $balanceText;
+
+        if ($user->role === 'user') {
+            $data['requestData'] = $data['requestData']->take(5);
+
             if ($type && $type != 'all') {
-                $data['requestData'] = $data['requestData']->where('type', $type)->take(4);
+                $data['requestData'] = $data['requestData']->where('type', $type)->take(5);
             }
-        } elseif (Auth::user()->role === 'admin') {
+        } elseif ($user->role === 'admin') {
             $data['requestData'] = $data['requestData']->where('request_status', $status ?? 'review')->take(8);
         }
 
@@ -56,10 +123,11 @@ class DashboardController extends Controller
                 return stripos($item->start_leave ?? $item->overwork_date ?? '', $month) !== false ||
                     stripos($item->leave ?? '', $search) !== false ||
                     stripos($item->user->name ?? '', $search) !== false ||
-                    stripos($item->reason ?? $item->task_description ?? $item->reason ?? '', $search) !== false;
+                    stripos($item->reason ?? $item->task_description ?? '', $search) !== false;
             });
         }
 
         return view('dashboard', compact('data'));
     }
+
 }

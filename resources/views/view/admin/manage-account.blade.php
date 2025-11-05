@@ -8,12 +8,12 @@
 
         {{-- Search --}}
         <div class="ml-auto">
-            <input 
-                type="search" 
-                id="search" 
-                name="search" 
-                placeholder="Search..." 
-                class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400" 
+            <input
+                type="search"
+                id="search"
+                name="search"
+                placeholder="Search by name"
+                class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400"
             />
         </div>
     </div>
@@ -23,7 +23,7 @@
     @endphp
 
     <table class="min-w-full text-left justify-center items-center border-b border-gray-400">
-        <a href="{{ route('register') }}" 
+        <a href="{{ route('register') }}"
             class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px] my-4">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M12 6v12M6 12h12" />
@@ -37,20 +37,45 @@
                 <th class="py-3 px-6 font-semibold">Position</th>
                 <th class="py-3 px-6 font-semibold">Department</th>
                 <th class="py-3 px-6 font-semibold">Role</th>
+                <th class="py-3 px-6 font-semibold">Leave Balance</th>
                 <th class="py-3 px-6 font-semibold">Status</th>
                 <th class="py-3 px-6 font-semibold text-center">Action</th>
             </tr>
         </thead>
 
-        <tbody>
-            @forelse($data as $d)
+            <tbody>
+                @forelse($data as $d)
+                {{-- @php
+                    $leavePeriod = \App\Models\Leave::where('user_id', $d->id)
+                        ->where('request_status', 'approved')
+                        ->sum('leave_period') / 8;
+                    $extraLeave = \App\Models\Overwork::where('user_id', $d->id)
+                        ->where('request_status', 'approved')
+                        ->get()
+                        ->sum(function ($o) {
+                            return \Carbon\Carbon::parse($o->start_overwork)
+                                ->diffInHours(\Carbon\Carbon::parse($o->finished_overwork));
+                        }) / 8;
+                    $leaveBalance = auth()->user()->overwork_allowance + $extraLeave - $leavePeriod;
+                    $periodDays = floor($leavePeriod);
+                    $periodHours = ($leavePeriod - $periodDays) * 8;
+
+                    if (floor($leaveBalance) == 0) {
+                        $balance = ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
+                    } elseif ($leaveBalance - floor($leaveBalance) == 0) {
+                        $balance = floor($leaveBalance) . ' d';
+                    } else {
+                        $balance = floor($leaveBalance) . ' d ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' h';
+                    }
+                @endphp --}}
                 <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 capitalize">
-                    
+
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $d->name }}</td>
                     <td class="py-4 px-6 font-semibold">{{ $d->position }}</td>
                     <td class="py-4 px-6"> {{ $d->department }} </td>
                     <td class="py-4 px-6 font-semibold">{{$d->role}}</td>
+                    <td class="py-4 px-6 text-center">{{$d->overwork_allowance}}</td>
                     <td class="py-4 px-6 font-semibold text-center">
                         <span class="{{$d->status_account === 'active' ? 'bg-blue-500' : 'bg-red-500'}} text-white rounded-full px-3 py-1 text-sm font-semibold">
                             {{$d->status_account}}
@@ -58,25 +83,9 @@
                     </td>
 
                     <td class="py-4 px-6 text-center">
-                        @php
-                            $leavePeriod = \App\Models\Leave::where('user_id', $d->id)
-                                ->where('request_status', 'approved')
-                                ->sum('leave_period') / 8;
-                            $leaveBalance = auth()->user()->overwork_allowance - $leavePeriod;
-                            $periodDays = floor($leavePeriod);
-                            $periodHours = ($leavePeriod - $periodDays) * 8;
-
-                            if (floor($leaveBalance) == 0) {
-                                $balance = ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
-                            } elseif ($leaveBalance - floor($leaveBalance) == 0) {
-                                $balance = floor($leaveBalance) . ' days';
-                            } else {
-                                $balance = floor($leaveBalance) . ' days ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
-                            }
-                        @endphp
                         <div class="flex space-x-2 justify-center items-center">
                             <button
-                                class="eye-preview-btn border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                class="eye-preview-btn "
                                 title="Show Details"
                                 data-id="{{ $d->id }}"
                                 data-cration_account="{{ Carbon\Carbon::parse($d->created_at)->format('d - m - Y') }}"
@@ -88,10 +97,10 @@
                                 data-position="{{ $d->position }}"
                                 data-department="{{ $d->department }}"
                                 data-role="{{ $d->role }}"
-                                data-balance="{{ $balance }}"
+                                data-balance="{{ $d->overwork_allowance }}"
                             >
-                                <i class="bi bi-eye"></i>
-                            </button>
+                            <img src="{{ asset('img/view.svg') }}" alt="view" >
+                        </button>
 
                             @php
                                 $status = request('status');
@@ -99,29 +108,29 @@
                             @if ($d->email != 'superadmin@sangnila.com')
                                 @if ($d->status_account === 'active')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspended'])}}"
-                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}}"
                                         title="Suspended"
                                         onclick="return confirm('are you sure want to suspend this account?')"
                                     >
-                                        <i class="bi bi-ban"></i>
-                                    </a>
+                                    <img src="{{ asset('img/ban.svg') }}" alt="view" >
+                                </a>
                                 @elseif ($d->status_account === 'suspended')
                                     <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspended'])}}"
-                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}}"
                                         title="Unsuspended"
                                         onclick="return confirm('are you sure want to unsuspend this account?')"
                                     >
-                                        <i class="bi bi-person-check"></i>
+                                    <img src="{{ asset('img/unban.svg') }}" alt="view" >
                                     </a>
                                 @endif
 
                                 <a href="{{route('account.delete', ['id' => $d->id])}}"
-                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
+                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} "
                                     title="Remove"
                                     onclick="return confirm('yakin di hapus?')"
                                 >
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <img src="{{ asset('img/delete-button.svg') }}" alt="view"  >
+                            </a>
                             @endif
                         </div>
                     </td>
@@ -185,7 +194,7 @@
             }
         })
     })
-    
+
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.eye-preview-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -236,7 +245,7 @@
                             <span class="font-extrabold text-gray-700">Status:</span>
                             <span class="${statusClass} capitalize">${status}</span>
                         </div>
-                        ${role != 'admin' 
+                        ${role != 'admin'
                             ? ` <div class="flex flex-col items-start">
                                     <span class="font-extrabold text-gray-700">Leave Balance:</span>
                                     <span class="text-gray-900 mt-2">${balance}</span>

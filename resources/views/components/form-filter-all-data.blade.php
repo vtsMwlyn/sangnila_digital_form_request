@@ -5,7 +5,7 @@
             @if ($route === 'dashboard' || $route === 'draft')
             <x-filter-data-toggle :status="$status" :type="$type" />
             @endif
-            
+
             <div class="flex items-center space-x-4">
 
                 @if ($route !== 'dashboard' && $route !== 'draft')
@@ -32,7 +32,7 @@
                     type="search"
                     id="search"
                     name="search"
-                    placeholder="Search..."
+                    placeholder="Search by Reason"
                     value="{{ request('search') }}"
                     class="border border-gray-300 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-cyan-400"
                 />

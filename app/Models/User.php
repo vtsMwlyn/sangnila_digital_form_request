@@ -41,6 +41,17 @@ class User extends Authenticatable
         return $this->hasMany(Overwork::class);
     }
 
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone_number',
+        'position',
+        'department',
+        'overwork_allowance',
+        'total_overwork',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *

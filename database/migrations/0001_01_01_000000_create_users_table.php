@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->decimal('overwork_allowance', 8, 2)->default(0);
+            $table->decimal('total_overwork', 8, 2)->default(0);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -35,6 +37,8 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+
     }
 
     /**

@@ -31,8 +31,8 @@
 </head>
       <x-header />
 <body class="font-geologica antialiased">
-    <div 
-        class="min-h-screen w-full bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]" 
+    <div
+        class="min-h-screen w-full bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]"
         x-data="{ sidebarOpen: true }"
         x-on:open-sidebar.window="sidebarOpen = true"
         x-on:close-sidebar.window="sidebarOpen = false"
@@ -40,14 +40,14 @@
         @include('layouts.navbar', ['sidebarOpen' => 'sidebarOpen'])
         @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
-        <main 
+        <main
             class="min-h-screen max-w-full ml-72 flex flex-col items-center mt-5 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out"
             :class="sidebarOpen ? 'ml-0' : 'ml-[0px]'"
         >
-            <div 
+            <div
                 class="w-full max-w-[1400px] rounded-xl overflow-hidden bg-transparent mx-auto py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-10 transition-all duration-300 ease-in-out"
             >
-                <div 
+                <div
                     class="w-full"
                     :class="sidebarOpen ? 'overflow-x-auto' : ''"
                 >
@@ -55,8 +55,9 @@
                 </div>
             </div>
         </main>
+        @include('layouts.footer', ['sidebarOpen' => 'sidebarOpen'])
     </div>
-    <div id="global-loading" 
+    <div id="global-loading"
          class="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
         <div class="w-6 h-6 border-4 rounded-full animate-spin border-sky-600 border-t-transparent"></div>
     </div>

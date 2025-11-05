@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\OverworkController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeductionController;
 use Symfony\Component\Routing\RequestContext;
 use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
@@ -99,6 +100,15 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         });
         Route::get('/', [RequestController::class, 'showRecent'])->name('show');
     });
+
+    // Route::prefix('admin')->group(function () {
+    //     Route::post('/admin/leave/approve/{mode}', [LeaveController::class, 'approve'])
+    //         ->name('admin.leave.approve');
+    // });
+
+    Route::post('/admin/leave/approve/{mode}', [LeaveController::class, 'approve'])
+    ->name('admin.leave.approve');
+
 });
 
 require __DIR__ . '/auth.php';

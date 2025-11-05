@@ -7,12 +7,12 @@
     $requestStatus = request('status', 'all');
 @endphp
 
-<div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg">
+<div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-[1400px] shadow-lg overflow-x-auto">
     <x-form-filter-all-data title="overwork data" route="overwork.show" :status="$requestStatus" :type="$requestType" />
             <!-- New Data Button -->
     @if (auth()->user()->role === 'user')
-        <a href="{{ route('overwork.form-view') }}" 
-            class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px]">
+        <a href="{{ route('overwork.form-view') }}"
+            class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px] text-sm sm:text-base">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M12 6v12M6 12h12" />
             </svg>
@@ -21,46 +21,47 @@
     @endif
 
     <!-- Overwork Table -->
-    <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10">
+    <div class="mt-4 w-full overflow-x-auto">
+    <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10  text-sm sm:text-base">
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
             <tr>
-                <th class="py-3 px-6 font-semibold">No</th>
-                <th class="py-3 px-6 font-semibold">Overwork Date</th>
-                <th class="py-3 px-6 font-semibold w-[250px]">Task Description</th>
+                <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">No</th>
+                <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">Overwork Date</th>
+                <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap w-[250px]">Task Description</th>
                 @if (auth()->user()->role === 'admin')
-                    <th class="py-3 px-6 font-semibold">
+                    <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">
                             Name
                     </th>
                 @endif
-                    <th class="py-3 px-6 font-semibold">Duration</th>
-                <th class="py-3 px-6 font-semibold">Evidence</th>
-                <th class="py-3 px-6 font-semibold">Status</th>
-                <th class="py-3 px-6 font-semibold text-center">Action</th>
+                    <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">Duration</th>
+                <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">Evidence</th>
+                <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">Status</th>
+                <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap text-center">Action</th>
             </tr>
         </thead>
 
         <tbody>
             @forelse($data as $d)
             <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 items-center justify-center">
-                <td class="py-4 px-6">
+                <td class="py-4 sm:px-6 px-6">
                     {{ $loop->iteration }}
                 </td>
 
-                <td class="py-4 px-6">
+                <td class="py-4 sm:px-6 px-6">
                     {{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}
                 </td>
 
-                <td class="py-4 px-6" title="{{ $d->task_description }}">
+                <td class="py-4 sm:px-6 px-6" title="{{ $d->task_description }}">
                     {{ ucfirst(strtolower(Str::limit($d->task_description, 25))) }}
                 </td>
 
                 @if (auth()->user()->role === 'admin')
-                    <td class="py-4 px-6">
+                    <td class="py-4 sm:px-6 px-6">
                         {{ Str::words($d->user->name, 2) ?? 'N/A' }}
                     </td>
                 @endif
 
-                <td class="py-4 px-6">
+                <td class="py-4 sm:px-6 px-6">
                     @php
                         $duration = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
                         @endphp
@@ -71,7 +72,7 @@
                     @endif
                 </td>
 
-                <td class="py-4 px-6">
+                <td class="py-4 sm:px-6 px-6">
                     @php
                         $totalEvidence = $d->evidence->count();
                         $firstImage = $d->evidence->first(fn($e) => in_array(strtolower(pathinfo($e->path, PATHINFO_EXTENSION)), ['jpg', 'png', 'jpeg', 'webp']));
@@ -88,7 +89,7 @@
                         <span class="text-gray-500 text-sm">No evidence</span>
                     @endif
                 </td>
-                <td class="py-4 px-6">
+                <td class="py-4 sm:px-6 px-6">
                     @php
                         $statusClass = match($d->request_status) {
                             'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm',
@@ -99,7 +100,7 @@
                     @endphp
                     <span class="{{ $statusClass }} capitalize">{{ $d->request_status }}</span>
                 </td>
-                <td class="py-4 px-6 text-center">
+                <td class="py-4 sm:px-6 px-6 text-center">
                     <div class="flex justify-center items-center space-x-2">
                         <!-- Show Details Button -->
                         <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
@@ -109,7 +110,7 @@
                                 class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                                 title="Edit"
                             >
-                                <i class="bi bi-pencil-square"></i>
+                                <i class="bi bi-pencil-square text-sm sm:text-base"></i>
                             </a>
                             <form action="{{ route('overwork.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this overwork draft?')">
                                 @csrf
@@ -119,7 +120,7 @@
                                     class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                     title="Delete"
                                     >
-                                    <i class="bi bi-trash"></i>
+                                    <i class="bi bi-trash text-sm sm:text-base"></i>
                                 </button>
                             </form>
                         @endif
@@ -134,9 +135,9 @@
                             <circle cx="12" cy="12" r="9" />
                             <path d="M12 7v5l3 3" />
                         </svg>
-                        <p class="capitalize">No overwork {{request()->segment(2)}} data found</p>
+                        <p class="capitalize text-sm sm:text-base">No overwork {{request()->segment(2)}} data found</p>
                         @if (auth()->user()->role === 'user')
-                            <a href="{{ route('overwork.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
+                            <a href="{{ route('overwork.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2 text-sm sm:text-base">
                                 Create your first overwork request
                             </a>
                         @endif
@@ -146,10 +147,13 @@
             @endforelse
         </tbody>
     </table>
+    </div>
 
 </div>
-
+<x-contact/>
 <x-preview-data title="overwork" />
+<x-modal-reject/>
+<x-modal-choose/>
 
 <x-modal-success />
 

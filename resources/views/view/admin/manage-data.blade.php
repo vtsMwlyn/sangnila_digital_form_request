@@ -36,7 +36,7 @@
                     @else
                         <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}</td>
                     @endif
-                    
+
                     <!-- Type -->
                     <td class="py-4 px-6">
                         <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
