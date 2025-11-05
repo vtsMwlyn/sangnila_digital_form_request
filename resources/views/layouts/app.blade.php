@@ -83,6 +83,9 @@
             <!-- Page Content with reactive margin -->
             <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 transition-all duration-300 ease-in-out pb-10">
                 {{ $slot }}
+                @if (auth()->user()->role === 'user')
+                <x-contact />
+                 @endif
             </main>
             @include('layouts.footer')
         </div>

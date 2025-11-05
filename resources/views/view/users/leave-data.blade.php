@@ -126,9 +126,10 @@
                 @endforelse
             </tbody>
         </table>
+        @if (auth()->user()->role === 'user')
+        <x-contact />
+         @endif
     </div>
-
-    <x-contact/>
 </div>
 
 <x-modal-reject/>

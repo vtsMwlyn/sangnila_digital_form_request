@@ -148,9 +148,11 @@
         </tbody>
     </table>
     </div>
-
+    @if (auth()->user()->role === 'user')
+    <x-contact />
+     @endif
 </div>
-<x-contact/>
+
 <x-preview-data title="overwork" />
 <x-modal-reject/>
 <x-modal-choose/>

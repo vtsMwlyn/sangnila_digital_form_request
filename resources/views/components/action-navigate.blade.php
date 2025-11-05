@@ -28,7 +28,7 @@
         }
     @endphp
     <button
-        class="eye-preview-btn text-gray-600 rounded px-2"
+        class="eye-preview-btn"
             title="Show Details"
             data-id="{{ $d->id }}"
             data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"

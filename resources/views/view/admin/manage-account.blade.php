@@ -120,6 +120,7 @@
                                         title="Unsuspended"
                                         onclick="return confirm('are you sure want to unsuspend this account?')"
                                     >
+                                    {{-- bukannya harusnya status jd active?? --}}
                                     <img src="{{ asset('img/unban.svg') }}" alt="view" >
                                     </a>
                                 @endif

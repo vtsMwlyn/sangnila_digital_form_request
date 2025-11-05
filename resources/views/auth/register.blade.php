@@ -178,20 +178,20 @@
                             <label
                                 for="overwork_allowance"
                                 class="font-semibold text-sm block mb-1"
-                                >Overwork Allowance</label
+                                >Leave Balance</label
                             >
                             <x-text-input
-                                placeholder="Enter Overwork Allowance"
-                                id="overwork_allowance"
+                                placeholder="Enter Leave Balance in Hours (ex: 160 for 20 day)"
+                                id="Leave_Balance"
                                 type="text"
-                                name="overwork_allowance"
-                                :value="old('overwork_allowance')"
+                                name="Leave_Balance"
+                                :value="old('Leave_Balance')"
                                 required
                                 autofocus
                                 class="w-full rounded border px-3 py-2"
                             />
                             <x-input-error
-                                :messages="$errors->get('overwork_allowance')"
+                                :messages="$errors->get('Leave_Balance')"
                                 class="mt-1 text-red-600"
                             />
                         </div>
@@ -225,7 +225,7 @@
                               id="positionInput"
                               name="position_other"
                               placeholder="Enter custom position"
-                              class="hidden w-full rounded border border-black px-3 py-2 shadow-sm"
+                              class="hidden w-full rounded border border-black px-0 py-0 shadow-sm"
                             />
 
                             <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
@@ -261,7 +261,7 @@
                               id="departmentInput"
                               name="department_other"
                               placeholder="Enter custom department"
-                              class="hidden w-full rounded border border-black px-3 py-2 shadow-sm"
+                              class="hidden w-full rounded border border-black px-0 py-0 shadow-sm"
                             />
 
                             <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600"/>
@@ -279,11 +279,11 @@
                                     id="role"
                                     name="role"
                                     required
-                                    class="w-full rounded border border-black px-0 py-0 shadow-sm"
+                                    class="w-full rounded border border-black px-0 py-0 shadow-sm font-semibold text-lg"
                                 >
-                                    <option disabled hidden selected></option>
-                                    <option value="admin">admin</option>
-                                    <option value="user">user</option>
+                                    <option disabled hidden selected ></option>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">User</option>
                                 </select>
                                 <x-input-error
                                     :messages="$errors->get('role')"
