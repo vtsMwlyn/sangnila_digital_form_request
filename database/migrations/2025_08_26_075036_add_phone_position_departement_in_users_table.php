@@ -17,7 +17,6 @@ return new class extends Migration
             $table->enum('position', ['Admin', 'Concept Art and Illustration', 'Web Programmer', '3D Artist'])->after('phone_number');
             $table->enum('department', ['Admin', 'Digital Art', 'IT', 'Animasi'])->after('position');
             $table->enum('role', ['admin', 'user'])->after('department');
-            $table->integer('overwork_allowance')->after('role');
             $table->string('otp_reset_pass')->nullable();
         });
     }

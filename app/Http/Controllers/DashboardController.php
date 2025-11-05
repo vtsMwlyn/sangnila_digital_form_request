@@ -74,9 +74,9 @@ class DashboardController extends Controller
         $month = $request->input('month');
         $user = Auth::user();
 
-        $totalLeaveHours = Leave::where('user_id', $user->id)
-            ->where('request_status', 'approved')
-            ->sum('leave_period');
+        $totalLeaveHours = $user->overwork_allowance;
+
+        // return $totalLeaveHours;
 
         $totalOverworkHours = $user->total_overwork ?? 0;
         $allowanceDays = ($user->overwork_allowance ?? 0) / 8;

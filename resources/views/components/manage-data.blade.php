@@ -1,6 +1,4 @@
 <script>
-    console.log('hello');
-
     function clearFilters() {
         document.getElementById("search").value = "";
         document.getElementById("month").value = "all";

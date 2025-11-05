@@ -50,6 +50,7 @@ class User extends Authenticatable
         'department',
         'overwork_allowance',
         'total_overwork',
+        'role',
     ];
 
     /**
