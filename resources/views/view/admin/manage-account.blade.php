@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg">
+<div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg overflow-x-auto">
     <div id="filter" class="flex items-center mb-8">
         <h2 class="text-2xl font-bold text-[#012967]">Manage Account</h2>
 
@@ -22,7 +22,7 @@
         $activeToggle = request('status', 'pending');
     @endphp
 
-    <table class="min-w-full text-left justify-center items-center border-b border-gray-400">
+    <table class="min-w-full text-left justify-center items-center border-b border-gray-400 overflow-x-auto">
         <a href="{{ route('register') }}"
             class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px] my-4">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -32,14 +32,14 @@
         </a>
         <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300">
             <tr class="text-center">
-                <th class="py-3 px-6 font-semibold">No</th>
-                <th class="py-3 px-6 font-semibold">Name</th>
-                <th class="py-3 px-6 font-semibold">Position</th>
-                <th class="py-3 px-6 font-semibold">Department</th>
-                <th class="py-3 px-6 font-semibold">Role</th>
-                <th class="py-3 px-6 font-semibold">Leave Balance</th>
-                <th class="py-3 px-6 font-semibold">Status</th>
-                <th class="py-3 px-6 font-semibold text-center">Action</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">No</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Name</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Position</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Department</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Role</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Leave Balance</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Status</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold text-center">Action</th>
             </tr>
         </thead>
 
@@ -106,24 +106,20 @@
                                 $status = request('status');
                             @endphp
                             @if ($d->email != 'superadmin@sangnila.com')
-                                @if ($d->status_account === 'active')
-                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'suspended'])}}"
-                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}}"
-                                        title="Suspended"
-                                        onclick="return confirm('are you sure want to suspend this account?')"
-                                    >
-                                    <img src="{{ asset('img/ban.svg') }}" alt="view" >
-                                </a>
-                                @elseif ($d->status_account === 'suspended')
-                                    <a href="{{route('account.edit', ['id' => $d->id, 'status' => 'unsuspended'])}}"
-                                        class="{{$status === 'approved' ? 'hidden' : 'flex'}}"
-                                        title="Unsuspended"
-                                        onclick="return confirm('are you sure want to unsuspend this account?')"
-                                    >
-                                    {{-- bukannya harusnya status jd active?? --}}
-                                    <img src="{{ asset('img/unban.svg') }}" alt="view" >
-                                    </a>
-                                @endif
+                            @if ($d->status_account === 'active')
+                            <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'suspended']) }}"
+                                onclick="return confirm('Are you sure you want to suspend this account?')"
+                                title="Suspend">
+                                <img src="{{ asset('img/ban.svg') }}" alt="Suspend">
+                            </a>
+                        @elseif ($d->status_account === 'suspended')
+                            <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'active']) }}"
+                                onclick="return confirm('Are you sure you want to unsuspend this account?')"
+                                title="Unsuspend">
+                                <img src="{{ asset('img/unban.svg') }}" alt="Unsuspend">
+                            </a>
+                        @endif
+
 
                                 <a href="{{route('account.delete', ['id' => $d->id])}}"
                                     class="{{$status === 'rejected' ? 'hidden' : 'flex'}} "
@@ -269,3 +265,5 @@
 
 </script>
 @endsection
+
+

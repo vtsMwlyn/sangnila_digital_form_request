@@ -4,7 +4,9 @@
 
 <a href="https://wa.me/{{ $waNumber }}"
    target="_blank"
-   class="btn btn-success btn-lg rounded-circle whatsapp-float">
+   class="btn btn-success btn-lg rounded-circle whatsapp-float"
+   x-on:click.stop="$dispatch('skip-loading')">
+
     <i class="bi bi-whatsapp" style="font-size: 1.8rem;"></i>
 </a>
 
@@ -35,4 +37,10 @@
     }
 </style>
 
+    <script>
+    document.addEventListener('skip-loading', () => {
+        const loader = document.getElementById('global-loading');
+        if (loader) loader.classList.add('hidden');
+    });
+    </script>
 

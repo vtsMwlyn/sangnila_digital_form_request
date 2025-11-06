@@ -14,10 +14,6 @@
                 scroll-behavior: smooth;
             }
 
-            /* ===============================
-               RESPONSIVE LAYOUT SETTINGS
-               =============================== */
-
             /* Untuk tablet (<=1024px) dan HP */
             @media (max-width: 1024px) {
                 /* Sidebar */
@@ -84,7 +80,7 @@
             <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 transition-all duration-300 ease-in-out pb-10">
                 {{ $slot }}
                 @if (auth()->user()->role === 'user')
-                <x-contact />
+                  <x-contact />
                  @endif
             </main>
             @include('layouts.footer')

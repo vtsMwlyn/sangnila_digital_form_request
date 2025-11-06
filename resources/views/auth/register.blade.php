@@ -21,8 +21,59 @@
         font-size: 16px;
     } */
 
+
+    .ts-wrapper {
+        border: none;
+    }
+
+    .ts-wrapper .ts-control {
+        padding-inline: 11px;
+        padding-block: 13px;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+    }
+
+    .ts-wrapper.focus .ts-control {
+        border-color: #6366f1;
+        border-width: 2px;
+    }
+
+    /* ✅ RESPONSIVE FORM (MOBILE & TABLET) */
+    @media (max-width: 1024px) {
+        table {
+            display: block;
+            width: 100%;
+        }
+
+        table tbody,
+        table tr,
+        table td {
+            display: block;
+            width: 100%;
+        }
+
+        td {
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+        }
+
+        .p-6 {
+            padding: 1rem;
+        }
+
+        .text-right {
+            text-align: center;
+        }
+
+        .text-right button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
-@endpush @extends('layouts.tables') @section('content') @if ($errors->any())
+@endpush
+ @extends('layouts.tables') @section('content')
+{{-- @if ($errors->any())
 <div class="alert alert-danger">
     <ul>
         @foreach ($errors->all() as $error)
@@ -30,7 +81,7 @@
         @endforeach
     </ul>
 </div>
-@endif
+@endif --}}
 
 <form method="POST" action="{{ route('register') }}" autocomplete="off">
     @csrf
@@ -181,7 +232,7 @@
                                 >Leave Balance</label
                             >
                             <x-text-input
-                                placeholder="Enter Leave Balance in Hours (ex: 160 for 20 day)"
+                                placeholder="Enter Leave Balance in Days"
                                 id="Leave_Balance"
                                 type="text"
                                 name="Leave_Balance"
@@ -205,9 +256,9 @@
                               required
                               onchange="handleSelectChange('position')"
                               placeholder= "Select Position"
-                              class="w-full rounded border border-black px-3 py-2 shadow-sm"
+                              class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                             >
-                              <option disabled hidden selected></option>
+                              <option disabled hidden selected>Select Position</option>
                               <option value="Admin">Admin</option>
                               <option value="CEO/Director">CEO/Director</option>
                               <option value="Human Resources">Human Resources</option>
@@ -225,7 +276,7 @@
                               id="positionInput"
                               name="position_other"
                               placeholder="Enter custom position"
-                              class="hidden w-full rounded border border-black px-0 py-0 shadow-sm"
+                              class="hidden w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                             />
 
                             <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
@@ -241,9 +292,9 @@
                               required
                               onchange="handleSelectChange('department')"
                               placeholder= "Select Department"
-                              class="w-full rounded border border-black px-3 py-2 shadow-sm"
+                              class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                             >
-                              <option disabled hidden selected></option>
+                              <option disabled hidden selected> Select Department</option>
                               <option value="Admin">Admin</option>
                               <option value="Executive">Executive</option>
                               <option value="Human Resources">Human Resources</option>
@@ -261,7 +312,7 @@
                               id="departmentInput"
                               name="department_other"
                               placeholder="Enter custom department"
-                              class="hidden w-full rounded border border-black px-0 py-0 shadow-sm"
+                              class="hidden w-full rounded border border-gray-300 px-3 py-3 shadow-sm"
                             />
 
                             <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600"/>
@@ -269,22 +320,18 @@
 
                             <!-- Role -->
                             <div class="mb-4">
-                                <label
-                                    for="role"
-                                    class="font-semibold text-sm block mb-1"
-                                    >Role</label
-                                >
+                                <label for="Role" class="font-semibold text-sm block mb-1">Role</label>
                                 <select
-                                    placeholder="Select New User Role"
-                                    id="role"
-                                    name="role"
-                                    required
-                                    class="w-full rounded border border-black px-0 py-0 shadow-sm font-semibold text-lg"
-                                >
-                                    <option disabled hidden selected ></option>
-                                    <option value="admin">Admin</option>
-                                    <option value="user">User</option>
-                                </select>
+                                id="role"
+                                name="role"
+                                required
+                                placeholder="Select New User Role"
+                                class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                              >
+                              <option disabled hidden selected >Select New User Role</option>
+                              <option value="admin">Admin</option>
+                              <option value="user">User</option>
+                              </select>
                                 <x-input-error
                                     :messages="$errors->get('role')"
                                     class="mt-1 text-red-600"
@@ -353,13 +400,13 @@
 </script>
 
 @endsection
-<script>
+{{-- <script>
     document.addEventListener("DOMContentLoaded", function () {
         new TomSelect('#role', {
             create: false,
         });
     });
-</script>
+</script> --}}
 
 <script>
     function toggleOther(field) {

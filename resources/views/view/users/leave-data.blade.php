@@ -19,7 +19,6 @@
         </a>
     @endif
 
-    <!-- Table wrapper agar bisa scroll di HP -->
     <div class="mt-4 w-full overflow-x-auto">
         <table class="min-w-full text-left border-b border-gray-300 text-sm sm:text-base">
             <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
@@ -127,7 +126,7 @@
             </tbody>
         </table>
         @if (auth()->user()->role === 'user')
-        <x-contact />
+          <x-contact />
          @endif
     </div>
 </div>

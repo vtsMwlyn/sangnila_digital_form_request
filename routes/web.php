@@ -66,7 +66,10 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         });
         Route::prefix('account')->name('account.')->group(function () {
             Route::get('/', [ManageAccountController::class, 'show'])->name('show');
-            Route::get('edit/user/{id}/status/{status?}', [ManageAccountController::class, 'edit'])->name('edit');
+            // Route::get('edit/user/{id}/status/{status?}', [ManageAccountController::class, 'edit'])->name('edit');
+            Route::get('edit/user/{id}/status/{status}', [ManageAccountController::class, 'edit'])
+            ->name('edit');
+
             Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
         });
     });
@@ -100,11 +103,6 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         });
         Route::get('/', [RequestController::class, 'showRecent'])->name('show');
     });
-
-    // Route::prefix('admin')->group(function () {
-    //     Route::post('/admin/leave/approve/{mode}', [LeaveController::class, 'approve'])
-    //         ->name('admin.leave.approve');
-    // });
 
     Route::post('/admin/leave/approve/{mode}', [LeaveController::class, 'approve'])
     ->name('admin.leave.approve');

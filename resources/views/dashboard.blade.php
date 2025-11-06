@@ -21,7 +21,7 @@
     {{-- Cards --}}
 
     <div class="flex flex-col space-y-7">
-        <div class="mx-10 px-6 lg:px-8 pt-8 grid grid-cols-2 gap-8">
+        <div class="mx-10 px-6 lg:px-8 pt-8 grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2">
 
             @if (auth()->user()->role === 'user')
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -175,7 +175,7 @@
                         @endif
                         <th class="py-3 px-6 font-semibold w-30">Reason</th>
                         <th class="py-3 px-6 font-semibold">Status</th>
-                        <th class="py-3 px-6 font-semibold text-center w-16">Action</th>
+                        <th class="py-3 px-6 font-semibold text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>

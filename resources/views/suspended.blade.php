@@ -16,7 +16,7 @@
     </style>
 </head>
 <body>
-     <div 
+     <div
     class="min-h-screen flex items-center justify-center bg-cover bg-center"
     style="background-image: url('{{ asset('img/bg.webp') }}');"
     >
@@ -54,10 +54,10 @@
             </p>
         </div>
     </div>
-    
-    
-    <footer class="text-center text-sm text-gray-400 py-6">
-        &copy; {{ date('Y') }} PT Sangnila Utama. All rights reserved.
+
+
+    <footer class="text-center text-sm text-gray-300 py-6">
+       Copyright © 2025 - Sangnila Interactive Media and Technology
     </footer>
 
 </body>

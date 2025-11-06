@@ -23,16 +23,21 @@ class ManageAccountController extends Controller
      */
     public function edit(string $id, string $status)
     {
-        if ($status === 'suspended') {
-            User::findOrFail($id)->update(['status_account' => 'suspended']);
-        } elseif ($status === 'unsuspended') {
-            User::findOrFail($id)->update(['status_account' => 'active']);
+        $user = User::findOrFail($id);
+
+        if (!in_array($status, ['active', 'suspended'])) {
+            return redirect()->back()->with('fail', [
+                'title' => 'Invalid status',
+                'message' => 'Status must be either active or suspended.',
+            ]);
         }
 
+        $user->forceFill(['status_account' => $status])->save();
+
+        $user->refresh();
         return redirect()->back()->with('success', [
-            'title' => User::findOrFail($id)->name . ' is ' . $status,
-            'message' => 'This overwork request has been approved.',
-            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            'title' => "{$user->name} is now {$status}",
+            'message' => 'Account status has been updated successfully.',
         ]);
     }
 
@@ -57,6 +62,9 @@ class ManageAccountController extends Controller
     {
         User::findOrFail($id)->delete();
 
-        return redirect()->back()->with('success', 'Delete account is successfully');
-    }
+        return redirect()->back()->with('success', [
+            'title' => 'Account deleted',
+            'message' => 'The account has been successfully removed.',
+        ]);
+            }
 }

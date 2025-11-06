@@ -37,8 +37,10 @@ class RegisteredUserController extends Controller
             'position' => ['required'],
             'department' => ['required'],
             'role' => ['required', 'in:admin,user'],
-            'overwork_allowance' => ['required', 'int'],
+            'Leave_Balance' => ['required', 'integer'],
         ]);
+
+        $overworkAllowance = (int) $validate['Leave_Balance'] * 8;
 
         $user = User::create([
             'name' => $validate['name'],
@@ -48,11 +50,12 @@ class RegisteredUserController extends Controller
             'position' => $validate['position'],
             'department' => $validate['department'],
             'role' => $validate['role'],
-            'overwork_allowance' => $validate['overwork_allowance'],
+            'overwork_allowance' => $overworkAllowance, 
         ]);
 
         event(new Registered($user));
 
         return redirect(route('account.show', absolute: false));
     }
+
 }
