@@ -36,7 +36,11 @@
             </div>
 
             <div class="space-y-3 mb-6">
-                <a href="https://wa.link/cewipg" class="block w-full bg-sky-100 text-[#012967] font-medium py-2 px-4 rounded-md border border-sky-200 hover:bg-sky-200 transition duration-150 ease-in-out">
+                @php
+                $waNumber = env('WHATSAPP_NUMBER', '6282295037691');
+                @endphp
+
+                <a href="https://wa.me/{{ $waNumber }}"class="block w-full bg-sky-100 text-[#012967] font-medium py-2 px-4 rounded-md border border-sky-200 hover:bg-sky-200 transition duration-150 ease-in-out">
                     Contact Admin
                 </a>
                 <form action="{{ route('logout') }}" method="POST">

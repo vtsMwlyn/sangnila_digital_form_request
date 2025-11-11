@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\LateLog;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -34,23 +35,42 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::default()],
             'phone_number' => ['required', 'string', 'max:30'],
+            'status' => ['required'],
             'position' => ['required'],
+            'position_other' => 'nullable|string',
             'department' => ['required'],
+            'department_other' => 'nullable|string',
             'role' => ['required', 'in:admin,user'],
-            'Leave_Balance' => ['required', 'integer'],
+            'Leave_Balance_Day' => ['required', 'integer'],
+            'Leave_Balance_Hour' => 'nullable|integer',
+            'Total_Overwork_Day' => ['required', 'integer'],
+            'Total_Overwork_Hour' => 'nullable|integer',
         ]);
 
-        $overworkAllowance = (int) $validate['Leave_Balance'] * 8;
+        $validate['position'] = $validate['position'] === 'other'
+        ? $validate['position_other']
+        : $validate['position'];
+
+        $validate['department'] = $validate['department'] === 'other'
+            ? $validate['department_other']
+            : $validate['department'];
+
+        unset($validate['position_other'], $validate['department_other']);
+
+        $overworkAllowance = (int) $validate['Leave_Balance_Day'] * 8 + (int) $validate['Leave_Balance_Hour'];
+        $TotalOverwork = (int) $validate['Total_Overwork_Day'] * 8 + (int) $validate['Total_Overwork_Hour'] ;
 
         $user = User::create([
             'name' => $validate['name'],
             'email' => $validate['email'],
             'password' => Hash::make($validate['password']),
             'phone_number' => $validate['phone_number'],
+            'status' => $validate['status'],
             'position' => $validate['position'],
             'department' => $validate['department'],
             'role' => $validate['role'],
-            'overwork_allowance' => $overworkAllowance, 
+            'overwork_allowance' => $overworkAllowance,
+            'total_overwork' => $TotalOverwork,
         ]);
 
         event(new Registered($user));
@@ -58,4 +78,99 @@ class RegisteredUserController extends Controller
         return redirect(route('account.show', absolute: false));
     }
 
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $validate = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone_number' => 'nullable|string|max:20',
+            'status' => 'nullable|string|max:255',
+            'Leave_Balance_Day' => 'nullable|numeric',
+            'Leave_Balance_Hour' => 'nullable|numeric',
+            'Total_Overwork_Day' => 'nullable|numeric',
+            'Total_Overwork_Hour' => 'nullable|numeric',
+            'position' => 'nullable|string|max:255',
+            'position_other' => 'nullable|string',
+            'department' => 'nullable|string|max:255',
+            'department_other' => 'nullable|string',
+        ]);
+
+        $validate['position'] = $validate['position'] === 'other'
+            ? $validate['position_other']
+            : $validate['position'];
+
+        $validate['department'] = $validate['department'] === 'other'
+            ? $validate['department_other']
+            : $validate['department'];
+
+        unset($validate['position_other'], $validate['department_other']);
+
+        $leaveBalanceTimes8 = isset($validate['Leave_Balance_Day'], $validate['Leave_Balance_Hour'] )
+            ? (int) $validate['Leave_Balance_Day'] * 8 + (int) $validate['Leave_Balance_Hour']
+            : $user->overwork;
+
+        $totalOverworkTimes8 = isset($validate['Total_Overwork_Day'], $validate['Leave_Balance_Hour'])
+            ? (int) $validate['Total_Overwork_Day'] * 8 + (int) $validate['Total_Overwork_Hour']
+            : $user->total_overwork;
+
+        $user->update([
+            'name' => $validate['name'],
+            'email' => $validate['email'],
+            'phone_number' => $validate['phone_number'] ?? $user->phone_number,
+            'status' => $validate ['status'] ?? $user->status,
+            'position' => $validate['position'] ?? $user->position,
+            'department' => $validate['department'] ?? $user->department,
+            'overwork_allowance' => $leaveBalanceTimes8,
+            'total_overwork' => $totalOverworkTimes8,
+        ]);
+
+        return redirect()->back()->with('success', [
+            'title' => 'User data updated successfully!',
+            'message' => '',
+            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+        ]);
+    }
+
+
+    public function approve(Request $request, $mode)
+    {
+        $userId = $request->input('userId');
+        $user = User::findOrFail($userId);
+
+        $totalLate = floatval($request->input('totalLateValue')) * 8;
+
+        if ($mode === 'leave') {
+
+            $user->overwork_allowance = max(0, $user->overwork_allowance - $totalLate);
+        } elseif ($mode === 'overwork') {
+            $user->total_overwork = max(0, $user->total_overwork - $totalLate);
+        } else {
+            return redirect()->back()->with('fail', [
+                'title' => 'Invalid Mode',
+                'message' => 'Mode must be either leave or overwork.',
+            ]);
+        }
+
+        // dd([
+        //     'user' => $user,
+        //     'total' =>  $totalLate,
+        //     'dt leave' =>   $user->overwork_allowance,
+        //     'dt leaveoverwork' =>  $user->total_overwork,
+        // ]);
+
+        $user->save();
+
+        LateLog::create([
+            'user_id' => $user->id,
+            'mode' => $mode,
+            'amount' => $totalLate,
+            'message' => "Your {$mode} balance has been reduced by $totalLate Hours due to lateness.",
+        ]);
+
+        return redirect()->back()->with('success', [
+            'title' => 'Balance Updated',
+            'message' => ucfirst($mode) . " balance has been reduced by $totalLate Hours.",
+        ]);
+    }
 }

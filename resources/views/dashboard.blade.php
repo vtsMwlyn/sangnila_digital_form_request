@@ -21,7 +21,7 @@
     {{-- Cards --}}
 
     <div class="flex flex-col space-y-7">
-        <div class="mx-10 px-6 lg:px-8 pt-8 grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2">
+        <div class="mx-10 px-6 lg:px-8 pt-8 grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2 {{auth()->user()->role === 'user' ? 'sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}}">
 
             @if (auth()->user()->role === 'user')
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -33,14 +33,6 @@
                     <span class="text-sm text-gray-500">{{ __('Total overwork approved') }}</span>
                 </div>
 
-                 {{-- <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
-                    <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                        {{ __('Total Leave') }}
-                        <i class="bi bi-journal-check text-gray-500 text-lg"></i>
-                    </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['total_leave']}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total leave approved') }}</span>
-                </div> --}}
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
@@ -50,6 +42,30 @@
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{  $data['balance'] }}</h1>
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
+
+                <div class="sticky z-50 top-0 bg-[#F0F3F8] rounded-2xl shadow-md p-6 ">
+                    <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px] mb-3">
+                    {{ __('Recent Activity') }}
+                    <i class="bi bi-file-text text-lg text-gray-500"></i>
+                    </small>
+
+                <a href="{{ route('LogActivity.show') }}" class="bg-[#F0F3F8] relative overflow-y-auto max-h-[60px] block">
+                 @if($data['logs']->isEmpty())
+                     <p class="text-gray-500 text-sm italic">No recent lateness activity.</p>
+                 @else
+                     <ul class="space-y-2">
+                         @foreach($data['logs'] as $log)
+                             <li class="text-sm text-gray-800">
+                                 <span class="block font-semibold ">
+                                     {{ $log->created_at->setTimezone('Asia/Jakarta')->format('d M Y, H:i') }}
+                                 </span>
+                                 <span>{{ $log->message }}</span>
+                             </li>
+                         @endforeach
+                     </ul>
+                 @endif
+             </a>
+            </div>
             @elseif (auth()->user()->role === 'admin')
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">

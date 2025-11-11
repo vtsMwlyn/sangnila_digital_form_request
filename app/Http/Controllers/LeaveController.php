@@ -171,50 +171,21 @@ class LeaveController
                 ]);
             }
 
-            $user->overwork_allowance = $allowance - $newApproval;
+            $user->overwork_allowance = $allowance - $newApproval ;
 
-            // dd([
-            //     'mode' => $mode,
-            //     'totalOverwork' => $allowance,
-            //     'validateBalanceApproval' => $newApproval,
-            //     'new_balance' =>  $user->overwork_allowance,
-            //     ]);
+            dd([
+                'mode' => $mode,
+                'totalOverwork' => $allowance,
+                'validateBalanceApproval' => $newApproval,
+                'new_balance' =>  $user->overwork_allowance,
+              
+                ]);
 
             $user->save();
             $leave->update(['request_status' => 'approved']);
         }
 
 
-        // elseif ($mode === 'overwork') {
-        //     $newApproval = (int) $leave->leave_period;
-        //     $totalApprovedOverwork = Overwork::getTotalApprovedHours($userId);
-        //     $maxAllowance = $user->overwork_allowance;
-
-        //     if ($totalApprovedOverwork < $newApproval) {
-        //         return redirect()->back()->with('fail', [
-        //             'title'   => 'Exceeds Limit',
-        //             'message' => 'This user exceeds the allowed overwork limit.',
-        //         ]);
-        //     }
-        //     $newTotalOverwork = max($totalApprovedOverwork - $newApproval, 0);
-
-        //     $leave->update(['request_status' => 'approved']);
-
-        //     dd([
-        //         'mode' => $mode,
-        //         'totalOverwork' => $totalApprovedOverwork,
-        //         'validateBalanceApproval' => $newApproval,
-        //         'new_balance' => $newTotalOverwork,
-        //         ]);
-
-        //     $user->total_overwork = $newTotalOverwork;
-        //     $user->save();
-
-        //     return redirect()->back()->with('success', [
-        //         'title'   => 'Overwork Approved',
-        //         'message' => 'Overwork has been approved and the balance has been updated.',
-        //     ]);
-        // }
         elseif ($mode === 'overwork') {
             $newApproval = (int) $leave->leave_period;
             $totalApprovedOverwork = $user->total_overwork;
@@ -230,12 +201,13 @@ class LeaveController
             $newTotalOverwork = max($totalApprovedOverwork - $newApproval, 0);
 
 
-            // dd([
-            //     'mode' => $mode,
-            //     'totalOverwork' => $totalApprovedOverwork,
-            //     'validateBalanceApproval' => $newApproval,
-            //     'new_balance' => $newTotalOverwork,
-            //     ]);
+            dd([
+                'mode' => $mode,
+                'totalOverwork' => $totalApprovedOverwork,
+                'validateBalanceApproval' => $newApproval,
+                'new_balance' => $newTotalOverwork,
+
+                ]);
 
             $leave->update(['request_status' => 'approved']);
             $user->update(['total_overwork' => $newTotalOverwork]);
@@ -246,5 +218,7 @@ class LeaveController
             'message' => "This {$mode} request has been approved successfully.",
         ]);
     }
+
+
 
 }

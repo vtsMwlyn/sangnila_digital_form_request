@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="container-draft bg-[#F0F3F8] p-6 rounded-lg w-full max-w-6xl shadow-lg overflow-x-auto">
+<div class="mx-1 container-draft bg-[#F0F3F8] p-6 rounded-lg w-full shadow-lg overflow-x-auto">
     <div id="filter" class="flex items-center mb-8">
         <h2 class="text-2xl font-bold text-[#012967]">Manage Account</h2>
 
@@ -22,22 +22,21 @@
         $activeToggle = request('status', 'pending');
     @endphp
 
-    <table class="min-w-full text-left justify-center items-center border-b border-gray-400 overflow-x-auto">
+    <table class="text-left justify-center items-center border-b border-gray-400 w-full ">
         <a href="{{ route('register') }}"
-            class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[130px] my-4">
+            class="bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-800 text-white font-semibold py-2 px-2 rounded-lg transition duration-300 flex items-center space-x-2 w-[150px] my-4">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M12 6v12M6 12h12" />
             </svg>
-            <span>Add User</span>
+            <span>Add Account</span>
         </a>
-        <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300">
+        <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300 ">
             <tr class="text-center">
                 <th class="py-3 px-6 whitespace-nowrap font-semibold">No</th>
                 <th class="py-3 px-6 whitespace-nowrap font-semibold">Name</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Position</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Department</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Role</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Leave Balance</th>
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Position & Department</th>
+                {{-- <th class="py-3 px-6 whitespace-nowrap font-semibold">Role</th> --}}
+                <th class="py-3 px-6 whitespace-nowrap font-semibold">Leave Balance & <br> Total Overwork</th>
                 <th class="py-3 px-6 whitespace-nowrap font-semibold">Status</th>
                 <th class="py-3 px-6 whitespace-nowrap font-semibold text-center">Action</th>
             </tr>
@@ -45,44 +44,34 @@
 
             <tbody>
                 @forelse($data as $d)
-                {{-- @php
-                    $leavePeriod = \App\Models\Leave::where('user_id', $d->id)
-                        ->where('request_status', 'approved')
-                        ->sum('leave_period') / 8;
-                    $extraLeave = \App\Models\Overwork::where('user_id', $d->id)
-                        ->where('request_status', 'approved')
-                        ->get()
-                        ->sum(function ($o) {
-                            return \Carbon\Carbon::parse($o->start_overwork)
-                                ->diffInHours(\Carbon\Carbon::parse($o->finished_overwork));
-                        }) / 8;
-                    $leaveBalance = auth()->user()->overwork_allowance + $extraLeave - $leavePeriod;
-                    $periodDays = floor($leavePeriod);
-                    $periodHours = ($leavePeriod - $periodDays) * 8;
-
-                    if (floor($leaveBalance) == 0) {
-                        $balance = ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
-                    } elseif ($leaveBalance - floor($leaveBalance) == 0) {
-                        $balance = floor($leaveBalance) . ' d';
-                    } else {
-                        $balance = floor($leaveBalance) . ' d ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' h';
-                    }
-                @endphp --}}
-                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 capitalize">
+                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 overflow-x-auto">
 
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $d->name }}</td>
-                    <td class="py-4 px-6 font-semibold">{{ $d->position }}</td>
-                    <td class="py-4 px-6"> {{ $d->department }} </td>
-                    <td class="py-4 px-6 font-semibold">{{$d->role}}</td>
-                    <td class="py-4 px-6 text-center">{{$d->overwork_allowance}}</td>
+                    <td class="py-4 px-6 text-sm ">{{ $d->position. ' | ' .$d->department }}</td>
+                    {{-- <td class="py-4 px-6">{{$d->role}}</td> --}}
+                    <td class="py-4 px-6 text-center">
+                        @php
+                            $allowanceDay = intdiv($d->overwork_allowance, 8);
+                            $allowanceHour = $d->overwork_allowance % 8;
+
+                            $totalDay = intdiv($d->total_overwork, 8);
+                            $totalHour = $d->total_overwork % 8;
+                        @endphp
+
+                        {{ $allowanceDay }} Day
+                        {{ $allowanceHour }} Hours
+                         <br>
+                        {{ $totalDay }} Day
+                        {{ $totalHour }} Hours
+                    </td>
                     <td class="py-4 px-6 font-semibold text-center">
                         <span class="{{$d->status_account === 'active' ? 'bg-blue-500' : 'bg-red-500'}} text-white rounded-full px-3 py-1 text-sm font-semibold">
                             {{$d->status_account}}
                         </span>
                     </td>
 
-                    <td class="py-4 px-6 text-center">
+                    <td class="px-1 text-center">
                         <div class="flex space-x-2 justify-center items-center">
                             <button
                                 class="eye-preview-btn "
@@ -97,10 +86,47 @@
                                 data-position="{{ $d->position }}"
                                 data-department="{{ $d->department }}"
                                 data-role="{{ $d->role }}"
-                                data-balance="{{ $d->overwork_allowance }}"
+                                data-status_employee="{{ $d->status }}"
+                                @php
+                                $balanceDay = intdiv($d->overwork_allowance, 8);
+                                $balanceHour = $d->overwork_allowance % 8;
+
+                                $overworkDay = intdiv($d->total_overwork, 8);
+                                $overworkHour = $d->total_overwork % 8;
+
+                                $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
+                                $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+                            @endphp
+                                data-balance="{{ $formattedBalance }}"
+                                data-overwork="{{ $formattedOverwork }}"
                             >
-                            <img src="{{ asset('img/view.svg') }}" alt="view" >
-                        </button>
+                             <img src="{{ asset('img/view.svg') }}" alt="view" >
+                             </button>
+
+                            <button
+                                class="edit-account"
+                                title="Edit Account"
+                                data-id="{{ $d->id }}"
+                                data-name="{{ $d->name }}"
+                                data-email="{{ $d->email }}"
+                                data-phone="{{ $d->phone_number }}"
+                                data-position="{{ $d->position }}"
+                                data-department="{{ $d->department }}"
+                                data-balance="{{ $d->overwork_allowance }}"
+                                data-overwork="{{ $d->total_overwork }}"
+                                data-status_employee="{{ $d->status }}"
+                                onclick="openEditModal(this)"
+                            >
+                                <img src="{{ asset('img/edit.svg') }}" alt="edit">
+                            </button>
+
+                            <button
+                                class="late-balance"
+                                title="Lateness"
+                                data-id="{{ $d->id }}"
+                                onclick="openLateModal(this)">
+                                <img src="{{ asset('img/minus.svg') }}" alt="">
+                            </button>
 
                             @php
                                 $status = request('status');
@@ -110,24 +136,22 @@
                             <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'suspended']) }}"
                                 onclick="return confirm('Are you sure you want to suspend this account?')"
                                 title="Suspend">
-                                <img src="{{ asset('img/ban.svg') }}" alt="Suspend">
+                                <img src="{{ asset('img/ban.svg') }}" alt="Suspend" >
                             </a>
-                        @elseif ($d->status_account === 'suspended')
+                            @elseif ($d->status_account === 'suspended')
                             <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'active']) }}"
                                 onclick="return confirm('Are you sure you want to unsuspend this account?')"
                                 title="Unsuspend">
-                                <img src="{{ asset('img/unban.svg') }}" alt="Unsuspend">
+                                <img src="{{ asset('img/unban.svg') }}" alt="Unsuspend" >
                             </a>
-                        @endif
-
-
-                                <a href="{{route('account.delete', ['id' => $d->id])}}"
-                                    class="{{$status === 'rejected' ? 'hidden' : 'flex'}} "
-                                    title="Remove"
-                                    onclick="return confirm('yakin di hapus?')"
-                                >
+                            @endif
+                            <a href="{{route('account.delete', ['id' => $d->id])}}"
+                                class="{{$status === 'rejected' ? 'hidden' : 'flex'}} "
+                                title="Remove"
+                                onclick="return confirm('Are you sure to remove this account?')"
+                            >
                                 <img src="{{ asset('img/delete-button.svg') }}" alt="view"  >
-                            </a>
+                                </a>
                             @endif
                         </div>
                     </td>
@@ -161,13 +185,14 @@
                 &times;
             </button>
         </div>
-    <div id="leave-preview-account" class="space-y-3 overflow-y-auto flex-1">
+         <div id="leave-preview-account" class="space-y-3 overflow-y-auto flex-1">
             <!-- content -->
         </div>
     </div>
 </x-modal>
-
+<x-modal-late/>
 <x-modal-success />
+<x-modal-edit/>
 <script>
     document.getElementById('search').addEventListener('input', function () {
         const searchTerm = this.value.toLowerCase()
@@ -206,50 +231,76 @@
                     const position = this.dataset.position;
                     const department = this.dataset.department;
                     const role = this.dataset.role;
+                    const overwork = this.dataset.overwork;
+                    const status_employee = this.dataset.status_employee;
                     const statusClass = getStatusClass(status);
                     let body = `
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Cration Date Account:</span>
-                            <span class="text-gray-900 mt-2">${date}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Name:</span>
-                            <span class="text-gray-900 mt-2 capitalize">${name}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Email:</span>
-                            <span class="text-gray-900 mt-2">${email}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Phone Number:</span>
-                            <span class="text-gray-900 mt-2">${phone}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Position:</span>
-                            <span class="text-gray-900 mt-2">${position}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Position:</span>
-                            <span class="text-gray-900 mt-2">${department}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Position:</span>
-                            <span class="text-gray-900 mt-2 capitalize">${role}</span>
-                        </div>
-                        `;
-                        body += `
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Status:</span>
-                            <span class="${statusClass} capitalize">${status}</span>
-                        </div>
-                        ${role != 'admin'
-                            ? ` <div class="flex flex-col items-start">
-                                    <span class="font-extrabold text-gray-700">Leave Balance:</span>
-                                    <span class="text-gray-900 mt-2">${balance}</span>
-                                </div>`
+                    <table class="w-full text-sm text-gray-800 border-collapse">
+                        <tbody class="divide-y divide-gray-200">
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Creation Date Account:</th>
+                            <td class="text-gray-900 py-2">${date}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4">Name:</th>
+                            <td class="text-gray-900 py-2 capitalize">${name}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4">Email:</th>
+                            <td class="text-gray-900 py-2">${email}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4">Phone Number:</th>
+                            <td class="text-gray-900 py-2">${phone}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4">Position:</th>
+                            <td class="text-gray-900 py-2">${position}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4">Department:</th>
+                            <td class="text-gray-900 py-2">${department}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-4 pr-4">Role:</th>
+                            <td class="text-gray-900 py-2 capitalize">${role}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-4 pr-4">Status:</th>
+                            <td class="text-gray-900 py-2 capitalize">${status_employee}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 pt-2">Status:</th>
+                            <td class="${statusClass} py-3 capitalize">${status}</td>
+                        </tr>
+
+                        ${
+                            role != 'admin'
+                            ? `
+                            <tr>
+                                <th class="text-left font-semibold text-gray-700 py-2 pr-4">Leave Balance:</th>
+                                <td class="text-gray-900 py-2">${balance}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-left font-semibold text-gray-700 py-2 pr-4">Total Overwork:</th>
+                                <td class="text-gray-900 py-2">${overwork}</td>
+                            </tr>
+                            `
                             : ''
                         }
-                        `;
+                        </tbody>
+                    </table>
+                    `;
+
                     document.getElementById('leave-preview-account').innerHTML = body;
                     window.dispatchEvent(new CustomEvent('open-modal', { detail: 'leave-preview-modal' }));
                 });
@@ -262,6 +313,99 @@
                 case 'suspended': return 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold';
             }
         }
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.edit-account').forEach(b => {
+    b.addEventListener('click', function () {
+      window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-modal' }));
+    });
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.late-balance').forEach(b => {
+    b.addEventListener('click', function () {
+      window.dispatchEvent(new CustomEvent('open-modal', { detail: 'late-modal' }));
+    });
+  });
+});
+</script>
+
+<script>
+    function openEditModal(button) {
+        const id = button.getAttribute('data-id');
+        const name = button.getAttribute('data-name');
+        const email = button.getAttribute('data-email');
+        const phone = button.getAttribute('data-phone');
+        const leaveBalance = button.getAttribute('data-balance');
+        const totalOverwork = button.getAttribute('data-overwork');
+        const position = button.getAttribute('data-position');
+        const status_employee = button.getAttribute('data-status_employee');
+        const department = button.getAttribute('data-department');
+
+        document.getElementById('user_id').value = id;
+        document.getElementById('name').value = name;
+        document.getElementById('email').value = email;
+        document.getElementById('phone').value = phone ?? '';
+        document.getElementById('Leave_Balance').value = leaveBalance;
+        document.getElementById('Total_Overwork').value = totalOverwork;
+
+        document.getElementById('editForm').action = `/account/update/${id}`;
+
+        const positionSelect = document.getElementById('positionSelect');
+        const positionInput = document.getElementById('positionInput');
+
+
+        if ([...positionSelect.options].some(opt => opt.value === position)) {
+            positionSelect.value = position;
+            positionSelect.classList.remove("hidden");
+            positionInput.classList.add("hidden");
+        } else {
+            positionSelect.value = "other";
+            positionSelect.classList.add("hidden");
+            positionInput.classList.remove("hidden");
+            positionInput.value = position;
+        }
+
+        const departmentSelect = document.getElementById('departmentSelect');
+        const departmentInput = document.getElementById('departmentInput');
+
+        if ([...departmentSelect.options].some(opt => opt.value === department)) {
+            departmentSelect.value = department;
+            departmentSelect.classList.remove("hidden");
+            departmentInput.classList.add("hidden");
+        } else {
+            departmentSelect.value = "other";
+            departmentSelect.classList.add("hidden");
+            departmentInput.classList.remove("hidden");
+            departmentInput.value = department;
+        }
+
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-modal' }));
+    }
+
+
+
+    function openLateModal(button) {
+        const userId = button.getAttribute('data-id');
+
+        document.getElementById('lateUserIdLeave').value = userId;
+        document.getElementById('lateUserIdOverwork').value = userId;
+
+        window.dispatchEvent(new CustomEvent('open-modal', { detail: 'late-modal' }));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const totalLateInput = document.getElementById('totalLate');
+        const totalLateLeave = document.getElementById('totalLateLeave');
+        const totalLateOverwork = document.getElementById('totalLateOverwork');
+
+        totalLateInput.addEventListener('input', () => {
+            totalLateLeave.value = totalLateInput.value;
+            totalLateOverwork.value = totalLateInput.value;
+        });
+    });
 
 </script>
 @endsection

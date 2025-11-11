@@ -218,6 +218,30 @@
                                     class="mt-1 text-red-600"
                                 />
                             </div>
+
+                            {{-- status employee --}}
+                            <div class="mb-4">
+                                <label
+                                    for="status"
+                                    class="font-semibold text-sm block mb-1"
+                                    >Status Employee</label
+                                >
+                                <select
+                                id="status"
+                                name="status"
+                                required
+                                placeholder="Select New User Status"
+                                class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                                >
+                                <option disabled hidden selected >Select New User Status</option>
+                                <option value="contract">Contract</option>
+                                <option value="intern">Intern</option>
+                                </select>
+                                <x-input-error
+                                    :messages="$errors->get('status')"
+                                    class="mt-1 text-red-600"
+                                />
+                            </div>
                         </td>
 
                         <!-- Right Column -->
@@ -225,26 +249,69 @@
                             class="align-top w-1/2"
                             :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'pl-4' : ''"
                         >
-                        <div class="mb-4">
+
+                        <div class="mb-4 w-full">
                             <label
                                 for="overwork_allowance"
                                 class="font-semibold text-sm block mb-1"
                                 >Leave Balance</label
                             >
+                            <div class="flex flex-col md:flex-row gap-4">
                             <x-text-input
                                 placeholder="Enter Leave Balance in Days"
                                 id="Leave_Balance"
                                 type="text"
-                                name="Leave_Balance"
+                                name="Leave_Balance_Day"
                                 :value="old('Leave_Balance')"
                                 required
                                 autofocus
                                 class="w-full rounded border px-3 py-2"
                             />
+                            <x-text-input
+                            placeholder="Enter Leave Balance in hours"
+                            id="Leave_Balance"
+                            type="text"
+                            name="Leave_Balance_Hour"
+                            :value="old('Leave_Balance')"
+
+                            autofocus
+                            class="w-full rounded border px-3 py-2"
+                            />
+                            </div>
                             <x-input-error
                                 :messages="$errors->get('Leave_Balance')"
                                 class="mt-1 text-red-600"
                             />
+                        </div>
+
+                        <div class="mb-4 w-full">
+                            <label for="Total_Overwork" class="font-semibold text-sm block mb-1">
+                                Total Overwork
+                            </label>
+
+                            <div class="flex flex-col md:flex-row gap-4">
+                                <x-text-input
+                                    placeholder="Enter Total Overwork in Days"
+                                    id="Total_Overwork_Day"
+                                    type="text"
+                                    name="Total_Overwork_Day"
+                                    :value="old('Total_Overwork_Day')"
+                                    required
+                                    class="w-full md:w-1/2 rounded border px-3 py-2"
+                                />
+
+                                <x-text-input
+                                    placeholder="Enter Total Overwork in Hours"
+                                    id="Total_Overwork_Hour"
+                                    type="text"
+                                    name="Total_Overwork_Hour"
+                                    :value="old('Total_Overwork_Hour')"
+                                    
+                                    class="w-full md:w-1/2 rounded border px-3 py-2"
+                                />
+                            </div>
+
+                            <x-input-error :messages="$errors->get('Total_Overwork')" class="mt-1 text-red-600" />
                         </div>
 
                         <div class="mb-4">
@@ -280,10 +347,10 @@
                             />
 
                             <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
-                            </div>
+                        </div>
 
                           <!-- DEPARTMENT -->
-                          <div class="mb-4">
+                        <div class="mb-4">
                             <label for="departmentSelect" class="font-semibold text-sm block mb-1">Department</label>
 
                             <select
@@ -316,28 +383,28 @@
                             />
 
                             <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600"/>
-                            </div>
+                        </div>
 
                             <!-- Role -->
-                            <div class="mb-4">
-                                <label for="Role" class="font-semibold text-sm block mb-1">Role</label>
-                                <select
-                                id="role"
-                                name="role"
-                                required
-                                placeholder="Select New User Role"
-                                class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
-                              >
-                              <option disabled hidden selected >Select New User Role</option>
-                              <option value="admin">Admin</option>
-                              <option value="user">User</option>
-                              </select>
-                                <x-input-error
-                                    :messages="$errors->get('role')"
-                                    class="mt-1 text-red-600"
-                                />
-                            </div>
-                        </td>
+                        <div class="mb-4">
+                            <label for="Role" class="font-semibold text-sm block mb-1">Role</label>
+                            <select
+                            id="role"
+                            name="role"
+                            required
+                            placeholder="Select New User Role"
+                            class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                            >
+                            <option disabled hidden selected >Select New User Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                            </select>
+                            <x-input-error
+                                :messages="$errors->get('role')"
+                                class="mt-1 text-red-600"
+                            />
+                        </div>
+                    </td>
                     </tr>
                 </tbody>
             </table>

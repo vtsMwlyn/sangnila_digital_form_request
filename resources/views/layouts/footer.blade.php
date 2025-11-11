@@ -1,4 +1,4 @@
-<footer class="px-5 py-10  text-white bg-slate-800 text-base lg:text-xl ml-72 transition-all duration-300 ease-in-out flex items-center" :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'">
+<footer class="mpx-5 py-10  text-white bg-slate-800 text-base lg:text-xl ml-72 transition-all duration-300 ease-in-out flex items-center" :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'">
     <div class="flex flex-col md:flex-row items-start justify-center gap-3">
         <div class="w-full xl:w-1/3 self-center px-4">
             <p class="font-extrabold text-start text-lg lg:text-xl ">Sangnila LMS WebApp</p>

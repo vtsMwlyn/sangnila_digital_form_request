@@ -16,7 +16,7 @@
                     <option value="all" {{ request('month') === 'all' ? 'selected' : '' }}>All Months</option>
                     @php
                         $months = [];
-                        for ($i = 0; $i < 12; $i++) {
+                        for ($i = -1; $i < 12; $i++) {
                             $date = now()->subMonths($i);
                             $months[] = ['value' => $date->format('m-Y'), 'label' => $date->format('F Y')];
                         }

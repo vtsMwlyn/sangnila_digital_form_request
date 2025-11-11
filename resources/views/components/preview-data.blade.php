@@ -1,4 +1,4 @@
-<x-modal name="dashboard-preview-modal" maxWidth="3xl">
+<x-modal name="dashboard-preview-modal" maxWidth="xl">
     <div class="p-6 flex flex-col max-h-[80vh]">
         <div class="flex justify-between items-center mb-4 flex-shrink-0">
             <h3

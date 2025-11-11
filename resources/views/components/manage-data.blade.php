@@ -77,99 +77,132 @@
                 const status = this.dataset.status;
                 const duration = this.dataset.duration;
                 const adminNote = this.dataset.admin_note;
+                const balance = this.dataset.balance;
+                const overwork = this.dataset.overwork;
                 const evidences = this.dataset.evidences
                     ? JSON.parse(this.dataset.evidences)
                     : [];
                 const statusClass = getStatusClass(status);
-                let rejectedOnly = ""
+                let rejectedOnly = "";
                 let overworkOnly = "";
+
+
                 if (type === "overwork") {
                     overworkOnly = `
-                            <div class="flex flex-col items-start">
-                                <span class="font-extrabold text-gray-700 capitalize">${type} Date:</span>
-                                <span class="text-gray-900 mt-2 capitalize">${overworkDate}</span>
-                            </div>
+                    <table class="w-full text-sm text-gray-800 border-collapse">
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">${type} Date:</th>
+                            <td class="text-gray-900 py-2">${overworkDate}</td>
+                        </tr>
                             `;
                 }
                 if (status === "rejected") {
                     rejectedOnly = `
-                            <div class="flex flex-col items-start">
-                                <span class="font-extrabold text-gray-700 capitalize">Reason For Rejection:</span>
-                                <span class="text-gray-900 mt-2 capitalize ${adminNote != '' ? '' : 'text-yellow-800'}">${adminNote != '' ? adminNote : '<i>(This request was rejected without a specified reason.</i> <br> <i>Please consult the admin if you wish to clarify further.)</i>'}</span>
-                            </div>
+                        <table class="w-full text-sm text-gray-800 border-collapse">
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Reason For Rejection:</th>
+                                <td class="text-gray-900 py-2 ${adminNote != '' ? '' : 'text-yellow-800'}">${adminNote != '' ? adminNote : '<i>(This request was rejected without a specified reason.</i> <br> <i>Please consult the admin if you wish to clarify further.)</i>'}</td>
+                            </tr>
                             `;
                 }
                 let body = `
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Requested At:</span>
-                            <span class="text-gray-900 mt-2">${date}</span>
-                        </div>
+                    <table class="w-full text-sm text-gray-800 border-collapse">
+                        <tbody class="divide-y divide-gray-200">
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Requested At:</th>
+                            <td class="text-gray-900 py-2">${date}</td>
+                        </tr>
+
                         ${overworkOnly}
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700 capitalize">${
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">
+                                ${
                                 type === "overwork"
-                                    ? `${type} time`
-                                    : `${type} date`
-                            }:</span>
-                            <span class="text-gray-900 mt-2 flex gap-5">
-                                ${start}
+                                ? `${type} time`
+                                : `${type} date`
+                                }
+                            </th>
+                            <td class="text-gray-900 py-2"> ${start}
                                     <i class="bi bi-arrow-right text-xl font-bold"></i>
-                                ${finish}
-                            </span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Type:</span>
-                            <span class="text-gray-900 mt-2 capitalize">${type}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Description:</span>
-                            <span class="text-gray-900 mt-2">${description.replace(
+                                ${finish}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Type:</th>
+                            <td class="text-gray-900 py-2">${type}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Description:</th>
+                            <td class="text-gray-900 py-2">${description.replace(
                                 /\n/g,
                                 "<br>"
-                            )}</span>
-                        </div>
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Duration:</span>
-                            <span class="text-gray-900 mt-2 capitalize">${duration}</span>
-                        </div>
+                            )}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Duration:</th>
+                            <td class="text-gray-900 py-2">${duration}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Leave Balance</th>
+                            <td class="text-gray-900 py-2">${balance}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Total Overwork</th>
+                            <td class="text-gray-900 py-2">${overwork}</td>
+                        </tr>
+
                         ${rejectedOnly}
+                     </tbody>
+                    </table>
                         `;
                 body += `
-                            <div class="flex flex-col items-start">
-                                <span class="font-extrabold text-gray-700">Status:</span>
-                                <span class="${statusClass} m-2 capitalize">${status}</span>
-                            </div>
+                <table class="w-full text-sm text-gray-800 border-collapse">
+                        <tbody class="divide-y divide-gray-200">
+
+                         <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Status:</th>
+                            <td class="${statusClass} py-2 capitalize">${status}</td>
+                         </tr>
                         `;
                 if (type === "overwork") {
                     body += `
-                        <div class="flex flex-col items-start">
-                            <span class="font-extrabold text-gray-700">Evidences:</span>
-                            <div class="mt-2 flex flex-wrap gap-2">
-                                ${evidences
-                                    .map((e, index) => {
-                                        const ext = e.path
-                                            .split(".")
-                                            .pop()
-                                            .toLowerCase();
-                                        if (
-                                            [
-                                                "jpg",
-                                                "png",
-                                                "jpeg",
-                                                "webp",
-                                            ].includes(ext)
-                                        ) {
-                                            return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
-                                        } else if (
-                                            ["mp4", "mov", "avi"].includes(ext)
-                                        ) {
-                                            return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
-                                        }
-                                        return "";
-                                    })
-                                    .join("")}
-                            </div>
-                        </div>
+                    <table class="w-full text-sm text-gray-800 border-collapse">
+                        <tbody class="divide-y divide-gray-200">
+
+                         <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Evidences:</th>
+                            <td class="text-gray-900 py-2"> ${evidences
+                                .map((e, index) => {
+                                    const ext = e.path
+                                        .split(".")
+                                        .pop()
+                                        .toLowerCase();
+                                    if (
+                                        [
+                                            "jpg",
+                                            "png",
+                                            "jpeg",
+                                            "webp",
+                                        ].includes(ext)
+                                    ) {
+                                        return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
+                                    } else if (
+                                        ["mp4", "mov", "avi"].includes(ext)
+                                    ) {
+                                        return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
+                                    }
+                                    return "";
+                                })
+                                .join("")}</td>
+                         </tr>
                         `;
                 }
                 document.getElementById("dashboard-preview-body").innerHTML = body;
@@ -300,4 +333,45 @@
 
             window.dispatchEvent(new CustomEvent('open-modal', { detail: 'choose-modal' }));
         }
+
+        // function openLateModal(button) {
+        //     const id = button.getAttribute('data-id');
+
+        //     document.getElementById('user_id').value = id;
+
+        //     window.dispatchEvent(new CustomEvent('open-modal', { detail: 'late-modal' }));
+        // }
+
+        function openEditModal(button) {
+            const id = button.getAttribute('data-id');
+
+            const row = button.closest('tr');
+            const name = row.querySelector('.user-name').innerText;
+            const email = row.querySelector('.user-email').innerText;
+            const phone = row.querySelector('.user-phone').innerText;
+            const leave = row.querySelector('.user-leave').innerText;
+            const overwork = row.querySelector('.user-overwork').innerText;
+            const position = row.querySelector('.user-position').innerText;
+            const department = row.querySelector('.user-department').innerText;
+
+            document.getElementById('user_id').value = id;
+            document.getElementById('name').value = name;
+            document.getElementById('email').value = email;
+            document.getElementById('phone').value = phone;
+            document.getElementById('Leave_Balance').value = leave;
+            document.getElementById('Total_Overwork').value = overwork;
+            document.getElementById('positionSelect').value = position;
+            document.getElementById('departmentSelect').value = department;
+
+            const form = document.getElementById('editForm');
+            form.action = `/update/${id}`;
+
+            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-modal' }));
+        }
 </script>
+
+
+{{-- <div class="flex flex-col items-start">
+    <span class="font-extrabold text-gray-700 capitalize">Reason For Rejection:</span>
+    <span class="text-gray-900 mt-2 capitalize ${adminNote != '' ? '' : 'text-yellow-800'}">${adminNote != '' ? adminNote : '<i>(This request was rejected without a specified reason.</i> <br> <i>Please consult the admin if you wish to clarify further.)</i>'}</span>
+</div> --}}

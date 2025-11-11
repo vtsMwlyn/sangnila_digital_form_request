@@ -11,6 +11,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\OverworkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeductionController;
+use App\Http\Controllers\LogController;
 use Symfony\Component\Routing\RequestContext;
 use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
@@ -69,6 +70,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             // Route::get('edit/user/{id}/status/{status?}', [ManageAccountController::class, 'edit'])->name('edit');
             Route::get('edit/user/{id}/status/{status}', [ManageAccountController::class, 'edit'])
             ->name('edit');
+            Route::get('fetch/{id}', [ManageAccountController::class, 'fetch'])->name('fetch');
 
             Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
         });
@@ -107,6 +109,9 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     Route::post('/admin/leave/approve/{mode}', [LeaveController::class, 'approve'])
     ->name('admin.leave.approve');
 
+    Route::prefix('LogActivity')->name('LogActivity.')->group(function () {
+     Route::get('/LogActivity', [LogController::class, 'show'])->name('show');
+    });
 });
 
 require __DIR__ . '/auth.php';

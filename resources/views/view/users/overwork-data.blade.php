@@ -21,8 +21,8 @@
     @endif
 
     <!-- Overwork Table -->
-    <div class="mt-4 w-full overflow-x-auto">
-    <table class="min-w-full text-left justify-center border-b border-gray-300 mr-10  text-sm sm:text-base">
+    <div class="mt-4 w-full overflow-x-auto overflow-y-auto max-h-[600px] ">
+    <table class="w-full text-left justify-center border-b border-gray-300 mr-10 text-sm sm:text-base" >
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
             <tr>
                 <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">No</th>

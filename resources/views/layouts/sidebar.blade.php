@@ -37,9 +37,9 @@
             <a
                 href="{{ route('dashboard') }}"
                 class="flex items-center space-x-4 px-5 py-3
-          font-semibold transition-all duration-300
-          {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
-            >
+                font-semibold transition-all duration-300
+                {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
+                    >
                 <svg
                     class="w-6 h-6"
                     fill="none"
@@ -82,6 +82,16 @@
                     <path d="M16 2v4M8 2v4M3 10h18" />
                 </svg>
                 <span>Leave Data</span>
+            </a>
+
+            <a
+                href="{{ route('LogActivity.show') }}"
+                class="flex items-center space-x-4 px-5 py-3
+                font-semibold transition-all duration-300
+                {{ request()->routeIs('LogActivity.show') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
+                    >
+                <i class="bi bi-file-text text-lg"></i>
+                <span>Log Activity</span>
             </a>
 
             @if (auth()->user()->role === 'admin')
@@ -237,6 +247,16 @@
                 <span>Leave Data</span>
             </a>
 
+            <a
+            href="{{ route('LogActivity.show') }}"
+            class="flex items-center space-x-4 px-5 py-3
+            font-semibold transition-all duration-300
+            {{ request()->routeIs('LogActivity.show') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
+                >
+            <i class="bi bi-file-text text-lg"></i>
+            <span>Log Activity</span>
+        </a>
+
             @if (auth()->user()->role === 'admin')
                 <a
                     href="{{ route('account.show') }}"
@@ -288,5 +308,5 @@
         class="fixed inset-0 bg-black/40 z-30 md:hidden"
         x-transition.opacity
     ></div>
-</div>
- --}}
+</div> --}}
+

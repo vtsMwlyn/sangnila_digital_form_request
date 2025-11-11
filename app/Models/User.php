@@ -46,6 +46,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone_number',
+        'status',
         'position',
         'department',
         'overwork_allowance',

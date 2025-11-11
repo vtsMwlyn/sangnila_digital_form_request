@@ -37,6 +37,11 @@ Route::middleware('auth')->group(function () {
             ->name('register');
 
         Route::post('register', [RegisteredUserController::class, 'store']);
+
+        Route::put('account/update/{id}', [RegisteredUserController::class, 'update'])->name('account.update');
+
+        Route::post('/admin/late/{mode}', [RegisteredUserController::class, 'approve'])->name('admin.late');
+
     });
 
     Route::get('verify-email', EmailVerificationPromptController::class)

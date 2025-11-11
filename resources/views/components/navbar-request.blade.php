@@ -17,11 +17,12 @@
                 $navStatus += ['draft' => 'draft'];
             }
         @endphp
-        <form action="{{ route($type . '.show') }}" method="get">
-            <input type="hidden" class="buttonSubmit" name="status" value="{{ request('status', 'all') }}">
-            <input type="hidden" id="monthHidden" name="month" value="{{ request('month') ?? 'all' }}">
-            <input type="hidden" id="searchHidden" name="search" value="{{ request('search') ?? '' }}">
+       <form action="{{ route($type . '.show') }}" method="get">
+        <input type="hidden" class="buttonSubmit" name="status" value="{{ request('status', 'all') }}">
+        <input type="hidden" id="monthHidden" name="month" value="{{ request('month') ?? 'all' }}">
+        <input type="hidden" id="searchHidden" name="search" value="{{ request('search') ?? '' }}">
 
+        @if (!request()->routeIs('LogActivity.show'))
             <div class="status-grid">
                 @foreach ($navStatus as $status)
                     <button
@@ -36,7 +37,9 @@
                     </button>
                 @endforeach
             </div>
-        </form>
+        @endif
+    </form>
+
     </div>
 </div>
 

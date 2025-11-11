@@ -7,7 +7,7 @@
 @endphp
 
 <div class="container-draft bg-[#F0F3F8] p-4 sm:p-6 rounded-lg w-full max-w-[1400px] shadow-lg overflow-x-auto">
-    <x-form-filter-all-data title="leave date" route="leave.show" :status="$requestStatus" :type="$requestType" />
+    <x-form-filter-all-data title="leave data" route="leave.show" :status="$requestStatus" :type="$requestType" />
 
     @if(auth()->user()->role === 'user')
         <a href="{{ route('leave.form-view') }}"
@@ -19,8 +19,8 @@
         </a>
     @endif
 
-    <div class="mt-4 w-full overflow-x-auto">
-        <table class="min-w-full text-left border-b border-gray-300 text-sm sm:text-base">
+    <div class="mt-4 w-full overflow-y-auto max-h-[600px] ">
+        <table class="w-full text-left justify-center border-b border-gray-300 mr-10 text-sm sm:text-base" >
             <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
                 <tr>
                     <th class="py-3 px-4 sm:px-6 font-semibold whitespace-nowrap">No</th>

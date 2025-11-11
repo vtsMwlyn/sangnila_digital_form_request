@@ -8,6 +8,7 @@ use App\Models\Overwork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RequestController;
+use App\Models\LateLog;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -104,6 +105,12 @@ class DashboardController extends Controller
             ? "{$overworkDaysInt} days {$overworkHours} hours"
             : ($overworkDaysInt > 0 ? "{$overworkDaysInt} days" : "{$overworkHours} hours");
 
+
+        $data['logs'] = LateLog::where('user_id', $user->id)
+        ->latest()
+        ->take(3)
+        ->get();
+
         $data['total_leave'] = $totalLeaveText;
         $data['total_overwork'] = $totalOverworkText;
         $data['balance'] = $balanceText;
@@ -126,7 +133,6 @@ class DashboardController extends Controller
                     stripos($item->reason ?? $item->task_description ?? '', $search) !== false;
             });
         }
-
         return view('dashboard', compact('data'));
     }
 

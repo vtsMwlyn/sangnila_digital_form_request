@@ -28,7 +28,7 @@
         }
     @endphp
     <button
-        class="eye-preview-btn"
+        class="eye-preview-btn w-6 h-6"
             title="Show Details"
             data-id="{{ $d->id }}"
             data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
@@ -43,6 +43,18 @@
             data-description="{{ ucfirst(strtolower($d->reason ?? $d->task_description)) }}"
             data-status="{{ $d->request_status }}"
             data-duration="{{ $duration }}"
+            @php
+            $balanceDay = intdiv($d->user->overwork_allowance, 8);
+            $balanceHour = $d->user->overwork_allowance % 8;
+
+            $overworkDay = intdiv($d->user->total_overwork, 8);
+            $overworkHour = $d->user->total_overwork % 8;
+
+            $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
+            $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+            @endphp
+            data-balance="{{ $formattedBalance }}"
+            data-overwork="{{ $formattedOverwork }}"
             data-admin_note="{{ ucfirst(strtolower($d->admin_note)) }}"
             @if($d->type === 'overwork') data-evidences="{{ $d->evidence->toJson() }}" @endif >
 
@@ -53,7 +65,7 @@
         <form
             action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}"
             method="post"
-            class="flex justify-between gap-2"
+            class="flex justify-between gap-2 "
         >
             @csrf
             <input
@@ -67,7 +79,7 @@
                 id="approved"
                 data-leave="{{ $d->id}}"
                 value="{{ $d->type }}"
-                class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }}"
+                class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }} w-6 h-6"
                 title="Accept"
                 @if($d->type === 'overwork')
                     onclick="return confirm('Are you sure want to accept this request?')"
@@ -82,12 +94,12 @@
                 type="button"
                 value="{{$d->type}}"
                 id="rejectButton"
-                class="rejectButton {{$d->request_status === 'rejected' ? 'hidden' : 'flex'}}"
+                class="rejectButton {{$d->request_status === 'rejected' ? 'hidden' : 'flex'}} w-6 h-6"
                 title="Reject"
             >
             <img src="{{ asset('img/exit.svg') }}" alt="view" >
             </button>
-
         </form>
     @endif
+
 </div>
