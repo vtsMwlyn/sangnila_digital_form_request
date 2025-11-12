@@ -18,7 +18,7 @@ class LogController extends Controller
                 ->latest()
                 ->get();
 
-            return view('view.users.log', compact('data'));
+            return view('view.users.Log', compact('data'));
         }
 
         elseif ($user->role === 'admin') {
@@ -26,7 +26,7 @@ class LogController extends Controller
                 ->latest()
                 ->get();
 
-            return view('view.users.log', compact('data'));
+            return view('view.users.Log', compact('data'));
         }
 
         abort(403, 'Unauthorized');
