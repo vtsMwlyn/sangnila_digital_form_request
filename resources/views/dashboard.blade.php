@@ -43,7 +43,7 @@
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
 
-                <div class="sticky z-50 top-0 bg-[#F0F3F8] rounded-2xl shadow-md p-6 ">
+                <div class="sticky top-0 bg-[#F0F3F8] rounded-2xl shadow-md p-6 ">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px] mb-3">
                     {{ __('Recent Activity') }}
                     <i class="bi bi-file-text text-lg text-gray-500"></i>
