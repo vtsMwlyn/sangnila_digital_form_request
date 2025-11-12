@@ -145,6 +145,81 @@ class LeaveController
         }
     }
 
+    // public function approve(Request $request, $mode)
+    // {
+    //     $leaveId = $request->leaveId;
+    //     $leave   = Leave::find($leaveId);
+
+
+    //     if (!$leave) {
+    //         return redirect()->back()->with('fail', [
+    //             'title'   => 'Leave not found',
+    //             'message' => 'The selected leave request was not found.',
+    //         ]);
+    //     }
+
+    //     $userId  = $leave->user_id;
+    //     $user    = User::findOrFail($userId);
+    //     $newApproval = (int) $leave->leave_period;
+
+    //     if ($mode === 'leave') {
+    //         $allowance = $user->overwork_allowance;
+    //         $totalLate = floatval($request->input('totalLateValue')) * 8;
+
+    //         if ($newApproval > $allowance) {
+    //             return redirect()->back()->with('fail', [
+    //                 'title'   => 'Insufficient Balance',
+    //                 'message' => 'This user does not have enough leave balance.',
+    //             ]);
+    //         }
+
+    //         $user->overwork_allowance = $allowance - $newApproval - $totalLate ;
+
+    //         // dd([
+    //         //     'mode' => $mode,
+    //         //     'totalOverwork' => $allowance,
+    //         //     'validateBalanceApproval' => $newApproval,
+    //         //     'new_balance' =>  $user->overwork_allowance
+    //          //     'late' =>  $totalLate
+    //         //     ]);
+
+    //         $user->save();
+    //         $leave->update(['request_status' => 'approved']);
+    //     }
+
+
+    //     elseif ($mode === 'overwork') {
+    //         $newApproval = (int) $leave->leave_period;
+    //         $totalApprovedOverwork = $user->total_overwork;
+    //         $maxAllowance = $user->overwork_allowance;
+    //         $totalLate = floatval($request->input('totalLateValue')) * 8;
+
+    //         if ($totalApprovedOverwork < $newApproval) {
+    //             return redirect()->back()->with('fail', [
+    //                 'title'   => 'Exceeds Limit',
+    //                 'message' => 'This user exceeds the allowed overwork limit.',
+    //             ]);
+    //         }
+
+    //         $newTotalOverwork = max($totalApprovedOverwork - $newApproval - $totalLate, 0);
+
+
+    //         // dd([
+    //         //     'mode' => $mode,
+    //         //     'totalOverwork' => $totalApprovedOverwork,
+    //         //     'validateBalanceApproval' => $newApproval,
+    //         //     'new_balance' => $newTotalOverwork,
+    //         //     ]);
+
+    //         $leave->update(['request_status' => 'approved']);
+    //         $user->update(['total_overwork' => $newTotalOverwork]);
+    //     }
+
+    //     return redirect()->back()->with('success', [
+    //         'title'   => ucfirst($mode) . ' Approved!',
+    //         'message' => "This {$mode} request has been approved successfully.",
+    //     ]);
+    // }
     public function approve(Request $request, $mode)
     {
         $leaveId = $request->leaveId;
@@ -163,6 +238,7 @@ class LeaveController
 
         if ($mode === 'leave') {
             $allowance = $user->overwork_allowance;
+            $totalLate = floatval($request->input('totalLateValue')) * 8;
 
             if ($newApproval > $allowance) {
                 return redirect()->back()->with('fail', [
@@ -171,25 +247,19 @@ class LeaveController
                 ]);
             }
 
-            $user->overwork_allowance = $allowance - $newApproval ;
-
-            dd([
-                'mode' => $mode,
-                'totalOverwork' => $allowance,
-                'validateBalanceApproval' => $newApproval,
-                'new_balance' =>  $user->overwork_allowance,
-              
-                ]);
-
+            $user->overwork_allowance = $allowance - $newApproval - $totalLate;
             $user->save();
-            $leave->update(['request_status' => 'approved']);
-        }
 
+            $leave->update([
+                'request_status'   => 'approved',
+                'deduction_source' => 'leave_balance', // ✅ diset sesuai mode
+            ]);
+        }
 
         elseif ($mode === 'overwork') {
             $newApproval = (int) $leave->leave_period;
             $totalApprovedOverwork = $user->total_overwork;
-            $maxAllowance = $user->overwork_allowance;
+            $totalLate = floatval($request->input('totalLateValue')) * 8;
 
             if ($totalApprovedOverwork < $newApproval) {
                 return redirect()->back()->with('fail', [
@@ -198,19 +268,14 @@ class LeaveController
                 ]);
             }
 
-            $newTotalOverwork = max($totalApprovedOverwork - $newApproval, 0);
+            $newTotalOverwork = max($totalApprovedOverwork - $newApproval - $totalLate, 0);
 
-
-            dd([
-                'mode' => $mode,
-                'totalOverwork' => $totalApprovedOverwork,
-                'validateBalanceApproval' => $newApproval,
-                'new_balance' => $newTotalOverwork,
-
-                ]);
-
-            $leave->update(['request_status' => 'approved']);
             $user->update(['total_overwork' => $newTotalOverwork]);
+
+            $leave->update([
+                'request_status'   => 'approved',
+                'deduction_source' => 'total_overwork', // ✅ diset sesuai mode
+            ]);
         }
 
         return redirect()->back()->with('success', [
@@ -218,7 +283,4 @@ class LeaveController
             'message' => "This {$mode} request has been approved successfully.",
         ]);
     }
-
-
-
 }

@@ -112,6 +112,8 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     Route::prefix('LogActivity')->name('LogActivity.')->group(function () {
      Route::get('/LogActivity', [LogController::class, 'show'])->name('show');
     });
+
+
 });
 
 require __DIR__ . '/auth.php';

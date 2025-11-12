@@ -80,9 +80,9 @@ class DashboardController extends Controller
         // return $totalLeaveHours;
 
         $totalOverworkHours = $user->total_overwork ?? 0;
-        $allowanceDays = ($user->overwork_allowance ?? 0) / 8;
+        $allowanceDays = ($user->overwork_allowance ?? 0) ;
 
-        $leaveDays = $totalLeaveHours / 8;
+        $leaveDays = $allowanceDays / 8;
         $overworkDays = $totalOverworkHours / 8;
 
         $leaveBalanceDays = $user->overwork_allowance / 8;

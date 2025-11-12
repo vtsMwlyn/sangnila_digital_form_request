@@ -56,14 +56,49 @@ class ManageDataController extends Controller
             // Reason
             $adminNote = $request->input('admin_note');
 
-            // Update balance
-            if($status === 'leave'){
-                $allowance = User::findOrFail($userId)->overwork_allowance; // Saldo saat ini
-                $newApproval = Leave::find($leaveId)->leave_period; // Yang di-request
-                $validateBalanceApproval = $allowance + $newApproval; // New balance = Saldo saat ini + Yang di-request
 
-                User::findOrFail($userId)->update(['overwork_allowance' => $validateBalanceApproval]);
-                Leave::where('id', $leaveId)->update(['request_status' => 'rejected', 'admin_note' => $adminNote]);
+            // Update balance
+            if ($status === 'leave') {
+                $user = User::findOrFail($userId);
+                $leave = Leave::findOrFail($leaveId);
+
+                $newApproval = (int) $leave->leave_period;
+                $source = $leave->deduction_source;
+                $allowance = User::findOrFail($userId)->total_overwork;
+                $leave_balance = User::findOrFail($userId)->overwork_allowance;
+
+                if ($source === 'total_overwork') {
+                    $new_total_overwork =  $allowance + $newApproval;
+                    // dd([
+                    //     'mode' => 'REJECT LEAVE',
+                    //     'userId' => $userId,
+                    //     'source' => $source,
+                    //     'total overwork sebelum' =>$allowance,
+                    //     'returned_amount' => $newApproval,
+                    //     'new_total_overwork' => $new_total_overwork,
+                    //     'new_overwork_allowance' => $user->overwork_allowance,
+                    // ]);
+                    User::findOrFail($userId)->update(['total_overwork' => $new_total_overwork]);
+                } else {
+                    $new_overwork_allowance = $leave_balance + $newApproval;
+                    // dd([
+                    //     'mode' => 'REJECT LEAVE',
+                    //     'userId' => $userId,
+                    //     'source' => $source,
+                    //     'total leave_balance sebelum' =>$leave_balance,
+                    //     'returned_amount' => $newApproval,
+                    //     'new_total_overwork' => $new_overwork_allowance,
+                    //     'new_overwork_allowance' => $user->overwork_allowance,
+                    // ]);
+                    User::findOrFail($userId)->update(['overwork_allowance' => $new_overwork_allowance]);
+                }
+
+                $adminNote = $request->input('admin_note');
+                $leave->update([
+                    'request_status' => 'rejected',
+                    'admin_note'     => $adminNote,
+                ]);
+
             }
             else if($status === 'overwork'){
                 $allowance = User::findOrFail($userId)->total_overwork; // Saldo saat ini
@@ -79,6 +114,7 @@ class ManageDataController extends Controller
                         'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
                     ]);
                 }
+
 
                 User::findOrFail($userId)->update(['total_overwork' => $validateBalanceApproval]);
                 Overwork::where('id', $leaveId)->update(['request_status' => 'rejected', 'admin_note' => $adminNote]);
