@@ -190,16 +190,19 @@
           })
             .then(response => response.json())
             .then(data => {
-              let allowance = data.leave_allowance * 8;
-              let total = data.leave_period;
-              const res = (allowance - total) / 8;
+              let allowance = {{ max(Auth::user()->overwork_allowance, Auth::user()->total_overwork) }};
+              console.log('Jatah lembur/cuti paling banyak: ', allowance)
+              const res = allowance / 8;
+              console.log('Hasil:', res);
 
               manyHours.addEventListener('input', () => {
                 hoursLabel.textContent = `${manyHours.value} Hour(s)`;
               });
 
-              manyDays.max = res;
+              manyDays.max = Math.floor(res);
+              console.log('Max day: ', manyDays.max)
               manyHours.max = (res - Math.floor(res)) * 8;
+              console.log('Max hour: ', manyHours.max)
 
                 if (Math.floor(res) === {{ $num }} && hasLeave === false) {
                 manyHours.max = (res - Math.floor(res)) * 8;

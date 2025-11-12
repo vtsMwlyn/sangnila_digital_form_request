@@ -52,22 +52,22 @@
                 <div class="flex gap-4">
                 <div class="mb-4 w-1/2">
                     <label for="Leave_Balance" class="font-semibold text-sm block mb-1">Leave Balance</label>
-                    <x-text-input id="Leave_Balance" name="Leave_Balance_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Leave Balance in Day"/>
+                    <x-text-input id="Leave_Balance_Day" name="Leave_Balance_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Leave Balance in Day"/>
                 </div>
 
                 <div class="mt-6 w-1/2 ">
-                    <x-text-input id="Leave_Balance" name="Leave_Balance_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Leave Balance in Hours" />
+                    <x-text-input id="Leave_Balance_Hour" name="Leave_Balance_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Leave Balance in Hours" />
                 </div>
                 </div>
 
                 <div class="flex gap-4">
                 <div class="mb-4  w-1/2">
                     <label for="Total_Overwork" class="font-semibold text-sm block mb-1">Total Overwork</label>
-                    <x-text-input id="Total_Overwork" name="Total_Overwork_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Day"/>
+                    <x-text-input id="Total_Overwork_Day" name="Total_Overwork_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Day"/>
                 </div>
 
                 <div class="mt-6 w-1/2">
-                    <x-text-input id="Total_Overwork" name="Total_Overwork_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Hours" />
+                    <x-text-input id="Total_Overwork_Hour" name="Total_Overwork_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Hours" />
                 </div>
                 </div>
 

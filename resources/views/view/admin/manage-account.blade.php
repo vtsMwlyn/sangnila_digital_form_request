@@ -348,8 +348,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('name').value = name;
         document.getElementById('email').value = email;
         document.getElementById('phone').value = phone ?? '';
-        document.getElementById('Leave_Balance').value = leaveBalance;
-        document.getElementById('Total_Overwork').value = totalOverwork;
+        document.getElementById('Leave_Balance_Day').value = Math.floor(leaveBalance / 8);
+        document.getElementById('Total_Overwork_Day').value = Math.floor(totalOverwork / 8);
+        document.getElementById('Leave_Balance_Hour').value = leaveBalance - (Math.floor(leaveBalance / 8) * 8);
+        document.getElementById('Total_Overwork_Hour').value = totalOverwork - (Math.floor(totalOverwork / 8) * 8);
 
         document.getElementById('editForm').action = `/account/update/${id}`;
 

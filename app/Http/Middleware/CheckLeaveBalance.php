@@ -17,12 +17,7 @@ class CheckLeaveBalance
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $totalLeave = (int) Leave::where('user_id', Auth::user()->id)
-            ->where('request_status', 'approved')
-            ->sum('leave_period') / 8;
-        $annualLeaveBalance = (int) Auth::user()->overwork_allowance;
-
-        if ($totalLeave >= floor($annualLeaveBalance)) {
+        if (Auth::user()->overwork_allowance == 0 && Auth::user()->total_overwork == 0) {
             return response()->view('leave-limit');
         }
 
