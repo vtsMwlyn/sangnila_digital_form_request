@@ -252,7 +252,7 @@ class LeaveController
 
             $leave->update([
                 'request_status'   => 'approved',
-                'deduction_source' => 'leave_balance', // ✅ diset sesuai mode
+                'deduction_source' => 'leave_balance',
             ]);
         }
 
@@ -274,7 +274,7 @@ class LeaveController
 
             $leave->update([
                 'request_status'   => 'approved',
-                'deduction_source' => 'total_overwork', // ✅ diset sesuai mode
+                'deduction_source' => 'total_overwork', 
             ]);
         }
 

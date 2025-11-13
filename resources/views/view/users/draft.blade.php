@@ -66,20 +66,18 @@
                         <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                         <a
                             href="{{ route('overwork.edit', $d->id) }}"
-                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
                             title="Edit"
                         >
-                            <i class="bi bi-pencil-square"></i>
+                        <img src="{{ asset('img/edit.svg') }}" alt="edit" class=" h-6 w-6">
                         </a>
-                        <form action="{{ route('overwork.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this overwork draft?')">
+                        <form action="{{ route('overwork.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure want to delete this overwork draft?')">
                             @csrf
                             @method('DELETE')
                             <button
                             type="submit"
-                            class="border-2 border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                             title="Delete"
                             >
-                                <i class="bi bi-trash"></i>
+                            <img src="{{ asset('img/delete-button.svg') }}" alt="edit" class=" h-6 w-6">
                             </button>
                         </form>
                     </div>

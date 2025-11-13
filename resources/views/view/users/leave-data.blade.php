@@ -88,17 +88,16 @@
                                 <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                                 @if ($d->request_status === 'draft')
                                     <a href="{{ route('leave.edit', $d->id) }}"
-                                        class="border border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100 inline-block"
+                                        class="hover:bg-gray-100 "
                                         title="Edit">
-                                        <i class="bi bi-pencil-square text-sm sm:text-base"></i>
+                                        <img src="{{ asset('img/edit.svg') }}" alt="edit" class=" h-6 w-6">
                                     </a>
                                     <form action="{{ route('leave.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                            class="border border-gray-500 text-gray-600 rounded px-2 hover:bg-gray-100"
                                             title="Delete">
-                                            <i class="bi bi-trash text-sm sm:text-base"></i>
+                                            <img src="{{ asset('img/delete-button.svg') }}" alt="delete" class=" h-6 w-6 mt-2">
                                         </button>
                                     </form>
                                 @endif

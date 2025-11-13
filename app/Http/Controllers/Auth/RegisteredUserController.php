@@ -141,9 +141,20 @@ class RegisteredUserController extends Controller
         $totalLate = floatval($request->input('totalLateValue')) * 8;
 
         if ($mode === 'leave') {
-
-            $user->overwork_allowance = max(0, $user->overwork_allowance - $totalLate);
+            if ($user->overwork_allowance < $totalLate) {
+                return redirect()->back()->with('fail', [
+                    'title'   => 'Exceeds Limit',
+                    'message' => 'This user exceeds the allowed overwork limit.',
+                ]);
+            }
+            $user->overwork_allowance =max(0, $user->overwork_allowance - $totalLate);
         } elseif ($mode === 'overwork') {
+            if ($user->total_overwork < $totalLate) {
+                return redirect()->back()->with('fail', [
+                    'title'   => 'Exceeds Limit',
+                    'message' => 'This user exceeds the allowed overwork limit.',
+                ]);
+            }
             $user->total_overwork = max(0, $user->total_overwork - $totalLate);
         } else {
             return redirect()->back()->with('fail', [
