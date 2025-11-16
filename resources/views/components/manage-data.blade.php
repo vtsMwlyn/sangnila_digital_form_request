@@ -79,6 +79,7 @@
                 const adminNote = this.dataset.admin_note;
                 const balance = this.dataset.balance;
                 const overwork = this.dataset.overwork;
+                const changeby = this.dataset.admin_change;
                 const evidences = this.dataset.evidences
                     ? JSON.parse(this.dataset.evidences)
                     : [];
@@ -159,7 +160,13 @@
                             <td class="text-gray-900 py-2">${overwork}</td>
                         </tr>
 
+                        <tr>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Action by:</th>
+                            <td class="text-gray-900 py-2">${changeby}</td>
+                        </tr>
+
                         ${rejectedOnly}
+
                      </tbody>
                     </table>
                         `;

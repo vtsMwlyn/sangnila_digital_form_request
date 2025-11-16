@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="status" class="font-semibold text-sm block mb-1">Department</label>
+                    <label for="status" class="font-semibold text-sm block mb-1">Status</label>
 
                     <select
                       id="status"
@@ -44,7 +44,7 @@
                       class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                     >
                       <option disabled hidden selected> Select Status Employee</option>
-                      <option value="contract">Contract</option>
+                      <option value="Employee">Employee</option>
                       <option value="intern">Intern</option>
                     </select>
                 </div>
@@ -52,22 +52,34 @@
                 <div class="flex gap-4">
                 <div class="mb-4 w-1/2">
                     <label for="Leave_Balance" class="font-semibold text-sm block mb-1">Leave Balance</label>
-                    <x-text-input id="Leave_Balance_Day" name="Leave_Balance_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Leave Balance in Day"/>
+                    <div class="relative">
+                    <x-text-input id="Leave_Balance_Day" name="Leave_Balance_Day" type="text" class="w-full rounded border px-3 py-2 pr-10"  placeholder="Enter Leave Balance in Day"/>
+                    <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Days</label>
+                    </div>
                 </div>
 
                 <div class="mt-6 w-1/2 ">
+                    <div class="relative">
                     <x-text-input id="Leave_Balance_Hour" name="Leave_Balance_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Leave Balance in Hours" />
+                    <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Hours</label>
+                </div>
                 </div>
                 </div>
 
                 <div class="flex gap-4">
                 <div class="mb-4  w-1/2">
                     <label for="Total_Overwork" class="font-semibold text-sm block mb-1">Total Overwork</label>
+                    <div class="relative">
                     <x-text-input id="Total_Overwork_Day" name="Total_Overwork_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Day"/>
+                    <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Days</label>
+                    </div>
                 </div>
 
                 <div class="mt-6 w-1/2">
+                    <div class="relative">
                     <x-text-input id="Total_Overwork_Hour" name="Total_Overwork_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Hours" />
+                    <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Hours</label>
+                </div>
                 </div>
                 </div>
 

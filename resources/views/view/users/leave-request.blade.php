@@ -155,7 +155,7 @@
                         value="draft"
                         class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition"
                     >
-                        <i class="bi bi-save mr-1"></i>
+                        <i class="bi bi-save mr-1 h-[24px] w-[24px]"></i>
                         Draft
                     </button>
 
@@ -166,7 +166,7 @@
                         value="submit"
                         class="flex items-center bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white rounded-full px-4 py-2 text-sm transition hover:from-cyan-600 hover:to-blue-700"
                     >
-                        <i class="bi bi-send-fill mr-1"></i>
+                        <i class="bi bi-send-fill mr-1 h-[24px] w-[24px]"></i>
                         Submit
                     </button>
                 </div>

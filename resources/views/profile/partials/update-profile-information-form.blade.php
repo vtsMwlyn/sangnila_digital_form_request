@@ -25,8 +25,8 @@
             <div class="flex items-center gap-4 mt-2">
                 <!-- Preview Foto -->
                 @if ($user->profile_photo)
-                    <img src="{{ asset($user->profile_photo) }}" 
-                        alt="Profile Photo" 
+                    <img src="{{ asset($user->profile_photo) }}"
+                        alt="Profile Photo"
                         class="w-16 h-16 rounded-full object-cover">
                 @else
                     <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">

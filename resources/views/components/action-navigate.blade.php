@@ -28,7 +28,7 @@
         }
     @endphp
     <button
-        class="eye-preview-btn w-6 h-6"
+        class="eye-preview-btn "
             title="Show Details"
             data-id="{{ $d->id }}"
             data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
@@ -56,9 +56,10 @@
             data-balance="{{ $formattedBalance }}"
             data-overwork="{{ $formattedOverwork }}"
             data-admin_note="{{ ucfirst(strtolower($d->admin_note)) }}"
+            data-admin_change="{{$d->role}}"
             @if($d->type === 'overwork') data-evidences="{{ $d->evidence->toJson() }}" @endif >
 
-            <img src="{{ asset('img/view.svg') }}" alt="view" >
+            <img src="{{ asset('img/view.svg') }}" alt="view" class="w-[24px] h-[24px]">
     </button>
 
     @if (auth()->user()->role === 'admin')
@@ -79,7 +80,7 @@
                 id="approved"
                 data-leave="{{ $d->id}}"
                 value="{{ $d->type }}"
-                class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }} w-6 h-6"
+                class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }} w-[24px] h-[24px]"
                 title="Accept"
                 @if($d->type === 'overwork')
                     onclick="return confirm('Are you sure want to accept this request?')"
@@ -87,17 +88,18 @@
                     onclick="event.preventDefault(); openChooseModal(this);"
                 @endif
             >
-                <img src="{{ asset('img/yesbox.svg') }}" alt="view">
-            </button>
+            <img src="{{ asset('img/yesbox.svg') }}" alt="view" class="h-[24px] w-[24px]" >
+
+                    </button>
 
             <button
                 type="button"
                 value="{{$d->type}}"
                 id="rejectButton"
-                class="rejectButton {{$d->request_status === 'rejected' ? 'hidden' : 'flex'}} w-6 h-6"
+                class="rejectButton {{$d->request_status === 'rejected' ? 'hidden' : 'flex'}} w-[24px] h-[24px]"
                 title="Reject"
             >
-            <img src="{{ asset('img/exit.svg') }}" alt="view" >
+            <img src="{{ asset('img/exit.svg') }}" alt="view" class="h-[24px] w-[24px]" >
             </button>
         </form>
     @endif

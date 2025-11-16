@@ -15,7 +15,7 @@
             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M12 6v12M6 12h12" />
             </svg>
-            <span>New Data</span>
+            <span>New Form</span>
         </a>
     @endif
 
@@ -81,7 +81,7 @@
                                     default => 'bg-gray-400 text-white rounded-full px-3 py-1 text-xs sm:text-sm',
                                 };
                             @endphp
-                            <span class="{{ $statusClass }} capitalize">{{ $d->request_status }}</span>
+                            <span class="{{ $statusClass }} capitalize font-semibold">{{ $d->request_status }}</span>
                         </td>
                         <td class="py-3 px-4 sm:px-6 text-center">
                             <div class="flex justify-center items-center space-x-1 sm:space-x-2">

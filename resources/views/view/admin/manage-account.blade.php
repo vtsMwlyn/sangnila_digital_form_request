@@ -67,7 +67,7 @@
                     </td>
                     <td class="py-4 px-6 font-semibold text-center">
                         <span class="{{$d->status_account === 'active' ? 'bg-blue-500' : 'bg-red-500'}} text-white rounded-full px-3 py-1 text-sm font-semibold">
-                            {{$d->status_account}}
+                            {{ucfirst($d->status_account)}}
                         </span>
                     </td>
 
@@ -100,7 +100,7 @@
                                 data-balance="{{ $formattedBalance }}"
                                 data-overwork="{{ $formattedOverwork }}"
                             >
-                             <img src="{{ asset('img/view.svg') }}" alt="view" >
+                             <img src="{{ asset('img/view.svg') }}" alt="view" class="h-[24px] w-[24px]" >
                              </button>
 
                             <button
@@ -117,7 +117,7 @@
                                 data-status_employee="{{ $d->status }}"
                                 onclick="openEditModal(this)"
                             >
-                                <img src="{{ asset('img/edit.svg') }}" alt="edit">
+                                <img src="{{ asset('img/edit.svg') }}" alt="edit" class="h-[24px] w-[24px]">
                             </button>
 
                             <button
@@ -125,7 +125,7 @@
                                 title="Lateness"
                                 data-id="{{ $d->id }}"
                                 onclick="openLateModal(this)">
-                                <img src="{{ asset('img/minus.svg') }}" alt="">
+                                <img src="{{ asset('img/minus.svg') }}" alt="" class="h-[24px] w-[24px]">
                             </button>
 
                             @php
@@ -136,13 +136,13 @@
                             <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'suspended']) }}"
                                 onclick="return confirm('Are you sure you want to suspend this account?')"
                                 title="Suspend">
-                                <img src="{{ asset('img/ban.svg') }}" alt="Suspend" >
+                                <img src="{{ asset('img/ban.svg') }}" alt="Suspend" class="h-[24px] w-[24px]">
                             </a>
                             @elseif ($d->status_account === 'suspended')
                             <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'active']) }}"
                                 onclick="return confirm('Are you sure you want to unsuspend this account?')"
                                 title="Unsuspend">
-                                <img src="{{ asset('img/unban.svg') }}" alt="Unsuspend" >
+                                <img src="{{ asset('img/unban.svg') }}" alt="Unsuspend" class="h-[24px] w-[24px]">
                             </a>
                             @endif
                             <a href="{{route('account.delete', ['id' => $d->id])}}"
@@ -150,7 +150,7 @@
                                 title="Remove"
                                 onclick="return confirm('Are you sure to remove this account?')"
                             >
-                                <img src="{{ asset('img/delete-button.svg') }}" alt="view"  >
+                                <img src="{{ asset('img/delete-button.svg') }}" alt="view" class="h-[24px] w-[24px]" >
                                 </a>
                             @endif
                         </div>

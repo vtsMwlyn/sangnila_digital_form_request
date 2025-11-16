@@ -26,21 +26,36 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
-        $user = Auth::user();
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Update nama dan email
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
-        if ($request->hasFile('profile_photo')) {
-        $path = $request->file('profile_photo')->store('profile_photos', 'public');
-        $user->profile_photo = $path;
-    }
 
-        $request->user()->save();
+        // Update foto profil
+        if ($request->hasFile('profile_photo')) {
+
+            // Hapus foto lama jika ada
+            if ($user->profile_photo && file_exists(public_path($user->profile_photo))) {
+                unlink(public_path($user->profile_photo));
+            }
+
+            // Simpan foto baru -> storage/app/public/profile_photos
+            $path = $request->file('profile_photo')->store('profile_photos', 'public');
+
+            // Simpan path untuk browser -> public/storage/profile_photos
+            $user->profile_photo = 'storage/' . $path;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
+
+
 
     /**
      * Delete the user's account.
@@ -62,5 +77,5 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
-    
+
 }
