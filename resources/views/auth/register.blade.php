@@ -222,7 +222,7 @@
 
                                 <button
                                 type="button"
-                                id="togglePassword"
+                                id="togglePasswordConfirm"
                                 aria-label="Show password"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
                                 >
@@ -488,7 +488,7 @@
         </div>
     </div>
 </form>
-<script>
+{{-- <script>
 (function () {
   function initToggle(btnId, inputId, labelShow, labelHide) {
     const btn = document.getElementById(btnId);
@@ -520,7 +520,7 @@
     initToggle('togglePasswordConfirm', 'password_confirmation', 'Show confirm password', 'Hide confirm password');
   }
 })();
-</script>
+</script> --}}
 
 @endsection
 {{-- <script>
@@ -566,50 +566,69 @@
   </script>
 
 <script>
-    (function () {
-        function initPasswordToggle() {
-            const toggle =
-                document.getElementById("togglePassword");
-            const input = document.getElementById("password");
-            if (!toggle || !input) return;
+    // ======================
+    // PASSWORD TOGGLE (UNIVERSAL)
+    // ======================
+    function initPasswordToggle(buttonId, inputId) {
+        const btn = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        if (!btn || !input) return;
 
-            const eyeSVG =
-                '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/></svg>';
-            const eyeOffSVG =
-                '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/><path stroke-linecap="round" stroke-linejoin="round" d="M10.477 10.477A3 3 0 0113.523 13.523"/><path stroke-linecap="round" stroke-linejoin="round" d="M6.88 6.88C8.155 6.47 9.571 6.29 11 6.29c4.477 0 8.268 2.943 9.542 7-0.34 1.082-0.9 2.07-1.642 2.923M3.17 8.53A9.953 9.953 0 002.458 12c1.274 4.057 5.065 7 9.542 7 1.429 0 2.845-.18 4.121-.59"/></svg>';
+        const eye = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/>
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M10.5 10.5A3 3 0 0113.5 13.5"/>
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M6.8 6.8C8.1 6.4 9.6 6.2 11 6.2c4.5 0 8.3 3 9.6 7
+                    -0.3 1.1-0.9 2.1-1.6 2.9M3.2 8.5A10 10 0 002.5 12c1.3 4.1 5.1 7 9.5 7
+                    1.4 0 2.9-.2 4.2-.6"/>
+            </svg>`;
 
-            toggle.innerHTML = eyeSVG;
+        const eyeOff = `
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943
+                    9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
+            </svg>`;
 
-            toggle.addEventListener("click", function (e) {
-                e.preventDefault();
-                const isHidden = input.type === "password";
-                input.type = isHidden ? "text" : "password";
-                toggle.innerHTML = isHidden ? eyeOffSVG : eyeSVG;
-                toggle.setAttribute(
-                    "aria-label",
-                    isHidden ? "Hide password" : "Show password"
-                );
-                input.focus({ preventScroll: true });
-            });
 
-            const observer = new MutationObserver(() => {
-                if (input.type === "password")
-                    toggle.innerHTML = eyeSVG;
-                else toggle.innerHTML = eyeOffSVG;
-            });
-            observer.observe(input, {
-                attributes: true,
-                attributeFilter: ["type"],
-            });
-        }
+        btn.innerHTML = eye;
 
-        if (document.readyState === "loading") {
-            document.addEventListener(
-                "DOMContentLoaded",
-                initPasswordToggle
-            );
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const isHidden = input.type === "password";
+            input.type = isHidden ? "text" : "password";
+            btn.innerHTML = isHidden ? eyeOff : eye;
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initPasswordToggle("togglePassword", "password");
+        initPasswordToggle("togglePasswordConfirm", "password_confirmation");
+    });
+
+
+    // ======================
+    // SELECT → OTHER HANDLER
+    // ======================
+    function handleSelectChange(field) {
+        const select = document.getElementById(field + "Select");
+        const input = document.getElementById(field + "Input");
+
+        if (select.value === "other") {
+            select.classList.add("hidden");
+            input.classList.remove("hidden");
+            input.focus();
         } else {
-            initPasswordToggle();
+            input.classList.add("hidden");
+            select.classList.remove("hidden");
+            input.value = "";
         }
-    })();
-</script>
+    }
+    </script>
+

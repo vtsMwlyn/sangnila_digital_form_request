@@ -43,6 +43,7 @@
             data-description="{{ ucfirst(strtolower($d->reason ?? $d->task_description)) }}"
             data-status="{{ $d->request_status }}"
             data-duration="{{ $duration }}"
+            data-admin_change="{{ $d->action_by ?? '—' }}"
             @php
             $balanceDay = intdiv($d->user->overwork_allowance, 8);
             $balanceHour = $d->user->overwork_allowance % 8;

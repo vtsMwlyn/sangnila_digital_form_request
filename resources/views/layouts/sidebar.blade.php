@@ -8,7 +8,7 @@
         class="fixed top-0 left-0 h-full w-72 bg- text-white shadow-lg transform transition-transform duration-300 ease-in-out z-40 flex flex-col items-center"
         style="background-image: url('{{ asset('img/sidebar-bg.webp') }}'); background-size: cover; background-position: center;"
     >
-        <div class="mb-7 w-full hover:bg-gray-300/20 py-8 mt-14">
+        <div class="mb-2 w-full hover:bg-gray-300/20 py-8 mt-14">
             @if(Auth::user()->profile_photo)
              <a
                 href="{{ route('profile.edit') }}"
@@ -17,7 +17,7 @@
             <img
                 src="{{ asset(Auth::user()->profile_photo) }}"
                 alt="Profile Photo"
-                class="w-[120px] h-[120px] rounded-full object-cover mx-auto"
+                class="w-[150px] h-[150px] rounded-full object-cover mx-auto"
             />
             @else
             <div

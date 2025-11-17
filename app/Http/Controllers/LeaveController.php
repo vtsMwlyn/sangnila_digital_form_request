@@ -222,6 +222,7 @@ class LeaveController
     // }
     public function approve(Request $request, $mode)
     {
+        $adminName = Auth::user()->name;
         $leaveId = $request->leaveId;
         $leave   = Leave::find($leaveId);
 
@@ -253,6 +254,7 @@ class LeaveController
             $leave->update([
                 'request_status'   => 'approved',
                 'deduction_source' => 'leave_balance',
+                'action_by'      => $adminName,
             ]);
         }
 
@@ -274,7 +276,8 @@ class LeaveController
 
             $leave->update([
                 'request_status'   => 'approved',
-                'deduction_source' => 'total_overwork', 
+                'deduction_source' => 'total_overwork',
+                'action_by'      => $adminName
             ]);
         }
 

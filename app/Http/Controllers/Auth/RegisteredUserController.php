@@ -135,6 +135,7 @@ class RegisteredUserController extends Controller
 
     public function approve(Request $request, $mode)
     {
+        $adminName = Auth::user()->name;
         $userId = $request->input('userId');
         $user = User::findOrFail($userId);
 
@@ -176,7 +177,7 @@ class RegisteredUserController extends Controller
             'user_id' => $user->id,
             'mode' => $mode,
             'amount' => $totalLate,
-            'message' => "Your {$mode} balance has been reduced by $totalLate Hours due to lateness.",
+            'message' => " $adminName has reduced your {$mode} balance by $totalLate Hours due to lateness.",
         ]);
 
         return redirect()->back()->with('success', [
