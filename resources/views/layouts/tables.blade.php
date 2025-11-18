@@ -24,6 +24,53 @@
         body {
             font-family: 'Geologica', sans-serif;
         }
+
+        /* === RESPONSIVE SECTION === */
+        @media (max-width: 1024px) {
+            main {
+                margin-left: 0 !important;
+                padding: 0 1rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ml-72 {
+                margin-left: 0 !important;
+            }
+
+            main {
+                padding: 0.5rem 1rem !important;
+            }
+
+            .max-w-[1400px] {
+                max-width: 100% !important;
+            }
+
+            .px-6, .px-5 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            .sm\\:px-6, .lg\\:px-8 {
+                padding: 1rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                margin: 0 !important;
+                padding: 0.5rem !important;
+            }
+
+            .rounded-xl {
+                border-radius: 0.5rem !important;
+            }
+
+            .py-6, .sm\\:py-8, .lg\\:py-5 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+        }
     </style>
 
     @stack('styles')
@@ -42,7 +89,7 @@
         @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
         <main
-            class="min-h-screen max-w-full ml-72 flex flex-col items-center mt-5 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out"
+            class="min-h-screen max-w-full ml-72 flex flex-col items-center mt-5 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out mb-2"
             :class="sidebarOpen ? 'ml-0' : 'ml-[0px]'"
         >
             <div

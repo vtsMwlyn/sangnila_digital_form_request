@@ -60,7 +60,7 @@
     </div>
 
 
-    <footer class="text-center text-sm text-gray-300 py-6">
+    <footer class="text-center text-xs xl:text-sm text-gray-300 py-6">
        Copyright © 2025 - Sangnila Interactive Media and Technology
     </footer>
 

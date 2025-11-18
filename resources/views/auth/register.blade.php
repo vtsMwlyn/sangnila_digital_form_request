@@ -125,7 +125,7 @@
                                     :value="old('name')"
                                     required
                                     autofocus
-                                    class="w-full rounded border px-3 py-2"
+                                    class="w-[280px] xl:w-full rounded border px-3 py-2"
                                 />
                                 <x-input-error
                                     :messages="$errors->get('name')"
@@ -147,7 +147,7 @@
                                     name="email"
                                     :value="old('email')"
                                     required
-                                    class="w-full rounded border border-black px-3 py-2"
+                                    class=" w-[280px] xl:w-full rounded border border-black px-3 py-2"
                                 />
                                 <x-input-error
                                     :messages="$errors->get('email')"
@@ -166,7 +166,7 @@
                                         name="password"
                                         placeholder="Create Password"
                                         required
-                                        class="w-full rounded border border-black px-3 py-2 pr-10"
+                                        class=" w-[280px] xl:w-full rounded border border-black px-3 py-2 pr-10"
                                     />
 
                                     <button
@@ -217,7 +217,7 @@
                                     type="password"
                                     name="password_confirmation"
                                     required
-                                    class="w-full rounded border border-black px-3 py-2 pr-10"
+                                    class=" w-[280px] xl:w-full rounded border border-black px-3 py-2 pr-10"
                                 />
 
                                 <button
@@ -267,7 +267,7 @@
                                     name="phone_number"
                                     :value="old('phone_number')"
                                     required
-                                    class="w-full rounded border border-black px-3 py-2"
+                                    class=" w-[280px] xl:w-full rounded border border-black px-3 py-2"
                                 />
                                 <x-input-error
                                     :messages="$errors->get('phone')"
@@ -287,7 +287,7 @@
                                 name="status"
                                 required
                                 placeholder="Select New User Status"
-                                class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                                class=" w-[280px] xl:w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                                 >
                                 <option disabled hidden selected >Select New User Status</option>
                                 <option value="Employee">Employee</option>
@@ -321,7 +321,7 @@
                                 :value="old('Leave_Balance')"
                                 required
                                 autofocus
-                                class="w-full rounded border px-3 py-2"
+                                class=" w-[280px] xl:w-full rounded border px-3 py-2"
                             />
                             <x-text-input
                             placeholder="Enter Leave Balance in hours"
@@ -331,7 +331,7 @@
                             :value="old('Leave_Balance')"
 
                             autofocus
-                            class="w-full rounded border px-3 py-2"
+                            class=" w-[280px] xl:w-full rounded border px-3 py-2"
                             />
                             </div>
                             <x-input-error
@@ -353,7 +353,7 @@
                                     name="Total_Overwork_Day"
                                     :value="old('Total_Overwork_Day')"
                                     required
-                                    class="w-full md:w-1/2 rounded border px-3 py-2"
+                                    class=" w-[280px] xl:w-full md:w-1/2 rounded border px-3 py-2"
                                 />
 
                                 <x-text-input
@@ -363,7 +363,7 @@
                                     name="Total_Overwork_Hour"
                                     :value="old('Total_Overwork_Hour')"
 
-                                    class="w-full md:w-1/2 rounded border px-3 py-2"
+                                    class=" w-[280px] xl:w-full md:w-1/2 rounded border px-3 py-2"
                                 />
                             </div>
 
@@ -379,7 +379,7 @@
                               required
                               onchange="handleSelectChange('position')"
                               placeholder= "Select Position"
-                              class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                              class=" w-[280px] xl:w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                             >
                               <option disabled hidden selected>Select Position</option>
                               <option value="Admin">Admin</option>
@@ -399,7 +399,7 @@
                               id="positionInput"
                               name="position_other"
                               placeholder="Enter custom position"
-                              class="hidden w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                              class="hidden  w-[280px] xl:w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                             />
 
                             <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
@@ -415,7 +415,7 @@
                               required
                               onchange="handleSelectChange('department')"
                               placeholder= "Select Department"
-                              class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                              class=" w-[280px] xl:w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                             >
                               <option disabled hidden selected> Select Department</option>
                               <option value="Admin">Admin</option>
@@ -435,7 +435,7 @@
                               id="departmentInput"
                               name="department_other"
                               placeholder="Enter custom department"
-                              class="hidden w-full rounded border border-gray-300 px-3 py-3 shadow-sm"
+                              class="hidden  w-[280px] xl:w-full rounded border border-gray-300 px-3 py-3 shadow-sm"
                             />
 
                             <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600"/>
@@ -449,7 +449,7 @@
                             name="role"
                             required
                             placeholder="Select New User Role"
-                            class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                            class=" w-[280px] xl:w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
                             >
                             <option disabled hidden selected >Select New User Role</option>
                             <option value="admin">Admin</option>

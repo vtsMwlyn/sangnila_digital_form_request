@@ -25,34 +25,34 @@
         </div>
 
         <!-- Konten utama -->
-        <div class="flex items-center justify-center p-5">
+        <div class="flex flex-col md:flex-row items-center justify-center p-5 text-center md:text-left">
             <!-- Icon centang -->
             <div class="flex-shrink-0">
                 @if (session('success'))
-                    <svg class="w-40 h-40 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <svg class="xl:w-40 xl:h-40 w-20 h-20 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                 @elseif (session('fail'))
-                    <svg class="w-40 h-40 text-red-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <svg class="xl:w-40 xl:h-40 w-20 h-20 text-red-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 @endif
             </div>
 
             <!-- Teks -->
-            <div class="ml-8">
+            <div class="mt-6 md:mt-0 md:ml-8">
                 @php
                 $success = session()->pull('success');
                 $fail = session()->pull('fail');
                 @endphp
                 @if ($success)
-                    <h2 class="text-3xl font-bold text-[#012967] mb-5 capitalize">{{$success['title']}}</h2>
+                    <h2 class="xl:text-3xl text-xl font-bold text-[#012967] mb-5 capitalize">{{$success['title']}}</h2>
                     <p class="text-lg text-[#1EB8CD] mb-2">{{$success['message']}}</p>
                     @if (isset($success['time']))
                         <p class="text-sm text-gray-500">
                             Submitted at:
                             <span class="font-medium text-gray-700">
-                                {{$success['time']}} 
+                                {{$success['time']}}
                             </span>
                         </p>
                     @endif
@@ -63,7 +63,7 @@
                         <p class="text-sm text-gray-500">
                             Submitted at:
                             <span class="font-medium text-gray-700">
-                                {{$fail['time']}} 
+                                {{$fail['time']}}
                             </span>
                         </p>
                     @endif

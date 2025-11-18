@@ -34,8 +34,8 @@
                 <input type="hidden" name="userId" id="lateUserIdLeave" />
                 <input type="hidden" name="totalLateValue" id="totalLateLeave" />
                 <button type="submit"
-                    class="w-full py-3 bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white font-semibold rounded-xl">
-                    <i class="bi bi-calendar-check mr-2"></i> Leave Balance
+                class="w-full py-3 bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-md transition duration-200 transform hover:scale-[1.02]">
+                <i class="bi bi-calendar-check mr-2"></i> Leave Balance
                 </button>
             </form>
 
@@ -44,8 +44,8 @@
                 <input type="hidden" name="userId" id="lateUserIdOverwork" />
                 <input type="hidden" name="totalLateValue" id="totalLateOverwork" />
                 <button type="submit"
-                    class="w-full py-3 bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white font-semibold rounded-xl">
-                    <i class="bi bi-alarm mr-2"></i> Overwork Balance
+                class="w-full py-3 bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-md transition duration-200 transform hover:scale-[1.02]">
+                <i class="bi bi-alarm mr-2"></i> Overwork Balance
                 </button>
             </form>
         </div>

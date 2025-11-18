@@ -200,8 +200,8 @@
                 {{-- Media Preview --}}
                 <div id="media-preview" class="mt-4 hidden">
                     <h4 class="font-bold text-md mb-2">Selected Files Preview:</h4>
-                    <div id="preview-images" class="flex flex-wrap gap-2 mb-2"></div>
-                    <div id="preview-videos" class="flex flex-wrap gap-2"></div>
+                    <div id="preview-images" class="flex flex-wrap gap-2 mb-2 w-[150px]"></div>
+                    <div id="preview-videos" class="flex flex-wrap gap-2 w-[150px]"></div>
                 </div>
 
                 {{-- Buttons --}}

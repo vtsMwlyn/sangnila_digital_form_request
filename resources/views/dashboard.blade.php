@@ -21,7 +21,7 @@
     {{-- Cards --}}
 
     <div class="flex flex-col space-y-7">
-        <div class="mx-10 px-6 lg:px-8 pt-8 grid grid-cols-1 gap-8 sm:grid-cols-1 md:grid-cols-2 {{auth()->user()->role === 'user' ? 'sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}}">
+        <div class="mx-3 xl:mx-10 xl:px-6 lg:px-8 pt-8 grid grid-cols-1 gap-8 md:grid-cols-2 {{auth()->user()->role === 'user' ? 'sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}}">
 
             @if (auth()->user()->role === 'user')
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -33,7 +33,6 @@
                     <span class="text-sm text-gray-500">{{ __('Total overwork approved') }}</span>
                 </div>
 
-
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                         {{ __('Leave Balance') }}
@@ -43,7 +42,7 @@
                     <span class="text-sm text-gray-500">{{ __('Annual leave balance') }}</span>
                 </div>
 
-                <div class="sticky top-0 bg-[#F0F3F8] rounded-2xl shadow-md p-6 ">
+                <div class="sticky top-0 bg-[#F0F3F8] rounded-2xl shadow-md p-6">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px] mb-3">
                     {{ __('Recent Activity') }}
                     <i class="bi bi-file-text text-lg text-gray-500"></i>
@@ -84,12 +83,11 @@
                     <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['approved']->where('type', 'leave')->count()}} {{__('Data')}}</h1>
                     <span class="text-sm text-gray-500">{{ __('Total leave approved') }}</span>
                 </div>
-            @endif
 
+            @endif
         </div>
 
-
-        <div class="mx-10 px-6 lg:px-8 pb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div class="mx-3 xl:mx-10 xl:px-6 lg:px-8 pb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                 <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                     {{ __('Approved Request') }}
@@ -120,7 +118,7 @@
     </div>
 
     {{-- Buttons --}}
-    <div class="mx-10 px-6 lg:px-8 flex flex-col sm:flex-row gap-6 mb-8">
+    <div class="mx-3 xl:mx-10 xl:px-6 lg:px-8 flex flex-col sm:flex-row gap-6 mb-8">
         @auth
             @if (auth()->user()->role === 'user')
                 <a href="{{ route('leave.form-view') }}" class="flex h-[125px] flex-col items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
@@ -175,12 +173,12 @@
     </div>
 
     {{-- Recent Request --}}
-    <div id="data" class="mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6 overflow-x-auto">
+    <div id="data" class="mx-[15px] xl:mx-[70px] px-6 lg:px-8 bg-[#F0F3F8] rounded-xl shadow-6xl p-6 overflow-x-auto">
         <x-form-filter-all-data title="recent request" route="dashboard" :status="$requestStatus" :type="$requestType" />
 
         {{-- Table --}}
         <div class="overflow-x-auto">
-            <table class="min-w-full text-left border-collapse border-b border-gray-300 text-sm md:text-base">
+            <table class="min-w-full text-left border-collapse border-b border-gray-300 text-sm md:text-base hidden sm:table mb-3">
                 <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
                     <tr>
                         <th class="py-3 px-6 font-semibold w-12">No</th>
@@ -232,10 +230,105 @@
                     @endforelse
                 </tbody>
             </table>
+
+               {{-- MOBILE CARD VIEW --}}
+            <div class="sm:hidden block mt-4 mb-3">
+                @forelse ($data['requestData'] as $d)
+                    @php
+                        $statusClass = match($d->request_status) {
+                            'approved' => 'bg-green-500 text-white rounded-full px-3 py-1/2 font-semibold',
+                            'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1/2 font-semibold',
+                            'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1/2 font-semibold',
+                            default => 'bg-yellow-500 text-white rounded-full px-3 py-1/2 font-semibold',
+                        };
+                    @endphp
+
+                    <div x-data="{ open: false }" class="bg-white rounded-xl shadow-md p-4 mb-3 border border-gray-200">
+
+                        {{-- HEADER --}}
+                        <button class="w-full flex justify-between items-center" x-on:click="open = !open">
+                            <div>
+                                @if (auth()->user()->role === 'admin')
+                                <div class="flex items-center mb-2">
+                                    <span class="items-start font-semibold text-[#012967] mr-1">Name: </span>
+                                    <div class="items-start font-semibold text-[#012967]"> {{ $d->user->name }}</div>
+
+                                </div>
+                                @endif
+                                <div class="flex items-center mb-2">
+                                    <span class="font-semibold text-gray-700 mr-2">Type:</span>
+                                    <span class="py-1/2 px-2 rounded-full capitalize text-white
+                                        {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
+                                        {{ $d->type }}
+                                    </span>
+                                </div>
+                                <div class="flex items-center text-xs text-gray-500">
+                                    {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
+                                </div>
+                            </div>
+
+                            {{-- ICONS --}}
+                            <svg x-show="!open" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+
+                            <svg x-show="open" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                            </svg>
+                        </button>
+
+                        {{-- BODY --}}
+                        <div x-show="open" x-collapse class="mt-3 text-sm">
+
+                            <div class="mb-1">
+                                <span class="font-semibold text-gray-700 mb-2">Date:</span>
+                                <div>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</div>
+                            </div>
+
+                            {{-- <div class="mb-1">
+                                <span class="font-semibold text-gray-700">Type:</span>
+                                <div class="py-1 px-3 inline-block rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
+                                    {{ $d->type }}
+                                </div>
+                            </div> --}}
+
+                            {{-- @if (auth()->user()->role === 'admin')
+                            <div class="mb-1">
+                                <span class="font-semibold text-gray-700">Name:</span>
+                                <div>{{ $d->user->name }}</div>
+                            </div>
+                            @endif --}}
+
+                            <div class="mb-1">
+                                <span class="font-semibold text-gray-700">Reason:</span>
+                                <div>{{ $d->reason ?? $d->task_description }}</div>
+                            </div>
+
+                            <div class="mb-1">
+                                <span class="font-semibold text-gray-700 py-2">Status:</span>
+                                <br>
+                                <div class="{{ $statusClass }} inline-block ">
+                                    {{ ucfirst($d->request_status) }}
+                                </div>
+                            </div>
+
+                            <div class="mb-1">
+                                <span class="font-semibold text-gray-700">Action:</span>
+                                <div>
+                                    <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center py-4 text-gray-500 italic">No recent request.</p>
+                @endforelse
+            </div>
         </div>
     </div>
 
-    <style>
+    {{-- <style>
         @media (max-width: 768px) {
             .mx-10, .mx-[70px] {
                 margin-left: 1rem !important;
@@ -250,7 +343,7 @@
                 font-size: 0.875rem !important;
             }
         }
-    </style>
+    </style> --}}
 
     <x-preview-data title="request" />
     <x-manage-data />

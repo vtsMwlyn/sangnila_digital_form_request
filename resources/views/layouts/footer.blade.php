@@ -1,4 +1,4 @@
-<footer class="mpx-5 py-10  text-white bg-slate-800 text-base lg:text-xl ml-72 transition-all duration-300 ease-in-out flex items-center" :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'">
+<footer class="px-5 py-10  text-white bg-slate-800 text-base lg:text-xl ml-72 transition-all duration-300 ease-in-out flex items-center" :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'">
     <div class="flex flex-col md:flex-row items-start justify-center gap-3">
         <div class="w-full xl:w-1/3 self-center px-4">
             <p class="font-extrabold text-start text-lg lg:text-xl ">Sangnila Form Request WebApp</p>
@@ -60,3 +60,56 @@
         </div>
     </div>
 </footer>
+
+<style>
+    body {
+        font-family: 'Geologica', sans-serif;
+    }
+
+    /* === RESPONSIVE SECTION === */
+    @media (max-width: 1024px) {
+        main {
+            margin-left: 0 !important;
+            padding: 0 1rem !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .ml-72 {
+            margin-left: 0 !important;
+        }
+
+        main {
+            padding: 0.5rem 1rem !important;
+        }
+
+        .max-w-[1400px] {
+            max-width: 100% !important;
+        }
+
+        .px-6, .px-5 {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+        }
+
+        .sm\\:px-6, .lg\\:px-8 {
+            padding: 1rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        main {
+            margin: 0 !important;
+            padding: 0.5rem !important;
+        }
+
+        .rounded-xl {
+            border-radius: 0.5rem !important;
+        }
+
+        .py-6, .sm\\:py-8, .lg\\:py-5 {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+        }
+    }
+</style>

@@ -4,7 +4,8 @@
 >
     <h1 class="text-white text-2xl font-bold capitalize">{{ request()->segment(1) }}</h1>
 
-    <div class="flex space-x-2 flex-wrap justify-end w-full md:w-auto">
+    <div class="hidden sm:flex space-x-2 flex-wrap justify-end w-full md:w-auto">
+
         @php
             $type = request()->segment(1);
             $navStatus = [
@@ -17,13 +18,14 @@
                 $navStatus += ['draft' => 'draft'];
             }
         @endphp
-       <form action="{{ route($type . '.show') }}" method="get">
-        <input type="hidden" class="buttonSubmit" name="status" value="{{ request('status', 'all') }}">
-        <input type="hidden" id="monthHidden" name="month" value="{{ request('month') ?? 'all' }}">
-        <input type="hidden" id="searchHidden" name="search" value="{{ request('search') ?? '' }}">
 
-        @if (!request()->routeIs('LogActivity.show'))
-            <div class="status-grid">
+        <form action="{{ route($type . '.show') }}" method="get">
+            <input type="hidden" class="buttonSubmit" name="status" value="{{ request('status', 'all') }}">
+            <input type="hidden" id="monthHidden" name="month" value="{{ request('month') ?? 'all' }}">
+            <input type="hidden" id="searchHidden" name="search" value="{{ request('search') ?? '' }}">
+
+            @if (!request()->routeIs('LogActivity.show'))
+            <div class="hidden  status-grid space-x-2">
                 @foreach ($navStatus as $status)
                     <button
                         type="button"
@@ -38,61 +40,70 @@
                 @endforeach
             </div>
         @endif
-    </form>
+
+        </form>
 
     </div>
 </div>
 
+{{-- mobile --}}
+<div class="sm:hidden block mt-4 px-4">
+    @php
+        $type = request()->segment(1);
+        $navStatus = [
+            'all' => 'all',
+            'review' => 'review',
+            'approved' => 'approved',
+            'rejected' => 'rejected',
+        ];
+        if (auth()->user()->role === 'user') {
+            $navStatus += ['draft' => 'draft'];
+        }
+    @endphp
 
-<style>
- @media (max-width: 1024px) {
-    .header-bar {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-        padding: 1rem;
-        margin-left: 0 !important;
-    }
+    <div x-data="{ open: false }" class="bg-white rounded-xl shadow-md p-4 border border-gray-200">
 
-    .header-bar h1 {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
+        <button class="w-full flex justify-between items-center" x-on:click="open = !open">
+            <h1 class="text-[#1EB8CD] text-xl font-bold capitalize">
+                {{ request()->segment(1) }} Filters
+            </h1>
 
-    .header-bar form {
-        width: 100%;
-    }
+            <svg x-show="!open" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 9l-7 7-7-7"/>
+            </svg>
 
-    .header-bar .status-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.5rem;
-        width: 100%;
-    }
+            <svg x-show="open" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 15l7-7 7 7"/>
+            </svg>
+        </button>
 
-    .header-bar .status-btn {
-        width: 100%;
-        text-align: center;
-        padding: 0.6rem 0;
-        font-size: 0.9rem;
-    }
-}
+        <div x-show="open" x-collapse class="mt-4">
 
-@media (max-width: 640px) {
-    .header-bar h1 {
-        font-size: 1.25rem;
-        text-align: center;
-        width: 100%;
-    }
+            <form action="{{ route($type . '.show') }}" method="get" class="w-full">
+                <input type="hidden" class="buttonSubmit" name="status" value="{{ request('status', 'all') }}">
+                <input type="hidden" id="monthHidden" name="month" value="{{ request('month') ?? 'all' }}">
+                <input type="hidden" id="searchHidden" name="search" value="{{ request('search') ?? '' }}">
 
-    .header-bar .status-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.4rem;
-    }
+                @if (!request()->routeIs('LogActivity.show'))
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        @foreach ($navStatus as $status)
+                            <button
+                                type="button"
+                                value="{{ $status }}"
+                                class="status-btn w-full px-4 py-2 text-sm font-medium rounded-full transition duration-300
+                                {{ request('status', 'all') === $status
+                                    ? 'bg-[#1EB8CD] text-white shadow-md'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}"
+                            >
+                                {{ ucfirst($status) }}
+                            </button>
+                        @endforeach
+                    </div>
+                @endif
+            </form>
 
-    .header-bar .status-btn {
-        font-size: 0.85rem;
-        padding: 0.5rem 0;
-    }
-}
-</style>
+        </div>
+    </div>
+</div>

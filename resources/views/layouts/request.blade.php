@@ -7,16 +7,66 @@
     <link rel="icon" href="{{ asset('img/icon.png') }}" type="image/png">
     <title>Sangnila E-form</title>
 
+    <style>
+        body {
+            font-family: 'Geologica', sans-serif;
+        }
+
+        /* === RESPONSIVE SECTION === */
+        @media (max-width: 1024px) {
+            main {
+                margin-left: 0 !important;
+                padding: 0 1rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ml-72 {
+                margin-left: 0 !important;
+            }
+
+            main {
+                padding: 0.5rem 1rem !important;
+            }
+
+            .max-w-[1400px] {
+                max-width: 100% !important;
+            }
+
+            .px-6, .px-5 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            .sm\\:px-6, .lg\\:px-8 {
+                padding: 1rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                margin: 0 !important;
+                padding: 0.5rem !important;
+            }
+
+            .rounded-xl {
+                border-radius: 0.5rem !important;
+            }
+
+            .py-6, .sm\\:py-8, .lg\\:py-5 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+        }
+    </style>
+
+
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-        <style>
-            body {
-                font-family: 'Geologica', sans-serif;
-            }
-        </style>
+
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -26,8 +76,8 @@
             @include('layouts.navbar', ['sidebarOpen' => 'sidebarOpen'])
             @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
-            <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 min-h-screen max-w-full flex flex-col items-center mt-20 px-4 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out">
-                <div :class="sidebarOpen ? 'max-w-5xl' : 'max-w-6xl'" class="w-full max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white mx-auto py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-10 transition-all duration-300 ease-in-out">
+            <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 min-h-screen max-w-full flex flex-col items-center mt-20 px-4 sm:px-10 lg:px-8 transition-all duration-300 ease-in-out">
+                <div :class="sidebarOpen ? 'max-w-5xl' : 'max-w-6xl'" class="w-[350px] xl:w-full xl:max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white xl:py-10 px-8 py-10 mt-5 mb-8 transition-all duration-300 ease-in-out">
                     {{ $slot }}
                 </div>
             </main>

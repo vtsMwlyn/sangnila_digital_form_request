@@ -10,9 +10,7 @@
             Leave Request
         </h2>
 
-        <div
-            class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto"
-        >
+        <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto ">
             {{-- Submission Section --}}
             <div class="flex-1">
                 <h3 class="text-[#042E66] font-extrabold text-lg mb-4">
@@ -25,8 +23,8 @@
             </div>
 
             {{-- Leave Request Section --}}
-            <div class="flex-1 flex flex-col space-y-4">
-                <h3 class="text-[#042E66] font-extrabold text-lg">
+            <div class="flex-1 flex flex-col xl:space-y-4 ">
+                <h3 class="text-[#042E66] font-extrabold text-lg xl:py-0 py-4 ">
                     Leave Informations
                 </h3>
 
@@ -44,7 +42,7 @@
                             name="start_leave"
                             id="startDate"
                             value="{{ old('start_leave', isset($leave) ? $leave->start_leave : '') }}"
-                            class="w-full border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+                            class="w-[280px] xl:w-full border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
                         />
                         <x-unvalid-input field="start_leave" />
                     </div>
@@ -55,7 +53,7 @@
                     <div class="rangeTime flex w-full">
                         <x-input-label
                             for="manyDays"
-                            class="font-bold text-md mb-1"
+                            class="font-bold text-md mb-1 w-[280px] xl:w-full"
                         >
                             How Many Days? <span class="text-red-500">*</span>
                         </x-input-label>
@@ -87,9 +85,9 @@
                             name="many_days"
                             id="manyDays"
                             value="{{ old('many_days', isset($leave) ? $numeric : '0') }}"
-                            class="w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+                            class="w-[280px] xl:w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
                         />
-                        <span id="daysLabel" class="text-gray-500 mt-2 ml-2">
+                        <span id="daysLabel" class="text-gray-500 mt-2 ml-2 text-xs xl:text-lg">
                             @if (isset($leave)) {{ old('many_days',
                             $labelNumeric) }} @endif
                         </span>
@@ -118,9 +116,9 @@
                             name="many_hours"
                             id="manyHours"
                             value="{{ old('many_hours', isset($leave) ? $decimal : '0') }}"
-                            class="w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+                            class="w-[280px] xl:w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
                         />
-                        <span id="hoursLabel" class="text-gray-500 mt-2 ml-2">
+                        <span id="hoursLabel" class="text-gray-500 mt-2 ml-2 text-xs xl:text-lg">
                             @if (isset($leave)) {{ old('many_hours',
                             $labelDecimal) }} @endif
                         </span>

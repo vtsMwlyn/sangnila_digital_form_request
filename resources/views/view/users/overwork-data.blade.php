@@ -22,7 +22,7 @@
 
     <!-- Overwork Table -->
     <div class="mt-4 w-full overflow-x-auto overflow-y-auto max-h-[600px] ">
-    <table class="w-full text-left justify-center border-b border-gray-300 mr-10 text-sm sm:text-base" >
+    <table class="hidden sm:table w-full text-left justify-center border-b border-gray-300 mr-10 text-sm sm:text-base" >
         <thead class="bg-transparent text-[#1e293b] border-b border-gray-300">
             <tr>
                 <th class="py-4 sm:px-6 px-6 font-semibold whitespace-nowrap">No</th>
@@ -147,6 +147,91 @@
             @endforelse
         </tbody>
     </table>
+
+       {{-- MOBILE CARD VIEW --}}
+        <div class="sm:hidden block mt-4">
+         @forelse($data as $d)
+            @php
+                $statusClass = match($d->request_status) {
+                    'approved' => 'bg-green-500 text-white rounded-full px-3 py-1/2 font-semibold',
+                    'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1/2 font-semibold',
+                    'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1/2 font-semibold',
+                    default => 'bg-yellow-500 text-white rounded-full px-3 py-1/2 font-semibold',
+                };
+            @endphp
+
+            <div x-data="{ open: false }" class="bg-white rounded-xl shadow-md p-4 mb-3 border border-gray-200">
+
+                {{-- HEADER --}}
+                <button class="w-full flex justify-between items-center" x-on:click="open = !open">
+                    <div>
+                        @if (auth()->user()->role === 'admin')
+                        <div class="flex font-semibold text-[#012967]">{{ $d->user->name }}</div>
+                        @endif
+                        <div class="flex text-xs text-gray-500">
+                            {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
+                        </div>
+                    </div>
+
+                    {{-- ICONS --}}
+                    <svg x-show="!open" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+
+                    <svg x-show="open" class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                    </svg>
+                </button>
+
+                {{-- BODY --}}
+                <div x-show="open" x-collapse class="mt-3 text-sm">
+
+                    <div class="mb-1">
+                        <span class="font-semibold text-gray-700">Date:</span>
+                        <div>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</div>
+                    </div>
+
+                    <div class=" items-center mb-2">
+                        <span class="font-semibold text-gray-700 mr-2">Type:</span>
+                        <span class="py-1/2 px-3 rounded-full capitalize text-white
+                            {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
+                            {{ $d->type }}
+                        </span>
+                    </div>
+
+
+                    @if (auth()->user()->role === 'admin')
+                    <div class="mb-1">
+                        <span class="font-semibold text-gray-700">Name:</span>
+                        <div>{{ $d->user->name }}</div>
+                    </div>
+                    @endif
+
+                    <div class="mb-1">
+                        <span class="font-semibold text-gray-700">Reason:</span>
+                        <div>{{ $d->reason ?? $d->task_description }}</div>
+                    </div>
+
+                    <div class="flex items-center mb-2">
+                        <span class="font-semibold text-gray-700 mr-2">Status:</span>
+                        <span class="{{ $statusClass }} inline-block mt-2 mb-2">
+                            {{ ucfirst($d->request_status) }}
+                        </span>
+                    </div>
+
+                    <div class="mb-1">
+                        <span class="font-semibold text-gray-700">Action:</span>
+                        <div>
+                            <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @empty
+                <p class="text-center py-4 text-gray-500 italic">No recent request.</p>
+            @endforelse
+        </div>
     </div>
     @if (auth()->user()->role === 'user')
     <x-contact />

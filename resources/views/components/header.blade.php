@@ -1,13 +1,15 @@
 <div class="flex bg-white w-full h-[60px] sticky z-50 top-0 justify-between items-center">
+
     <div class="flex items-center space-x-4">
-        <img 
-        src="{{ asset('img/logo.png') }}" 
-        alt="Logo" 
-        class="h-[50px] ml-3 invert-0 brightness-0 saturate-100 hue-rotate-[200deg]" 
+        <img
+        src="{{ asset('img/logo.png') }}"
+        alt="Logo"
+        class="cursor-pointer h-[45px] xl:h-[50px] ml-3 invert-0 brightness-0 saturate-100 hue-rotate-[200deg]  "
         />
         <div class="bg-[#042E66] w-[3px] h-12"></div>
-        <h1 class="text-xl text-[#042E66] uppercase">Digital Leave & Overwork Form</h1>
+        <h1 class="text-md xl:text-xl text-[#042E66] uppercase">Digital Leave & Overwork Form</h1>
     </div>
+
     <div class="flex items-center mr-4">
         <x-dropdown>
             <x-slot name="trigger">

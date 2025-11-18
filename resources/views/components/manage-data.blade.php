@@ -176,7 +176,7 @@
 
                          <tr>
                             <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Status:</th>
-                            <td class="${statusClass} py-2 capitalize">${status}</td>
+                            <td class="${statusClass} mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white">${status}</td>
                          </tr>
                         `;
                 if (type === "overwork") {
@@ -200,11 +200,11 @@
                                             "webp",
                                         ].includes(ext)
                                     ) {
-                                        return `<img src="/storage/${e.path}" alt="Evidence" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
+                                        return `<img src="/storage/${e.path}" alt="Evidence" class="xl:h-[200px] h-[100px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}">`;
                                     } else if (
                                         ["mp4", "mov", "avi"].includes(ext)
                                     ) {
-                                        return `<video src="/storage/${e.path}" class="h-[200px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
+                                        return `<video src="/storage/${e.path}" class="xl:h-[200px] h-[100px] rounded shadow-sm cursor-pointer evidence-item" data-index="${index}" controls></video>`;
                                     }
                                     return "";
                                 })

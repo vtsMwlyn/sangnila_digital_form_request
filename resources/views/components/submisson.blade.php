@@ -1,5 +1,5 @@
 @props(['allowance', 'leave_period'])
-<div class="flex flex-col gap-2 w-[450px]">
+<div class="flex flex-col gap-2 xl:w-[450px] w-[300px]">
     <x-text-input class="font-medium shadow-none" type="hidden" name="user_id" id="" value="{{auth()->user()->id}}" />
     <x-input-label for="name" class="font-bold text-md">Name:</x-input-label>
     <h1 class="mb-1 border-2 border-gray-300 py-2 px-3 rounded-md">{{auth()->user()->name}}</h1>
