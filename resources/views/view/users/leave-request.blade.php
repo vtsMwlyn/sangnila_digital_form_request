@@ -140,7 +140,7 @@
                         placeholder="Write your leave reason here..."
                         class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
                     >
-{{ old('reason', isset($leave) ? $leave->reason : '') }}</textarea
+                    {{ old('reason', isset($leave) ? $leave->reason : '') }}</textarea
                     >
                     <x-unvalid-input field="reason" />
                 </div>

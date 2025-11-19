@@ -90,14 +90,14 @@
                                     <a href="{{ route('leave.edit', $d->id) }}"
                                         class="hover:bg-gray-100 "
                                         title="Edit">
-                                        <img src="{{ asset('img/edit.svg') }}" alt="edit" class="h-[24px] w-[24px]">
+                                        <img src="{{ asset('img/yesbox.svg') }}" alt="edit" class="w-[24px] h-[24px]">
                                     </a>
                                     <form action="{{ route('leave.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
                                             title="Delete">
-                                            <img src="{{ asset('img/delete-button.svg') }}" alt="delete" class="h-[24px] w-[24px] mt-2">
+                                            <img src="{{ asset('img/delete-button.svg') }}" alt="delete" class="w-[24px] h-[24px] mt-2">
                                         </button>
                                     </form>
                                 @endif
@@ -202,11 +202,26 @@
                     </div>
 
 
-                       <div class="mb-1">
+                        <div class="mb-1">
                            <span class="font-semibold text-gray-700">Action:</span>
-                           <div>
-                               <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
-                           </div>
+                           <div class="flex  space-x-1 sm:space-x-2">
+                            <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
+                            @if ($d->request_status === 'draft')
+                                <a href="{{ route('leave.edit', $d->id) }}"
+                                    class="hover:bg-gray-100 "
+                                    title="Edit">
+                                    <img src="{{ asset('img/edit.svg') }}" alt="edit" class="mt-2 h-[35px] w-[35px]">
+                                </a>
+                                <form action="{{ route('leave.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        title="Delete">
+                                        <img src="{{ asset('img/delete-button.svg') }}" alt="delete" class="h-[35px] w-[35px] mt-2">
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
                        </div>
 
                    </div>
