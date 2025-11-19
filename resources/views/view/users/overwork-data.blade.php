@@ -168,7 +168,7 @@
                         @if (auth()->user()->role === 'admin')
                         <div class="flex font-semibold text-[#012967]">{{ $d->user->name }}</div>
                         @endif
-                        <div class="flex text-xs text-gray-500">
+                        <div class="flex text-s text-gray-500">
                             {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
                         </div>
                     </div>

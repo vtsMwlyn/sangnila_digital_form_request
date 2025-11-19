@@ -25,7 +25,7 @@
             <input type="hidden" id="searchHidden" name="search" value="{{ request('search') ?? '' }}">
 
             @if (!request()->routeIs('LogActivity.show'))
-            <div class="hidden  status-grid space-x-2">
+            <div class="  status-grid space-x-2">
                 @foreach ($navStatus as $status)
                     <button
                         type="button"
@@ -61,6 +61,8 @@
         }
     @endphp
 
+@if (!request()->routeIs('LogActivity.show'))
+
     <div x-data="{ open: false }" class="bg-white rounded-xl shadow-md p-4 border border-gray-200">
 
         <button class="w-full flex justify-between items-center" x-on:click="open = !open">
@@ -86,7 +88,6 @@
                 <input type="hidden" id="monthHidden" name="month" value="{{ request('month') ?? 'all' }}">
                 <input type="hidden" id="searchHidden" name="search" value="{{ request('search') ?? '' }}">
 
-                @if (!request()->routeIs('LogActivity.show'))
                     <div class="grid grid-cols-2 gap-2 mt-2">
                         @foreach ($navStatus as $status)
                             <button
@@ -101,9 +102,10 @@
                             </button>
                         @endforeach
                     </div>
-                @endif
             </form>
 
         </div>
     </div>
+    @endif
+
 </div>

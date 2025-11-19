@@ -99,20 +99,18 @@
             </tbody>
         </table>
 
+        {{-- mobile --}}
         <div class="sm:hidden block">
             @forelse ($data as $log)
                 <div x-data="{ open: false }" class="bg-white rounded-xl shadow-md p-4 mb-3 border border-gray-200">
 
-                    <button
-                        class="w-full flex justify-between items-center"
-                        x-on:click="open = !open"
-                    >
+                    <button class="w-full flex justify-between items-center" x-on:click="open = !open">
 
                         <div>
                             @if (auth()->user()->role === 'admin')
                             <div class="flex font-semibold text-[#012967]">Name: {{ $log->user->name ?? 'Unknown User' }}</div>
                             @endif
-                            <div class="flex text-xs text-gray-500">
+                            <div class="flex text-s text-gray-500">
                                 {{ $log->created_at->setTimezone('Asia/Jakarta')->format('d M Y, H:i') }}
                             </div>
                         </div>
