@@ -109,7 +109,7 @@
 
             {{-- ================= Overwork Section ================= --}}
             <div class="flex-1 flex flex-col w-full">
-                <h3 class="text-[#042E66] font-extrabold text-lg">Overwork Informations</h3>
+                <h3 class="text-[#042E66] font-extrabold text-lg xl:mt-0 mt-2">Overwork Informations</h3>
 
                 {{-- Date Input --}}
                 <div class="w-full relative mt-4">
@@ -144,7 +144,7 @@
                             <x-unvalid-input field="start" />
                     </div>
 
-                    <i class="bi bi-arrow-right text-2xl text-gray-500"></i>
+                    <i class="bi bi-arrow-right mt-8 text-2xl text-gray-500"></i>
 
                     <div class="w-full relative">
                         <x-input-label for="finish" class="font-black text-[16px] mb-1">

@@ -51,7 +51,7 @@ class LeaveController
 
         Leave::create([
             'start_leave' => $validate['start_leave'],
-            'leave_period' => (int) $totalPeriod,
+            'leave_period' => $totalPeriod,
             'reason' => $validate['reason'],
             'request_status' => $status,
             'user_id' => $validate['user_id']
@@ -109,7 +109,7 @@ class LeaveController
 
         $leave->update([
             'start_leave' => $validate['start_leave'],
-            'leave_period' => (int) $totalPeriod,
+            'leave_period' =>  $totalPeriod,
             'reason' => $validate['reason'],
             'request_status' => $status,
         ]);
@@ -235,7 +235,7 @@ class LeaveController
 
         $userId  = $leave->user_id;
         $user    = User::findOrFail($userId);
-        $newApproval = (int) $leave->leave_period;
+        $newApproval = $leave->leave_period;
 
         if ($mode === 'leave') {
             $allowance = $user->overwork_allowance;
@@ -259,7 +259,7 @@ class LeaveController
         }
 
         elseif ($mode === 'overwork') {
-            $newApproval = (int) $leave->leave_period;
+            $newApproval = $leave->leave_period;
             $totalApprovedOverwork = $user->total_overwork;
             $totalLate = floatval($request->input('totalLateValue')) * 8;
 

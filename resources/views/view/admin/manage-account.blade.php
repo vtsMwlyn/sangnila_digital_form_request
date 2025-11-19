@@ -53,12 +53,13 @@
                     {{-- <td class="py-4 px-6">{{$d->role}}</td> --}}
                     <td class="py-4 px-6 text-center">
                         @php
-                            $allowanceDay = intdiv($d->overwork_allowance, 8);
-                            $allowanceHour = $d->overwork_allowance % 8;
+                           $allowanceDay  = intdiv($d->overwork_allowance, 8);
+                            $allowanceHour = ($d->overwork_allowance / 8 - $allowanceDay) * 8;
 
-                            $totalDay = intdiv($d->total_overwork, 8);
-                            $totalHour = $d->total_overwork % 8;
+                            $totalDay  = intdiv($d->total_overwork, 8);
+                            $totalHour = ($d->total_overwork / 8 - $totalDay) * 8
                         @endphp
+
 
                         {{ $allowanceDay }} Day
                         {{ $allowanceHour }} Hours
@@ -284,17 +285,26 @@
                                 data-role="{{ $d->role }}"
                                 data-status_employee="{{ $d->status }}"
                                 @php
-                                $balanceDay = intdiv($d->overwork_allowance, 8);
-                                $balanceHour = $d->overwork_allowance % 8;
+                                // BALANCE
+                                $balanceDay  = floor($d->overwork_allowance / 8);
+                                $balanceHour = ($d->overwork_allowance / 8 - $balanceDay) * 8;
 
-                                $overworkDay = intdiv($d->total_overwork, 8);
-                                $overworkHour = $d->total_overwork % 8;
+                                // OVERWORK
+                                $overworkDay  = floor($d->total_overwork / 8);
+                                $overworkHour = ($d->total_overwork / 8 - $overworkDay) * 8;
 
-                                $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
-                                $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+                                $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') .
+                                                    " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
+
+                                $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') .
+                                                     " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+
+                                // dd([$balanceDay,$balanceHour, $overworkDay, $overworkHour,  $formattedBalance, $formattedOverwork])
+
                             @endphp
-                                data-balance="{{ $formattedBalance }}"
-                                data-overwork="{{ $formattedOverwork }}"
+                            data-balance="{{ $formattedBalance }}"
+                            data-overwork="{{ $formattedOverwork }}"
+
                             >
                              <img src="{{ asset('img/view.svg') }}" alt="view" class="h-[40px] w-[40px]" >
                              </button>
@@ -423,7 +433,7 @@
                     const role = this.dataset.role;
                     const overwork = this.dataset.overwork;
                     const status_employee = this.dataset.status_employee;
-                    const statusClass = getStatusClass(status);
+=                    const statusClass = getStatusClass(status);
                     let body = `
                     <table class="w-full text-sm text-gray-800 border-collapse">
                         <tbody class="divide-y divide-gray-200">

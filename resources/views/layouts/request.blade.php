@@ -77,7 +77,7 @@
             @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
 
             <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 min-h-screen max-w-full flex flex-col items-center mt-20 px-4 sm:px-10 lg:px-8 transition-all duration-300 ease-in-out">
-                <div :class="sidebarOpen ? 'max-w-5xl' : 'max-w-6xl'" class="w-[350px] xl:w-full xl:max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white xl:py-10 px-8 py-10 mt-5 mb-8 transition-all duration-300 ease-in-out">
+                <div :class="sidebarOpen ? 'max-w-5xl' : 'max-w-6xl'" class="w-[390px] xl:w-full xl:max-w-6xl rounded-xl overflow-hidden shadow-lg bg-white xl:py-10 px-8 py-10 mt-5 mb-8 transition-all duration-300 ease-in-out">
                     {{ $slot }}
                 </div>
             </main>

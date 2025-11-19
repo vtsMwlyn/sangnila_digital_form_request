@@ -63,7 +63,7 @@ class ManageDataController extends Controller
     //             $user = User::findOrFail($userId);
     //             $leave = Leave::findOrFail($leaveId);
 
-    //             $newApproval = (int) $leave->leave_period;
+    //             $newApproval = $leave->leave_period;
     //             $source = $leave->deduction_source;
     //             $allowance = User::findOrFail($userId)->total_overwork;
     //             $leave_balance = User::findOrFail($userId)->overwork_allowance;
@@ -185,7 +185,7 @@ class ManageDataController extends Controller
                 $user = User::findOrFail($userId);
                 $leave = Leave::findOrFail($leaveId);
 
-                $newApproval = (int) $leave->leave_period;
+                $newApproval = $leave->leave_period;
                 $source = $leave->deduction_source;
                 $allowance = User::findOrFail($userId)->total_overwork;
                 $leave_balance = User::findOrFail($userId)->overwork_allowance;

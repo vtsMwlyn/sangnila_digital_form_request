@@ -42,9 +42,9 @@ class RegisteredUserController extends Controller
             'department_other' => 'nullable|string',
             'role' => ['required', 'in:admin,user'],
             'Leave_Balance_Day' => ['required', 'integer'],
-            'Leave_Balance_Hour' => 'nullable|integer',
+            'Leave_Balance_Hour' => 'nullable|numeric',
             'Total_Overwork_Day' => ['required', 'integer'],
-            'Total_Overwork_Hour' => 'nullable|integer',
+            'Total_Overwork_Hour' => 'nullable|numeric',
         ]);
 
         $validate['position'] = $validate['position'] === 'other'
@@ -57,8 +57,8 @@ class RegisteredUserController extends Controller
 
         unset($validate['position_other'], $validate['department_other']);
 
-        $overworkAllowance = (int) $validate['Leave_Balance_Day'] * 8 + (int) $validate['Leave_Balance_Hour'];
-        $TotalOverwork = (int) $validate['Total_Overwork_Day'] * 8 + (int) $validate['Total_Overwork_Hour'] ;
+        $overworkAllowance = (int) $validate['Leave_Balance_Day'] * 8 +  $validate['Leave_Balance_Hour'];
+        $TotalOverwork = (int) $validate['Total_Overwork_Day'] * 8 + $validate['Total_Overwork_Hour'] ;
 
         $user = User::create([
             'name' => $validate['name'],
@@ -107,11 +107,11 @@ class RegisteredUserController extends Controller
         unset($validate['position_other'], $validate['department_other']);
 
         $leaveBalanceTimes8 = isset($validate['Leave_Balance_Day'], $validate['Leave_Balance_Hour'] )
-            ? (int) $validate['Leave_Balance_Day'] * 8 + (int) $validate['Leave_Balance_Hour']
+            ? (int) $validate['Leave_Balance_Day'] * 8 + $validate['Leave_Balance_Hour']
             : $user->overwork;
 
         $totalOverworkTimes8 = isset($validate['Total_Overwork_Day'], $validate['Leave_Balance_Hour'])
-            ? (int) $validate['Total_Overwork_Day'] * 8 + (int) $validate['Total_Overwork_Hour']
+            ? (int) $validate['Total_Overwork_Day'] * 8 +  $validate['Total_Overwork_Hour']
             : $user->total_overwork;
 
         $user->update([

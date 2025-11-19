@@ -45,14 +45,20 @@
             data-duration="{{ $duration }}"
             data-admin_change="{{ $d->action_by ?? '—' }}"
             @php
-            $balanceDay = intdiv($d->user->overwork_allowance, 8);
-            $balanceHour = $d->user->overwork_allowance % 8;
+                // BALANCE
+                $balanceDay  = floor($d->user->overwork_allowance / 8);
+                $balanceHour = ($d->user->overwork_allowance / 8 - $balanceDay) * 8;
 
-            $overworkDay = intdiv($d->user->total_overwork, 8);
-            $overworkHour = $d->user->total_overwork % 8;
+                // OVERWORK
+                $overworkDay  = floor($d->user->total_overwork / 8);
+                $overworkHour = ($d->user->total_overwork / 8 - $overworkDay) * 8;
 
-            $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
-            $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+                $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') .
+                                    " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
+
+                $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') .
+                                        " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+
             @endphp
             data-balance="{{ $formattedBalance }}"
             data-overwork="{{ $formattedOverwork }}"

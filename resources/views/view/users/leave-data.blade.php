@@ -90,7 +90,7 @@
                                     <a href="{{ route('leave.edit', $d->id) }}"
                                         class="hover:bg-gray-100 "
                                         title="Edit">
-                                        <img src="{{ asset('img/edit.svg') }}" alt="edit" class=" h-[24px] w-[24px]">
+                                        <img src="{{ asset('img/edit.svg') }}" alt="edit" class="h-[24px] w-[24px]">
                                     </a>
                                     <form action="{{ route('leave.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this leave draft?')">
                                         @csrf
@@ -145,7 +145,13 @@
                             @if (auth()->user()->role === 'admin')
                             <div class="flex font-semibold text-[#012967]">{{ $d->user->name }}</div>
                             @endif
-                           <div class="text-xs text-gray-500">
+                            <div class="flex items-center mb-2">
+                                <span class="font-semibold text-gray-700 mr-2">Status:</span>
+                                <span class="{{ $statusClass }} inline-block mt-2 mb-2">
+                                    {{ ucfirst($d->request_status) }}
+                                </span>
+                            </div>
+                           <div class="flex text-s text-gray-500">
                                {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
                            </div>
                        </div>

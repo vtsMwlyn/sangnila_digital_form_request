@@ -10,7 +10,7 @@
         <h1 class="text-md xl:text-xl text-[#042E66] uppercase">Digital Leave & Overwork Form</h1>
     </div>
 
-    <div class="flex items-center mr-4">
+    <div class="hidden sm:flex items-center mr-4">
         <x-dropdown>
             <x-slot name="trigger">
                 <button class="p-2 rounded-md hover:bg-gray-100 focus:outline-none">

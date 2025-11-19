@@ -168,6 +168,12 @@
                         @if (auth()->user()->role === 'admin')
                         <div class="flex font-semibold text-[#012967]">{{ $d->user->name }}</div>
                         @endif
+                        <div class="flex items-center mb-2">
+                            <span class="font-semibold text-gray-700 mr-2">Status:</span>
+                            <span class="{{ $statusClass }} inline-block mt-2 mb-2">
+                                {{ ucfirst($d->request_status) }}
+                            </span>
+                        </div>
                         <div class="flex text-s text-gray-500">
                             {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
                         </div>

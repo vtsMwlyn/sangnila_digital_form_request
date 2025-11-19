@@ -111,6 +111,7 @@
                         <x-text-input
                             type="number"
                             min="0"
+                            step="0.5"
                             oninput="if(this.value < 0) this.value = 0;"
                             onblur="if(this.value === '') this.value = 0;"
                             name="many_hours"

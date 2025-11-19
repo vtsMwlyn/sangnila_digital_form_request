@@ -195,7 +195,7 @@
         x-show="open"
         x-transition
         x-cloak
-        class="fixed top-0 left-0 right-0 bg-white shadow-lg z-40 rounded-b-lg overflow-hidden"
+        class="fixed top-12 left-0 right-0 bg-white shadow-lg z-40 rounded-b-lg overflow-hidden"
     >
         {{-- <div class="pt-20 pb-6 text-center bg-cover bg-center"
              style="background-image: url('{{ asset('img/sidebar-bg.webp') }}')">
@@ -227,6 +227,12 @@
             @endif
 
             <a href="{{ route('profile.edit') }}" class="px-5 py-4 font-semibold hover:bg-gray-100">Profile</a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="px-5 py-4 font-semibold text-red-500 hover:bg-gray-100 w-full text-left">
+                    Log Out
+                </button>
+            </form>
         </nav>
     </div>
 
