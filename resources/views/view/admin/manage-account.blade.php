@@ -433,7 +433,7 @@
                     const role = this.dataset.role;
                     const overwork = this.dataset.overwork;
                     const status_employee = this.dataset.status_employee;
-=                    const statusClass = getStatusClass(status);
+                    const statusClass = getStatusClass(status);
                     let body = `
                     <table class="w-full text-sm text-gray-800 border-collapse">
                         <tbody class="divide-y divide-gray-200">
