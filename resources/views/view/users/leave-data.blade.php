@@ -190,6 +190,12 @@
                        @endif
 
                        <div class="mb-1">
+                        <span class="font-semibold text-gray-700">Duration:</span>
+                        <div>{{ $duration }}</div>
+                    </div>
+
+
+                       <div class="mb-1">
                            <span class="font-semibold text-gray-700">Reason:</span>
                            <div>{{ $d->reason ?? $d->task_description }}</div>
                        </div>

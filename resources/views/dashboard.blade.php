@@ -198,7 +198,7 @@
                             <td class="py-4 px-6">{{ $loop->iteration }}</td>
                             <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</td>
                             <td class="py-4 px-6">
-                                <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
+                                <span class="py-1 px-3 rounded-full capitalize text-white  {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                             </td>
                             @if (auth()->user()->role === "admin")
                                 <td class="py-4 px-6">{{ $d->user->name }}</td>
@@ -206,7 +206,7 @@
                             <td class="py-4 px-6 truncate max-w-xs" title="{{ $d->reason ?? $d->task_description }}">
                                 {{ ucfirst(strtolower(Str::limit($d->reason ?? $d->task_description, 40))) }}
                             </td>
-                            <td class="py-4 px-6 text-center">
+                            <td class="py-4 px-6 ">
                                 @php
                                     $statusClass = match($d->request_status) {
                                         'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 font-semibold',
@@ -218,7 +218,9 @@
                                 <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
                             </td>
                             <td class="py-4 px-6 text-center">
+                                <div class="flex justify-center w-full">
                                 <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
+                            </div>
                             </td>
                         </tr>
                     @empty
