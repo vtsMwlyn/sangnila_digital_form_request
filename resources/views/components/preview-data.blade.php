@@ -10,7 +10,7 @@
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'dashboard-preview-modal' }))"
                 class="text-red-500 hover:text-red-300 text-2xl"
             >
-                &times;
+                <img src="{{ asset('img/close.svg') }}" alt="x" />
             </button>
         </div>
         <div
@@ -28,7 +28,7 @@
             @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
             class="absolute right-5 m-5 top-0 text-red-500 hover:text-red-300 text-2xl"
         >
-            &times;
+            <img src="{{ asset('img/close.svg') }}" alt="x" />
         </button>
         <div id="evidence-viewer-body" class="flex items-center justify-center">
             <!-- media content -->

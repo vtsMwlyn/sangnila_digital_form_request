@@ -1,6 +1,6 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-blue-800 font-extrabold text-lg">
             {{ __('Profile Information') }}
         </h2>
 
@@ -78,7 +78,7 @@
 
         <!-- Tombol Save -->
         <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-button>{{ __('Save Profile') }}</x-button>
 
             @if (session('status') === 'profile-updated')
                 <p x-data="{ show: true }" x-show="show" x-transition

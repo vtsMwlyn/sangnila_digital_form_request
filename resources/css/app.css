@@ -1,6 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-   body {
+
+body {
     font-family: 'Geologica';
+}
+
+button, a {
+    @apply cursor-pointer;
+}
+
+th, td {
+    @apply py-3 px-4;
 }

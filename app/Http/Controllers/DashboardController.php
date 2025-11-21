@@ -38,34 +38,6 @@ class DashboardController extends Controller
         return compact('totalOverwork', 'totalLeave', 'approved', 'rejected', 'pending', 'requestData', 'result');
     }
 
-    // public function dashboard(Request $request)
-    // {
-    //     $data = $this->dataSubmitted();
-    //     $status = $request->input('status');
-    //     $type = $request->input('type');
-    //     $search = $request->input('search');
-    //     $month = $request->input('month');
-
-    //     if (Auth::user()->role === 'user') {
-    //         $data['requestData'] = $data['requestData']->take(5);
-    //         if ($type && $type != 'all') {
-    //             $data['requestData'] = $data['requestData']->where('type', $type)->take(5);
-    //         }
-    //     } elseif (Auth::user()->role === 'admin') {
-    //         $data['requestData'] = $data['requestData']->where('request_status', $status ?? 'review')->take(8);
-    //     }
-
-    //     if ($month && $month !== 'all') {
-    //         $data['requestData'] = $data['requestData']->filter(function ($item) use ($month, $search) {
-    //             return stripos($item->start_leave ?? $item->overwork_date ?? '', $month) !== false ||
-    //                 stripos($item->leave ?? '', $search) !== false ||
-    //                 stripos($item->user->name ?? '', $search) !== false ||
-    //                 stripos($item->reason ?? $item->task_description ?? $item->reason ?? '', $search) !== false;
-    //         });
-    //     }
-
-    //     return view('dashboard', compact('data'));
-    // }
     public function dashboard(Request $request)
     {
         $data = $this->dataSubmitted();
@@ -75,45 +47,30 @@ class DashboardController extends Controller
         $month = $request->input('month');
         $user = Auth::user();
 
-        $totalLeaveHours = $user->overwork_allowance;
+        $leaveHours = $user->overwork_allowance;
+        $overworkHours = $user->total_overwork;
+        $allHours = $leaveHours + $overworkHours;
 
-        // return $totalLeaveHours;
+        $leaveDays = floor($leaveHours / 8);
+        $overworkDays = floor($overworkHours / 8);
+        $allDays = floor($allHours / 8);
 
-        $totalOverworkHours = $user->total_overwork ?? 0;
-        $allowanceDays = ($user->overwork_allowance ?? 0) ;
+        $remainingLeave = $leaveHours - $leaveDays;
+        $remainingOverwork = $overworkHours - $overworkDays;
+        $remainingAll = $allHours - $allDays;
 
-        $leaveDays = $allowanceDays / 8;
-        $overworkDays = $totalOverworkHours / 8;
-
-        $leaveBalanceDays = $user->overwork_allowance / 8;
-
-        $periodDays = floor($leaveDays);
-        $periodHours = ($leaveDays - $periodDays) * 8;
-        $totalLeaveText = $leaveDays
-            ? "{$periodDays} days {$periodHours} hours"
-            : ($periodDays > 0 ? "{$periodDays} days" : "{$periodHours} hours");
-
-        $balanceDays = floor($leaveBalanceDays);
-        $balanceHours = ($leaveBalanceDays - $balanceDays) * 8;
-        $balanceText = $leaveBalanceDays
-            ? "{$balanceDays} days {$balanceHours} hours"
-            : ($balanceDays > 0 ? "{$balanceDays} days" : "{$balanceHours} hours");
-
-        $overworkDaysInt = floor($overworkDays);
-        $overworkHours = ($overworkDays - $overworkDaysInt) * 8;
-        $totalOverworkText = $overworkDays
-            ? "{$overworkDaysInt} days {$overworkHours} hours"
-            : ($overworkDaysInt > 0 ? "{$overworkDaysInt} days" : "{$overworkHours} hours");
-
+        $leaveBalanceText = "{$leaveDays} days {$remainingLeave} hours";
+        $overworkBalanceText = "{$overworkDays} days {$remainingOverwork} hours";
+        $allBalanceText = "{$allDays} days {$remainingAll} hours";
 
         $data['logs'] = LateLog::where('user_id', $user->id)
-        ->latest()
-        ->take(3)
-        ->get();
+            ->latest()
+            ->take(3)
+            ->get();
 
-        $data['total_leave'] = $totalLeaveText;
-        $data['total_overwork'] = $totalOverworkText;
-        $data['balance'] = $balanceText;
+        $data['total_overwork'] = $overworkBalanceText;
+        $data['total_leave'] = $leaveBalanceText;
+        $data['total_all'] = $allBalanceText;
 
         if ($user->role === 'user') {
             $data['requestData'] = $data['requestData']->take(5);

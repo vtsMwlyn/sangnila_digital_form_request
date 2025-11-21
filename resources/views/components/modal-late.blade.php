@@ -6,7 +6,7 @@
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'late-modal' }))"
                 class="text-red-500 hover:text-red-300 text-3xl font-bold"
             >
-                &times;
+                <img src="{{ asset('img/close.svg') }}" alt="x" />
             </button>
         </div>
 

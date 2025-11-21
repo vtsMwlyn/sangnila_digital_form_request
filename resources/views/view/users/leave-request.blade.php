@@ -1,20 +1,27 @@
-<x-request-layout>
+@extends('layouts.app')
+
+@section('content')
     <form
         action="{{ isset($leave) ? route('leave.update', $leave) : route('leave.insert') }}"
         method="post"
         enctype="multipart/form-data"
+        class="container-draft bg-[#FEFEFEB2] p-8 rounded-2xl w-full shadow-lg overflow-x-auto"
     >
         @csrf @if(isset($leave)) @method('PUT') @endif
 
-        <h2 class="text-center text-[#042E66] text-3xl font-extrabold mb-8">
-            Leave Request
-        </h2>
+        <x-back-button onclick="history.back();" />
 
-        <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto ">
+        <h2 class="text-[#042E66] text-3xl font-black mt-2 mb-1">
+            New Leave Request
+        </h2>
+        <span class="text-slate-500 italic">Pengajuan Cuti</span>
+        <x-separator-line/>
+
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-10 mt-5">
             {{-- Submission Section --}}
             <div class="flex-1">
-                <h3 class="text-[#042E66] font-extrabold text-lg mb-4">
-                    Submission Informations
+                <h3 class="text-blue-800 font-extrabold text-lg mb-4">
+                    Employee Information
                 </h3>
                 <x-submisson
                     :allowance="$allowance"
@@ -24,9 +31,7 @@
 
             {{-- Leave Request Section --}}
             <div class="flex-1 flex flex-col xl:space-y-4 ">
-                <h3 class="text-[#042E66] font-extrabold text-lg xl:py-0 py-4 ">
-                    Leave Informations
-                </h3>
+                <h3 class="text-blue-800 font-extrabold text-lg xl:mt-0 mt-2">Leave Information</h3>
 
                 {{-- Start Date --}}
                 <div class="flex flex-col w-full">
@@ -42,7 +47,7 @@
                             name="start_leave"
                             id="startDate"
                             value="{{ old('start_leave', isset($leave) ? $leave->start_leave : '') }}"
-                            class="w-[280px] xl:w-full border border-gray-400 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+                            class="w-full"
                         />
                         <x-unvalid-input field="start_leave" />
                     </div>
@@ -85,7 +90,7 @@
                             name="many_days"
                             id="manyDays"
                             value="{{ old('many_days', isset($leave) ? $numeric : '0') }}"
-                            class="w-[280px] xl:w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+                            class="w-[280px] xl:w-1/2"
                         />
                         <span id="daysLabel" class="text-gray-500 mt-2 ml-2 text-xs xl:text-lg">
                             @if (isset($leave)) {{ old('many_days',
@@ -117,7 +122,7 @@
                             name="many_hours"
                             id="manyHours"
                             value="{{ old('many_hours', isset($leave) ? $decimal : '0') }}"
-                            class="w-[280px] xl:w-1/2 border border-gray-400 rounded-lg px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-[#1EB8CD] cursor-pointer"
+                            class="w-[280px] xl:w-1/2"
                         />
                         <span id="hoursLabel" class="text-gray-500 mt-2 ml-2 text-xs xl:text-lg">
                             @if (isset($leave)) {{ old('many_hours',
@@ -133,41 +138,41 @@
                     <x-input-label for="reason" class="font-bold text-md mb-1">
                         Leave Reason: <span class="text-red-500">*</span>
                     </x-input-label>
-                    <textarea
+                    <x-textarea
                         name="reason"
                         id="reason"
                         rows="4"
                         placeholder="Write your leave reason here..."
-                        class="border border-gray-300 rounded p-2 text-sm w-full resize-none"
+                        class="w-full"
                     >
-                    {{ old('reason', isset($leave) ? $leave->reason : '') }}</textarea
-                    >
+                        {{ old('reason', isset($leave) ? $leave->reason : '') }}
+                    </x-textarea>
                     <x-unvalid-input field="reason" />
                 </div>
 
                 {{-- Buttons --}}
-                <div class="flex justify-end space-x-4 mt-6">
-                    {{-- Draft --}}
-                    <button
-                        type="submit"
-                        name="action"
-                        value="draft"
-                        class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition"
-                    >
-                        <i class="bi bi-save mr-1 h-[24px] w-[24px]"></i>
-                        Draft
-                    </button>
+                <div class="w-full flex justify-end mt-4">
+                    <div class="w-full xl:w-2/3 gap-2 grid grid-cols-2 mt-6">
+                        <button
+                            type="submit"
+                            name="action"
+                            value="draft"
+                            class="flex items-center justify-center hover:scale-105 bg-slate-500 rounded-xl px-4 py-2 text-sm text-white hover:brightness-125 transition"
+                        >
+                            <i class="bi bi-save2 mt-1 mr-1 h-[24px] w-[24px]"></i>
+                            Draft
+                        </button>
 
-                    {{-- Submit --}}
-                    <button
-                        type="submit"
-                        name="action"
-                        value="submit"
-                        class="flex items-center bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white rounded-full px-4 py-2 text-sm transition hover:from-cyan-600 hover:to-blue-700"
-                    >
-                        <i class="bi bi-send-fill mr-1 h-[24px] w-[24px]"></i>
-                        Submit
-                    </button>
+                        <x-button
+                            type="submit"
+                            name="action"
+                            value="submit"
+                            class="w-full"
+                        >
+                            <i class="bi bi-send-fill mt-1 mr-1 h-[24px] w-[24px]"></i>
+                            Submit
+                        </x-button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -252,5 +257,5 @@
           document.getElementById('startDate').showPicker();
         });
     </script>
-       <x-contact/>
-</x-request-layout>
+    <x-contact/>
+@endsection

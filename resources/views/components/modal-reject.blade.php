@@ -5,7 +5,7 @@
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'reject-modal' }))"
                 class="text-red-500 hover:text-red-300 text-3xl font-bold"
             >
-                &times;
+                <img src="{{ asset('img/close.svg') }}" alt="x" />
             </button>
         </div>
 
@@ -19,13 +19,13 @@
                 <label class="block text-sm font-medium text-[#012967] mb-2">
                     Please enter the rejection reason:
                 </label>
-                <textarea
+                <x-textarea
                     name="admin_note"
                     id="adminNoteInput"
-                    class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-[#1EB8CD]"
+                    class="w-full"
                     placeholder="Enter reason here..."
                     required
-                ></textarea>
+                ></x-textarea>
 
                 <div class="flex justify-end mt-5">
                     <button

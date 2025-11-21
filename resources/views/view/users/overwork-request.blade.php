@@ -1,24 +1,30 @@
-<x-request-layout>
+@extends('layouts.app')
+
+@section('content')
     <form
         action="{{ isset($overwork) ? route('overwork.update', $overwork) : route('overwork.insert') }}"
         method="post"
         enctype="multipart/form-data"
+        class="container-draft bg-[#FEFEFEB2] p-8 rounded-2xl w-full shadow-lg overflow-x-auto"
     >
         @csrf
         @if(isset($overwork))
             @method('PUT')
         @endif
 
-        <h2 class="text-center text-[#042E66] text-3xl font-black mb-8">
-            Overwork Request
+        <x-back-button onclick="history.back();" />
+
+        <h2 class="text-[#042E66] text-3xl font-black mt-2 mb-1">
+            New Overwork Request
         </h2>
+        <span class="text-slate-500 italic">Pengajuan Lembur</span>
+        <x-separator-line/>
 
-        <div class="flex flex-col md:flex-row justify-between max-w-5xl mx-auto">
-
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-10 mt-5">
             {{-- ================= Submission Section ================= --}}
             <div class="flex-1">
-                <h3 class="text-[#042E66] font-extrabold text-lg mb-4">
-                    Submission Informations
+                <h3 class="text-blue-800 font-extrabold text-lg mb-4">
+                    Employee Information
                 </h3>
 
                 <x-submisson />
@@ -109,12 +115,12 @@
 
             {{-- ================= Overwork Section ================= --}}
             <div class="flex-1 flex flex-col w-full">
-                <h3 class="text-[#042E66] font-extrabold text-lg xl:mt-0 mt-2">Overwork Informations</h3>
+                <h3 class="text-blue-800 font-extrabold text-lg xl:mt-0 mt-2">Overwork Information</h3>
 
                 {{-- Date Input --}}
                 <div class="w-full relative mt-4">
                     <x-input-label for="date" class="font-black text-[16px] mb-2">
-                        Overwork date: <span class="text-red-500">*</span>
+                        Date: <span class="text-red-500">*</span>
                     </x-input-label>
 
                     <x-text-input
@@ -122,7 +128,7 @@
                         name="date"
                         id="date"
                         value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
-                        class="border-2 h-[45px] px-3 rounded-md border-gray-300 w-full"
+                        class="w-full"
                     />
 
                     <x-unvalid-input field="date" />
@@ -167,22 +173,24 @@
                     <x-input-label for="desc" class="font-black text-[16px] mb-1">
                         Task Description: <span class="text-red-500">*</span>
                     </x-input-label>
-                    <textarea
+                    <x-textarea
                         name="desc"
                         id="desc"
                         rows="4"
-                        placeholder="Task you did for this overwork"
-                        class="border-2 border-gray-300 rounded px-3 text-md w-full resize-none"
+                        placeholder="Describe or list the tasks you did for this overwork"
                         required
-                    >{{ old('desc', isset($overwork) ? $overwork->task_description : '') }}</textarea>
+                        class="w-full"
+                    >
+                        {{ old('desc', isset($overwork) ? $overwork->task_description : '') }}
+                    </x-textarea>
                 </div>
 
                 {{-- Upload Inputs --}}
-                <div class="mt-4 space-y-4">
-                    <label class="text-gray-500">Please upload a photo or video evidence <span class="text-red-500">*</span></label><br />
+                <p class="text-gray-500 mt-6">Please upload a photo or video evidence for validation<span class="text-red-500">*</span></p>
+                <div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-5">
                     <div class="pl-2">
                         <label>Photo:</label><br />
-                        <input type="file" name="photo[]" multiple id="photo-input" accept="image/*" />
+                        <x-text-input type="file" name="photo[]" multiple id="photo-input" accept="image/*" class="w-full py-20 px-10 border-4 rounded-xl border-slate-400 border-dashed bg-white" />
                         @error('photo')
                             <div class="text-red-500 text-sm">{{ $message }}</div>
                         @enderror
@@ -190,7 +198,7 @@
 
                     <div class="pl-2">
                         <label>Video:</label><br />
-                        <input type="file" name="video[]" multiple id="video-input" accept="video/*" />
+                        <x-text-input type="file" name="video[]" multiple id="video-input" accept="video/*" class="w-full py-20 px-10 border-4 rounded-xl border-slate-400 border-dashed bg-white" />
                         @error('video')
                             <div class="text-red-500 text-sm">{{ $message }}</div>
                         @enderror
@@ -204,32 +212,35 @@
                     <div id="preview-videos" class="flex flex-wrap gap-2 w-[150px]"></div>
                 </div>
 
-                {{-- Buttons --}}
-                <div class="flex justify-end space-x-4 mt-6">
-                    <button
-                        type="submit"
-                        name="action"
-                        value="draft"
-                        class="flex items-center border border-black rounded-full px-4 py-2 text-sm text-black hover:bg-gray-100 transition"
-                    >
-                        <i class="bi bi-save2 mr-1 text-[#042E66] h-[24px] w-[24px]"></i>
-                        Draft
-                    </button>
+                <span class="text-slate-600 italic mt-10">By submitting, you confirm that all provided information is accurate and you acknowledge that <b>any false or invalid data may result in consequences</b>.</span>
 
-                    <button
-                        type="submit"
-                        name="action"
-                        value="submit"
-                        class="flex items-center bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] text-white rounded-full px-4 py-2 text-sm transition hover:from-cyan-600 hover:to-blue-700"
-                    >
-                        <i class="bi bi-send-fill mr-1 h-[24px] w-[24px]"></i>
-                        Submit
-                    </button>
+                {{-- Buttons --}}
+                <div class="w-full flex justify-end mt-4">
+                    <div class="w-full xl:w-2/3 gap-2 grid grid-cols-2 mt-6">
+                        <button
+                            type="submit"
+                            name="action"
+                            value="draft"
+                            class="flex items-center justify-center hover:scale-105 bg-slate-500 rounded-xl px-4 py-2 text-sm text-white hover:brightness-125 transition"
+                        >
+                            <i class="bi bi-save2 mt-1 mr-1 h-[24px] w-[24px]"></i>
+                            Draft
+                        </button>
+
+                        <x-button
+                            type="submit"
+                            name="action"
+                            value="submit"
+                            class="w-full"
+                        >
+                            <i class="bi bi-send-fill mt-1 mr-1 h-[24px] w-[24px]"></i>
+                            Submit
+                        </x-button>
+                    </div>
                 </div>
             </div>
         </div>
     </form>
-    <x-contact/>
 
     {{-- ================= Evidence Viewer Modal ================= --}}
     <x-modal name="evidence-viewer-modal" maxWidth="6xl">
@@ -238,7 +249,7 @@
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'evidence-viewer-modal' }))"
                 class="absolute right-5 top-0 m-5 text-red-500 hover:text-red-300 text-3xl"
             >
-                &times;
+                <img src="{{ asset('img/close.svg') }}" alt="x" />
             </button>
 
             <div id="evidence-viewer-body" class="flex items-center justify-center"></div>
@@ -247,156 +258,156 @@
             <button id="next-evidence" class="absolute right-4 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded">&rarr;</button>
         </div>
     </x-modal>
-</x-request-layout>
 
-{{-- ================= JS Section ================= --}}
-<script>
-    // showPicker for custom trigger
-    ['date'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('click', () => el.showPicker());
-    });
-
-    // Auto-update finish time +2h
-    function updateFinishTime(startTimeStr) {
-        if (!startTimeStr) return;
-        const [h, m] = startTimeStr.split(':').map(Number);
-        const finish = new Date();
-        finish.setHours(h + 2, m, 0);
-        const timeStr = `${String(finish.getHours()).padStart(2, '0')}:${String(finish.getMinutes()).padStart(2, '0')}`;
-        const finishInput = document.getElementById('finish');
-        finishInput.value = timeStr;
-        finishInput.min = timeStr;
-        finishInput.disabled = false;
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const start = document.getElementById('start');
-        if (start?.value) updateFinishTime(start.value);
-        start?.addEventListener('change', e => updateFinishTime(e.target.value));
-    });
-
-    // === Evidence Viewer Logic ===
-    let evidences = [], currentIndex = 0;
-
-    function collectEvidences() {
-        evidences = [...document.querySelectorAll('.preview-evidence')].map(btn => ({
-            path: btn.dataset.path,
-            type: btn.dataset.type,
-            id: btn.dataset.id,
-        }));
-    }
-
-    function showEvidence(index) {
-        const e = evidences[index];
-        const body = document.getElementById('evidence-viewer-body');
-        body.innerHTML = e.type === 'image'
-            ? `<img src="${e.path}" class="max-w-full max-h-[80vh] rounded shadow-lg" />`
-            : `<video src="${e.path}" controls autoplay class="max-w-full max-h-[80vh] rounded shadow-lg"></video>`;
-        document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
-        document.getElementById('next-evidence').style.display = index < evidences.length - 1 ? 'block' : 'none';
-    }
-
-    document.addEventListener('click', e => {
-        const preview = e.target.closest('.preview-evidence');
-        const del = e.target.closest('.delete-evidence');
-
-        if (preview) {
-            e.preventDefault();
-            collectEvidences();
-            currentIndex = evidences.findIndex(ev => ev.path === preview.dataset.path);
-            showEvidence(currentIndex);
-            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
-        }
-
-        if (del && confirm('Are you sure you want to delete this evidence?')) {
-            const id = del.dataset.id;
-            fetch(`/overwork/evidence/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) del.closest('.relative').remove();
-                else alert('Failed to delete: ' + data.message);
-            })
-            .catch(() => alert('An error occurred while deleting.'));
-        }
-    });
-
-    document.getElementById('prev-evidence')?.addEventListener('click', () => currentIndex > 0 && showEvidence(--currentIndex));
-    document.getElementById('next-evidence')?.addEventListener('click', () => currentIndex < evidences.length - 1 && showEvidence(++currentIndex));
-
-    // === Media Preview ===
-    let photos = [], videos = [];
-
-    function refreshPreview(type) {
-        const container = document.getElementById(type === 'photo' ? 'preview-images' : 'preview-videos');
-        container.innerHTML = '';
-        const files = type === 'photo' ? photos : videos;
-
-        files.forEach((file, i) => {
-            const reader = new FileReader();
-            reader.onload = e => {
-                const div = document.createElement('div');
-                div.className = 'relative group';
-                div.innerHTML = `
-                    <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300">
-                        ${type === 'photo'
-                            ? `<img src="${e.target.result}" class="w-full h-full object-cover">`
-                            : `<video src="${e.target.result}" muted controls autoplay loop class="w-full h-full object-cover"></video>`}
-                    </div>
-                    <button type="button"
-                        class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 remove-file"
-                        data-type="${type}" data-index="${i}">×</button>`;
-                container.appendChild(div);
-            };
-            reader.readAsDataURL(file);
+    {{-- ================= JS Section ================= --}}
+    <script>
+        // showPicker for custom trigger
+        ['date'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('click', () => el.showPicker());
         });
 
-        document.getElementById('media-preview').classList.toggle('hidden', photos.length === 0 && videos.length === 0);
-    }
-
-    document.addEventListener('change', e => {
-        if (e.target.id === 'photo-input') {
-            photos = [...photos, ...e.target.files];
-            refreshPreview('photo');
+        // Auto-update finish time +2h
+        function updateFinishTime(startTimeStr) {
+            if (!startTimeStr) return;
+            const [h, m] = startTimeStr.split(':').map(Number);
+            const finish = new Date();
+            finish.setHours(h + 2, m, 0);
+            const timeStr = `${String(finish.getHours()).padStart(2, '0')}:${String(finish.getMinutes()).padStart(2, '0')}`;
+            const finishInput = document.getElementById('finish');
+            finishInput.value = timeStr;
+            finishInput.min = timeStr;
+            finishInput.disabled = false;
         }
-        if (e.target.id === 'video-input') {
-            videos = [...videos, ...e.target.files];
-            refreshPreview('video');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const start = document.getElementById('start');
+            if (start?.value) updateFinishTime(start.value);
+            start?.addEventListener('change', e => updateFinishTime(e.target.value));
+        });
+
+        // === Evidence Viewer Logic ===
+        let evidences = [], currentIndex = 0;
+
+        function collectEvidences() {
+            evidences = [...document.querySelectorAll('.preview-evidence')].map(btn => ({
+                path: btn.dataset.path,
+                type: btn.dataset.type,
+                id: btn.dataset.id,
+            }));
         }
-    });
 
-    document.addEventListener('click', e => {
-        const rm = e.target.closest('.remove-file');
-        if (rm) {
-            const type = rm.dataset.type;
-            const idx = +rm.dataset.index;
-            (type === 'photo' ? photos : videos).splice(idx, 1);
-            refreshPreview(type);
+        function showEvidence(index) {
+            const e = evidences[index];
+            const body = document.getElementById('evidence-viewer-body');
+            body.innerHTML = e.type === 'image'
+                ? `<img src="${e.path}" class="max-w-full max-h-[80vh] rounded shadow-lg" />`
+                : `<video src="${e.path}" controls autoplay class="max-w-full max-h-[80vh] rounded shadow-lg"></video>`;
+            document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
+            document.getElementById('next-evidence').style.display = index < evidences.length - 1 ? 'block' : 'none';
         }
-    });
 
+        document.addEventListener('click', e => {
+            const preview = e.target.closest('.preview-evidence');
+            const del = e.target.closest('.delete-evidence');
 
-    document.addEventListener("DOMContentLoaded", function() {
-        const dateInput = document.getElementById("date");
-
-        dateInput.addEventListener("change", function() {
-            const selectedDate = new Date(this.value);
-            const today = new Date();
-
-            const oneMonthAgo = new Date();
-            oneMonthAgo.setMonth(today.getMonth() - 1);
-
-            if (selectedDate < oneMonthAgo) {
-                alert("The selected date must not be more than one month ago.");
-                this.value = "";
+            if (preview) {
+                e.preventDefault();
+                collectEvidences();
+                currentIndex = evidences.findIndex(ev => ev.path === preview.dataset.path);
+                showEvidence(currentIndex);
+                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
             }
-    });
-});
 
-</script>
+            if (del && confirm('Are you sure you want to delete this evidence?')) {
+                const id = del.dataset.id;
+                fetch(`/overwork/evidence/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) del.closest('.relative').remove();
+                    else alert('Failed to delete: ' + data.message);
+                })
+                .catch(() => alert('An error occurred while deleting.'));
+            }
+        });
+
+        document.getElementById('prev-evidence')?.addEventListener('click', () => currentIndex > 0 && showEvidence(--currentIndex));
+        document.getElementById('next-evidence')?.addEventListener('click', () => currentIndex < evidences.length - 1 && showEvidence(++currentIndex));
+
+        // === Media Preview ===
+        let photos = [], videos = [];
+
+        function refreshPreview(type) {
+            const container = document.getElementById(type === 'photo' ? 'preview-images' : 'preview-videos');
+            container.innerHTML = '';
+            const files = type === 'photo' ? photos : videos;
+
+            files.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const div = document.createElement('div');
+                    div.className = 'relative group';
+                    div.innerHTML = `
+                        <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300">
+                            ${type === 'photo'
+                                ? `<img src="${e.target.result}" class="w-full h-full object-cover">`
+                                : `<video src="${e.target.result}" muted controls autoplay loop class="w-full h-full object-cover"></video>`}
+                        </div>
+                        <button type="button"
+                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 remove-file"
+                            data-type="${type}" data-index="${i}">×</button>`;
+                    container.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            document.getElementById('media-preview').classList.toggle('hidden', photos.length === 0 && videos.length === 0);
+        }
+
+        document.addEventListener('change', e => {
+            if (e.target.id === 'photo-input') {
+                photos = [...photos, ...e.target.files];
+                refreshPreview('photo');
+            }
+            if (e.target.id === 'video-input') {
+                videos = [...videos, ...e.target.files];
+                refreshPreview('video');
+            }
+        });
+
+        document.addEventListener('click', e => {
+            const rm = e.target.closest('.remove-file');
+            if (rm) {
+                const type = rm.dataset.type;
+                const idx = +rm.dataset.index;
+                (type === 'photo' ? photos : videos).splice(idx, 1);
+                refreshPreview(type);
+            }
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const dateInput = document.getElementById("date");
+
+            dateInput.addEventListener("change", function() {
+                const selectedDate = new Date(this.value);
+                const today = new Date();
+
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(today.getMonth() - 1);
+
+                if (selectedDate < oneMonthAgo) {
+                    alert("The selected date must not be more than one month ago.");
+                    this.value = "";
+                }
+            });
+        });
+
+    </script>
+@endsection

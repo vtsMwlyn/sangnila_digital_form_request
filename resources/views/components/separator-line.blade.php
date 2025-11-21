@@ -1,0 +1,1 @@
+<div {!! $attributes->merge(['class' => 'w-full bg-slate-400 mt-2 mb-3 h-[2px]']) !!}></div>

@@ -45,7 +45,7 @@
 
             <tbody>
                 @forelse($data as $d)
-                <tr class="{{ $loop->odd ? 'bg-white' : 'bg-[#f1f5f9]' }} border-b border-gray-300 overflow-x-auto">
+                <tr class="{{ $loop->odd ? 'bg-white' : '' }} border-b border-gray-300 overflow-x-auto">
 
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
                     <td class="py-4 px-6">{{ $d->name }}</td>
@@ -382,7 +382,7 @@
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'leave-preview-modal' }))"
                 class="absolute right-0 text-gray-400 hover:text-gray-600 text-xl"
             >
-                &times;
+                <img src="{{ asset('img/close.svg') }}" alt="x" />
             </button>
         </div>
          <div id="leave-preview-account" class="space-y-3 overflow-y-auto flex-1">
