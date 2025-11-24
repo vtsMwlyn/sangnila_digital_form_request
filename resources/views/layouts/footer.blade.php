@@ -44,17 +44,17 @@
 
             <div class="w-1/2 flex flex-col items-start mt-6 xl:mt-0 text-lg lg:text-md">
                 <span class="font-bold mb-2">Sangnila WebApps</span>
-                <a href="https://register.sangnilaindonesia.com/admin-login/" class="flex items-center gap-2 hover:underline hover:font-medium hover:bg-rounded-lg" target="_blank">
+                <a href="https://sangnilaindonesia.com" class="flex items-center gap-2 hover:underline hover:font-medium hover:bg-rounded-lg" target="_blank">
                     <i class="bi bi-globe text-lg"></i> Main Website
                 </a>
                 <a href="https://finance.sangnilaindonesia.com/" class="flex items-center gap-2 hover:underline hover:font-medium hover:bg-rounded-lg" target="_blank">
                     <i class="bi bi-globe text-lg"></i> Finance
                 </a>
-                <a href="https://finance.sangnilaindonesia.com/" class="flex items-center gap-2 hover:underline hover:font-medium hover:bg-rounded-lg" target="_blank">
+                <a href="https://lms.sangnilaindonesia.com/" class="flex items-center gap-2 hover:underline hover:font-medium hover:bg-rounded-lg" target="_blank">
                     <i class="bi bi-globe text-lg"></i> LMS
                 </a>
-                <a href="https://finance.sangnilaindonesia.com/" class="flex items-center gap-2 hover:underline hover:font-medium hover:bg-rounded-lg" target="_blank">
-                    <i class="bi bi-globe text-lg"></i> Online Psychotest
+                <a href="https://register.sangnilaindonesia.com/admin-login" class="flex items-center gap-2 hover:underline hover:font-medium hover:bg-rounded-lg" target="_blank">
+                    <i class="bi bi-globe text-lg"></i> Academy Registration
                 </a>
             </div>
         </div>

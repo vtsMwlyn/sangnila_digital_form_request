@@ -4,9 +4,9 @@
         style="background-image: url('{{ asset('img/bg.webp') }}');"
     >
         @if (session('status'))
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ session('status') }}
-        </div>
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ session('status') }}
+            </div>
         @endif
 
         <div
@@ -103,14 +103,12 @@
                         </a>
                     @endif
 
-                    <x-primary-button
-                    class="px-6 py-2 bg-indigo-900 hover:bg-indigo-800 w-full sm:w-auto flex justify-center text-center"
-                >
-                    {{ __('Log in') }}
-                </x-primary-button>
-
+                    <x-button
+                        class="px-6 py-2 bg-indigo-900 hover:bg-indigo-800 w-full sm:w-auto flex justify-center text-center"
+                    >
+                        {{ __('Log in') }}
+                    </x-button>
                 </div>
-
             </form>
 
             <!-- Script -->
