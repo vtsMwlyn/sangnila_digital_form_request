@@ -186,7 +186,7 @@
                 </div>
 
                 {{-- Upload Inputs --}}
-                <p class="text-gray-500 mt-6">Please upload a photo or video evidence for validation<span class="text-red-500">*</span></p>
+                <p class="text-gray-500 mt-6">Please upload a photo or video evidence for validation<span class="text-red-500">*</span><br/><span class="font-bold">(You may select files, drag and drop your files, or paste them using Ctrl/Cmd + V)</span></p>
                 <div class="mt-4 grid grid-cols-1 xl:grid-cols-2 gap-5">
                     <div class="pl-2">
                         <label>Photo:</label><br />
@@ -208,8 +208,8 @@
                 {{-- Media Preview --}}
                 <div id="media-preview" class="mt-4 hidden">
                     <h4 class="font-bold text-md mb-2">Selected Files Preview:</h4>
-                    <div id="preview-images" class="flex flex-wrap gap-2 mb-2 w-[150px]"></div>
-                    <div id="preview-videos" class="flex flex-wrap gap-2 w-[150px]"></div>
+                    <div id="preview-images" class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-2 w-full"></div>
+                    <div id="preview-videos" class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full"></div>
                 </div>
 
                 <span class="text-slate-600 italic mt-10">By submitting, you confirm that all provided information is accurate and you acknowledge that <b>any false or invalid data may result in consequences</b>.</span>
@@ -261,10 +261,13 @@
 
     {{-- ================= JS Section ================= --}}
     <script>
-        function syncPhotoInput() {
+        function syncInput(type) {
             const dt = new DataTransfer();
-            photos.forEach(p => dt.items.add(p));
-            document.getElementById("photo-input").files = dt.files;
+            const arr = type === "photo" ? photos : videos;
+
+            arr.forEach(f => dt.items.add(f));
+
+            document.getElementById(type === "photo" ? "photo-input" : "video-input").files = dt.files;
         }
 
         // showPicker for custom trigger
@@ -380,12 +383,13 @@
             if (e.target.id === 'photo-input') {
                 photos = [...photos, ...e.target.files];
                 refreshPreview('photo');
-                syncPhotoInput(); // <— FIX
+                syncInput('photo');
             }
 
             if (e.target.id === 'video-input') {
                 videos = [...videos, ...e.target.files];
                 refreshPreview('video');
+                syncInput('video');
             }
         });
 
@@ -394,11 +398,18 @@
             if (rm) {
                 const type = rm.dataset.type;
                 const idx = +rm.dataset.index;
-                (type === 'photo' ? photos : videos).splice(idx, 1);
-                refreshPreview(type);
+
+                if (type === "photo") {
+                    photos.splice(idx, 1);
+                    refreshPreview('photo');
+                    syncInput('photo');
+                } else {
+                    videos.splice(idx, 1);
+                    refreshPreview('video');
+                    syncInput('video');
+                }
             }
         });
-
 
         document.addEventListener("DOMContentLoaded", function() {
             const dateInput = document.getElementById("date");
@@ -423,11 +434,19 @@
             if (!items) return;
 
             for (let item of items) {
-                if (item.type.indexOf("image") === 0) {
+                if (item.type.startsWith("image")) {
                     const file = item.getAsFile();
                     photos.push(file);
                     refreshPreview("photo");
-                    syncPhotoInput(); // <— FIX
+                    syncInput("photo");
+                    break;
+                }
+
+                if (item.type.startsWith("video")) {
+                    const file = item.getAsFile();
+                    videos.push(file);
+                    refreshPreview("video");
+                    syncInput("video");
                     break;
                 }
             }
