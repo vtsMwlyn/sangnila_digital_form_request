@@ -8,7 +8,7 @@ use App\Models\Overwork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\RequestController;
-use App\Models\LateLog;
+use App\Models\ActionLog;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -47,8 +47,8 @@ class DashboardController extends Controller
         $month = $request->input('month');
         $user = Auth::user();
 
-        $leaveHours = $user->overwork_allowance;
-        $overworkHours = $user->total_overwork;
+        $leaveHours = $user->leave_balance;
+        $overworkHours = $user->overwork_balance;
         $allHours = $leaveHours + $overworkHours;
 
         $leaveDays = floor($leaveHours / 8);
@@ -63,12 +63,12 @@ class DashboardController extends Controller
         $overworkBalanceText = "{$overworkDays} days {$remainingOverwork} hours";
         $allBalanceText = "{$allDays} days {$remainingAll} hours";
 
-        $data['logs'] = LateLog::where('user_id', $user->id)
+        $data['logs'] = ActionLog::where('user_id', $user->id)
             ->latest()
             ->take(3)
             ->get();
 
-        $data['total_overwork'] = $overworkBalanceText;
+        $data['overwork_balance'] = $overworkBalanceText;
         $data['total_leave'] = $leaveBalanceText;
         $data['total_all'] = $allBalanceText;
 

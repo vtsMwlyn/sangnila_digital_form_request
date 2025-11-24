@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('leaves', function (Blueprint $table) {
-            $table->string('deduction_source')->default('overwork_allowance');
+            $table->string('deduction_source')->default('leave_balance');
         });
     }
 

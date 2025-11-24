@@ -10,7 +10,7 @@
     @if (request()->segment(1) === 'leave')
         @php
             $leaveBalance = $allowance / 8;
-            $overworkBalance = Auth::user()->total_overwork / 8;
+            $overworkBalance = Auth::user()->overwork_balance / 8;
             $balanceL = floor($leaveBalance) . ' days ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
             $balanceO = floor($overworkBalance) . ' days ' . ($overworkBalance - floor($overworkBalance)) * 8 . ' hours';
         @endphp

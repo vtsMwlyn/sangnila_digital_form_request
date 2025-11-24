@@ -41,7 +41,7 @@
                       name="status"
                       required
                       placeholder= "Select Status Employee"
-                      class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                      class="w-full border-slate-400 focus:border-cyan-500 focus:ring-0 rounded-2xl shadow-sm focus:outline-none py-2 px-4 disabled:cursor-not-allowed transition duration-300 border-[3px]"
                     >
                       <option disabled hidden selected> Select Status Employee</option>
                       <option value="Employee">Employee</option>
@@ -68,16 +68,16 @@
 
                 <div class="flex gap-4">
                 <div class="mb-4  w-1/2">
-                    <label for="Total_Overwork" class="font-semibold text-sm block mb-1">Total Overwork</label>
+                    <label for="overwork_balance" class="font-semibold text-sm block mb-1">Total Overwork</label>
                     <div class="relative">
-                    <x-text-input id="Total_Overwork_Day" name="Total_Overwork_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Day"/>
+                    <x-text-input id="overwork_balance_Day" name="overwork_balance_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Day"/>
                     <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Days</label>
                     </div>
                 </div>
 
                 <div class="mt-6 w-1/2">
                     <div class="relative">
-                    <x-text-input id="Total_Overwork_Hour" name="Total_Overwork_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Hours" />
+                    <x-text-input id="overwork_balance_Hour" name="overwork_balance_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Hours" />
                     <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Hours</label>
                 </div>
                 </div>
@@ -92,7 +92,7 @@
                       required
                       onchange="handleSelectChange('position')"
                       placeholder= "Select Position"
-                      class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                      class="w-full border-slate-400 focus:border-cyan-500 focus:ring-0 rounded-2xl shadow-sm focus:outline-none py-2 px-4 disabled:cursor-not-allowed transition duration-300 border-[3px]"
                     >
                       <option disabled hidden selected>Select Position</option>
                       <option value="Admin">Admin</option>
@@ -107,12 +107,12 @@
                       <option value="other">Other</option>
                     </select>
 
-                    <input
+                    <x-text-input
                       type="text"
                       id="positionInput"
                       name="position_other"
                       placeholder="Enter custom position"
-                      class="hidden w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                      class="hidden w-full"
                     />
 
                     <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
@@ -128,7 +128,7 @@
                       required
                       onchange="handleSelectChange('department')"
                       placeholder= "Select Department"
-                      class="w-full rounded border border-gray-300 px-3 py-3 shadow-sm text-sm"
+                      class="w-full border-slate-400 focus:border-cyan-500 focus:ring-0 rounded-2xl shadow-sm focus:outline-none py-2 px-4 disabled:cursor-not-allowed transition duration-300 border-[3px]"
                     >
                       <option disabled hidden selected> Select Department</option>
                       <option value="Admin">Admin</option>
@@ -143,12 +143,12 @@
                       <option value="other">Other</option>
                     </select>
 
-                    <input
+                    <x-text-input
                       type="text"
                       id="departmentInput"
                       name="department_other"
                       placeholder="Enter custom department"
-                      class="hidden w-full rounded border border-gray-300 px-3 py-3 shadow-sm"
+                      class="hidden w-full"
                     />
 
                     <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600"/>

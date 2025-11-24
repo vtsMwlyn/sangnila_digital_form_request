@@ -49,8 +49,8 @@ class User extends Authenticatable
         'status',
         'position',
         'department',
-        'overwork_allowance',
-        'total_overwork',
+        'leave_balance',
+        'overwork_balance',
         'role',
     ];
 

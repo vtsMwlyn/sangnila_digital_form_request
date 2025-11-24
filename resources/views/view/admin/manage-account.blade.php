@@ -1,4 +1,4 @@
-@extends('layouts.tables')
+@extends('layouts.app')
 
 @section('content')
 
@@ -31,50 +31,45 @@
             </svg>
             <span>Add Account</span>
         </a>
-        <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-300 ">
+        <thead class="bg-transparent border-b-2 border-slate-400 ">
             <tr class="text-center">
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">No</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Name</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Position & Department</th>
-                {{-- <th class="py-3 px-6 whitespace-nowrap font-semibold">Role</th> --}}
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Leave Balance & <br> Total Overwork</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold">Status</th>
-                <th class="py-3 px-6 whitespace-nowrap font-semibold text-center">Action</th>
+                <th class="text-start">No</th>
+                <th class="text-start">Name</th>
+                <th class="text-start">Position & Department</th>
+                <th class="text-start">Leave Balance & <br> Total Overwork</th>
+                <th class="text-start">Status</th>
+                <th class="text-start">Action</th>
             </tr>
         </thead>
 
             <tbody>
                 @forelse($data as $d)
-                <tr class="{{ $loop->odd ? 'bg-white' : '' }} border-b border-gray-300 overflow-x-auto">
-
-                    <td class="py-4 px-6">{{ $loop->iteration }}</td>
-                    <td class="py-4 px-6">{{ $d->name }}</td>
-                    <td class="py-4 px-6 text-sm ">{{ $d->position. ' | ' .$d->department }}</td>
-                    {{-- <td class="py-4 px-6">{{$d->role}}</td> --}}
-                    <td class="py-4 px-6 text-center">
+                <tr class="{{ $loop->odd ? 'bg-white' : '' }}">
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $d->name }}</td>
+                    <td>{{ $d->position. ' | ' .$d->department }}</td>
+                    <td>
                         @php
-                           $allowanceDay  = intdiv($d->overwork_allowance, 8);
-                            $allowanceHour = ($d->overwork_allowance / 8 - $allowanceDay) * 8;
+                            $allowanceDay  = intdiv($d->leave_balance, 8);
+                            $allowanceHour = ($d->leave_balance / 8 - $allowanceDay) * 8;
 
-                            $totalDay  = intdiv($d->total_overwork, 8);
-                            $totalHour = ($d->total_overwork / 8 - $totalDay) * 8
+                            $totalDay  = intdiv($d->overwork_balance, 8);
+                            $totalHour = ($d->overwork_balance / 8 - $totalDay) * 8
                         @endphp
-
 
                         {{ $allowanceDay }} Day
                         {{ $allowanceHour }} Hours
-                         <br>
+                        <br>
                         {{ $totalDay }} Day
                         {{ $totalHour }} Hours
                     </td>
-                    <td class="py-4 px-6 font-semibold text-center">
+                    <td class="font-semibold">
                         <span class="{{$d->status_account === 'active' ? 'bg-blue-500' : 'bg-red-500'}} text-white rounded-full px-3 py-1 text-sm font-semibold">
                             {{ucfirst($d->status_account)}}
                         </span>
                     </td>
-
-                    <td class="px-1 text-center">
-                        <div class="flex space-x-2 justify-center items-center">
+                    <td>
+                        <div class="flex space-x-1 items-center">
                             <button
                                 class="eye-preview-btn "
                                 title="Show Details"
@@ -90,11 +85,11 @@
                                 data-role="{{ $d->role }}"
                                 data-status_employee="{{ $d->status }}"
                                 @php
-                                $balanceDay = intdiv($d->overwork_allowance, 8);
-                                $balanceHour = $d->overwork_allowance % 8;
+                                $balanceDay = intdiv($d->leave_balance, 8);
+                                $balanceHour = $d->leave_balance % 8;
 
-                                $overworkDay = intdiv($d->total_overwork, 8);
-                                $overworkHour = $d->total_overwork % 8;
+                                $overworkDay = intdiv($d->overwork_balance, 8);
+                                $overworkHour = $d->overwork_balance % 8;
 
                                 $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
                                 $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
@@ -102,7 +97,7 @@
                                 data-balance="{{ $formattedBalance }}"
                                 data-overwork="{{ $formattedOverwork }}"
                             >
-                             <img src="{{ asset('img/view.svg') }}" alt="view" class="h-[24px] w-[24px]" >
+                             <img src="{{ asset('img/view.svg') }}" alt="view" class="" >
                              </button>
 
                             <button
@@ -114,20 +109,20 @@
                                 data-phone="{{ $d->phone_number }}"
                                 data-position="{{ $d->position }}"
                                 data-department="{{ $d->department }}"
-                                data-balance="{{ $d->overwork_allowance }}"
-                                data-overwork="{{ $d->total_overwork }}"
+                                data-balance="{{ $d->leave_balance }}"
+                                data-overwork="{{ $d->overwork_balance }}"
                                 data-status_employee="{{ $d->status }}"
                                 onclick="openEditModal(this)"
                             >
-                                <img src="{{ asset('img/edit.svg') }}" alt="edit" class="h-[24px] w-[24px]">
+                                <img src="{{ asset('img/edit.svg') }}" alt="edit" class="">
                             </button>
 
                             <button
                                 class="late-balance"
                                 title="Lateness"
-                                data-id="{{ $d->id }}"
+                                data-user="{{ $d }}"
                                 onclick="openLateModal(this)">
-                                <img src="{{ asset('img/minus.svg') }}" alt="" class="h-[24px] w-[24px]">
+                                <img src="{{ asset('img/minus.svg') }}" alt="" class="">
                             </button>
 
                             @php
@@ -138,13 +133,13 @@
                             <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'suspended']) }}"
                                 onclick="return confirm('Are you sure you want to suspend this account?')"
                                 title="Suspend">
-                                <img src="{{ asset('img/ban.svg') }}" alt="Suspend" class="h-[24px] w-[24px]">
+                                <img src="{{ asset('img/ban.svg') }}" alt="Suspend" class="">
                             </a>
                             @elseif ($d->status_account === 'suspended')
                             <a href="{{ route('account.edit', ['id' => $d->id, 'status' => 'active']) }}"
                                 onclick="return confirm('Are you sure you want to unsuspend this account?')"
                                 title="Unsuspend">
-                                <img src="{{ asset('img/unban.svg') }}" alt="Unsuspend" class="h-[24px] w-[24px]">
+                                <img src="{{ asset('img/unban.svg') }}" alt="Unsuspend" class="">
                             </a>
                             @endif
                             <a href="{{route('account.delete', ['id' => $d->id])}}"
@@ -152,7 +147,7 @@
                                 title="Remove"
                                 onclick="return confirm('Are you sure to remove this account?')"
                             >
-                                <img src="{{ asset('img/delete-button.svg') }}" alt="view" class="h-[24px] w-[24px]" >
+                                <img src="{{ asset('img/delete-button.svg') }}" alt="view" class="" >
                                 </a>
                             @endif
                         </div>
@@ -224,8 +219,8 @@
                        <br>
                        <div class="mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
                             @php
-                            $allowanceDay = intdiv($d->overwork_allowance, 8);
-                            $allowanceHour = $d->overwork_allowance % 8;
+                            $allowanceDay = intdiv($d->leave_balance, 8);
+                            $allowanceHour = $d->leave_balance % 8;
                             @endphp
 
                             {{ $allowanceDay }} Day
@@ -238,8 +233,8 @@
                     <br>
                     <div class="mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
                          @php
-                         $totalDay = intdiv($d->total_overwork, 8);
-                         $totalHour = $d->total_overwork % 8;
+                         $totalDay = intdiv($d->overwork_balance, 8);
+                         $totalHour = $d->overwork_balance % 8;
                          @endphp
 
                          {{ $totalDay }} Day
@@ -286,12 +281,12 @@
                                 data-status_employee="{{ $d->status }}"
                                 @php
                                 // BALANCE
-                                $balanceDay  = floor($d->overwork_allowance / 8);
-                                $balanceHour = ($d->overwork_allowance / 8 - $balanceDay) * 8;
+                                $balanceDay  = floor($d->leave_balance / 8);
+                                $balanceHour = ($d->leave_balance / 8 - $balanceDay) * 8;
 
                                 // OVERWORK
-                                $overworkDay  = floor($d->total_overwork / 8);
-                                $overworkHour = ($d->total_overwork / 8 - $overworkDay) * 8;
+                                $overworkDay  = floor($d->overwork_balance / 8);
+                                $overworkHour = ($d->overwork_balance / 8 - $overworkDay) * 8;
 
                                 $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') .
                                                     " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
@@ -318,8 +313,8 @@
                                 data-phone="{{ $d->phone_number }}"
                                 data-position="{{ $d->position }}"
                                 data-department="{{ $d->department }}"
-                                data-balance="{{ $d->overwork_allowance }}"
-                                data-overwork="{{ $d->total_overwork }}"
+                                data-balance="{{ $d->leave_balance }}"
+                                data-overwork="{{ $d->overwork_balance }}"
                                 data-status_employee="{{ $d->status }}"
                                 onclick="openEditModal(this)"
                             >
@@ -549,9 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('email').value = email;
         document.getElementById('phone').value = phone ?? '';
         document.getElementById('Leave_Balance_Day').value = Math.floor(leaveBalance / 8);
-        document.getElementById('Total_Overwork_Day').value = Math.floor(totalOverwork / 8);
+        document.getElementById('overwork_balance_Day').value = Math.floor(totalOverwork / 8);
         document.getElementById('Leave_Balance_Hour').value = leaveBalance - (Math.floor(leaveBalance / 8) * 8);
-        document.getElementById('Total_Overwork_Hour').value = totalOverwork - (Math.floor(totalOverwork / 8) * 8);
+        document.getElementById('overwork_balance_Hour').value = totalOverwork - (Math.floor(totalOverwork / 8) * 8);
 
         document.getElementById('editForm').action = `/account/update/${id}`;
 
@@ -590,10 +585,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function openLateModal(button) {
-        const userId = button.getAttribute('data-id');
+        const user = $(button).data('user');
 
-        document.getElementById('lateUserIdLeave').value = userId;
-        document.getElementById('lateUserIdOverwork').value = userId;
+        document.getElementById('lateUserIdLeave').value = user.id;
+        document.getElementById('lateUserIdOverwork').value = user.id;
+
+        leaveDays = Math.floor(user.leave_balance / 8);
+        overworkDays = Math.floor(user.overwork_balance / 8);
+
+        leaveHours = user.leave_balance - (leaveDays * 8);
+        overworkHours = user.overwork_balance - (overworkDays * 8);
+
+        $('#late-modal-user-leave-balance').text(`Available: ${leaveDays} day(s) ${leaveHours} hour(s)`);
+        $('#late-modal-user-overwork-balance').text(`Available: ${overworkDays} day(s) ${overworkHours} hour(s)`);
 
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'late-modal' }));
     }

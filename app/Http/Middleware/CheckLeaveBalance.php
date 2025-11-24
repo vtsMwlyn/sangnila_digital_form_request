@@ -17,7 +17,7 @@ class CheckLeaveBalance
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user()->overwork_allowance == 0 && Auth::user()->total_overwork == 0) {
+        if (Auth::user()->leave_balance == 0 && Auth::user()->overwork_balance == 0) {
             return response()->view('leave-limit');
         }
 

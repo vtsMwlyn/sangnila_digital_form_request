@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'position' => 'Admin',
             'department' => 'Admin',
             'role' => 'admin',
-            'overwork_allowance' => 40,
+            'leave_balance' => 40,
         ]);
 
         User::factory()->create([
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'position' => 'Web Programmer',
             'department' => 'IT',
             'role' => 'user',
-            'overwork_allowance' => 40,
+            'leave_balance' => 40,
         ]);
     }
 }

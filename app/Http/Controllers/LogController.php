@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LateLog;
+use App\Models\ActionLog;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class LogController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'user') {
-            $data = LateLog::where('user_id', $user->id)
+            $data = ActionLog::where('user_id', $user->id)
                 ->latest()
                 ->get();
 
@@ -22,7 +22,7 @@ class LogController extends Controller
         }
 
         elseif ($user->role === 'admin') {
-            $data = LateLog::with('user')
+            $data = ActionLog::with('user')
                 ->latest()
                 ->get();
 

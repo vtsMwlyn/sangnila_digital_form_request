@@ -194,7 +194,7 @@
           })
             .then(response => response.json())
             .then(data => {
-              let allowance = {{ max(Auth::user()->overwork_allowance, Auth::user()->total_overwork) }};
+              let allowance = {{ max(Auth::user()->leave_balance, Auth::user()->overwork_balance) }};
               console.log('Jatah lembur/cuti paling banyak: ', allowance)
               const res = allowance / 8;
               console.log('Hasil:', res);

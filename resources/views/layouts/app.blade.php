@@ -130,6 +130,25 @@
           }
         });
       });
+
+      // Dropdowns
+      $(".dropdown-toggler").click(function (e) {
+        e.stopPropagation(); // Prevent click from bubbling up
+
+        let $dropdownMenu = $(this).closest(".dropdown-container").find(".dropdown-menu");
+
+        // Close all other dropdowns
+        $(".dropdown-menu").not($dropdownMenu).hide();
+
+        // Toggle the current one
+        $dropdownMenu.toggle();
+      });
+
+      $(document).click(function (e) {
+        if (!$(e.target).closest(".dropdown-menu, .dropdown-toggler").length) {
+          $(".dropdown-menu").hide();
+        }
+      });
     </script>
   </body>
 </html>

@@ -25,17 +25,17 @@ class Overwork extends Model
     //         $user = $overwork->user;
     //         if (!$user) return;
 
-    //         $currentTotal = $user->total_overwork ?? 0;
+    //         $currentTotal = $user->overwork_balance ?? 0;
 
     //         if ($overwork->request_status === 'approved') {
     //             $start = \Carbon\Carbon::parse($overwork->start_overwork);
     //             $end = \Carbon\Carbon::parse($overwork->finished_overwork);
     //             $hours = $start->diffInHours($end);
 
-    //             $user->update(['total_overwork' => $currentTotal + $hours]);
+    //             $user->update(['overwork_balance' => $currentTotal + $hours]);
     //         } else {
     //             $total = self::getTotalApprovedHours($user->id);
-    //             $user->update(['total_overwork' => $total]);
+    //             $user->update(['overwork_balance' => $total]);
     //         }
     //     });
 
@@ -46,7 +46,7 @@ class Overwork extends Model
 
     //         // Recalculate semua total yang masih approved
     //         $total = self::getTotalApprovedHours($user->id);
-    //         $user->update(['total_overwork' => $total]);
+    //         $user->update(['overwork_balance' => $total]);
     //     });
     // }
 
@@ -55,7 +55,7 @@ class Overwork extends Model
     {
         $overworks = self::where('user_id', $userId) ->where('request_status', 'approved') ->get();
 
-        $totalHours = $user->total_overwork ?? 0;
+        $totalHours = $user->overwork_balance ?? 0;
 
         $overworks = self::where('user_id', $userId)
             ->where('request_status', 'approved')

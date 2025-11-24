@@ -46,12 +46,12 @@
     data-admin_change="{{ $d->action_by ?? '—' }}"
     @php
         // BALANCE
-        $balanceDay  = floor($d->user->overwork_allowance / 8);
-        $balanceHour = ($d->user->overwork_allowance / 8 - $balanceDay) * 8;
+        $balanceDay  = floor($d->user->leave_balance / 8);
+        $balanceHour = ($d->user->leave_balance / 8 - $balanceDay) * 8;
 
         // OVERWORK
-        $overworkDay  = floor($d->user->total_overwork / 8);
-        $overworkHour = ($d->user->total_overwork / 8 - $overworkDay) * 8;
+        $overworkDay  = floor($d->user->overwork_balance / 8);
+        $overworkHour = ($d->user->overwork_balance / 8 - $overworkDay) * 8;
 
         $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
         $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
@@ -69,7 +69,7 @@
     <form
         action="{{route('request.edit', ['id' => $d->id, 'userId' => $d->user_id])}}"
         method="post"
-        class="flex justify-between gap-2"
+        class="flex justify-between gap-1"
     >
         @csrf
         <input
@@ -81,7 +81,9 @@
             type="submit"
             name="approved"
             id="approved"
-            data-leave="{{ $d->id}}"
+            data-leaveId="{{ $d->id }}"
+            data-leavePeriod="{{ $d->leave_period }}"
+            data-user="{{ $d->user }}"
             value="{{ $d->type }}"
             class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }} transition hover:scale-105"
             title="Accept"

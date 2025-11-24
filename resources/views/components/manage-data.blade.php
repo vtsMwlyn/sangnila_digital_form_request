@@ -334,20 +334,26 @@
         });
 
         function openChooseModal(button) {
-            const leaveId = $(button).data('leave');
+            console.log($(button).data());
+            const leaveId = $(button).data('leaveid');
+            const leavePeriod = $(button).data('leaveperiod');
+            const user = $(button).data('user');
 
-            $('input[name="leaveId"]').val(leaveId)
+            leaveDays = Math.floor(user.leave_balance / 8);
+            overworkDays = Math.floor(user.overwork_balance / 8);
+            requestedDays = Math.floor(parseFloat(leavePeriod) / 8);
+
+            leaveHours = user.leave_balance - (leaveDays * 8);
+            overworkHours = user.overwork_balance - (overworkDays * 8);
+            requestedHours = leavePeriod - (requestedDays * 8);
+
+            $('input[name="leaveId"]').val(leaveId);
+            $('#choose-modal-requested').text(`${requestedDays} day(s) ${requestedHours} hour(s)`);
+            $('#choose-modal-user-leave-balance').text(`Available: ${leaveDays} day(s) ${leaveHours} hour(s)`);
+            $('#choose-modal-user-overwork-balance').text(`Available: ${overworkDays} day(s) ${overworkHours} hour(s)`);
 
             window.dispatchEvent(new CustomEvent('open-modal', { detail: 'choose-modal' }));
         }
-
-        // function openLateModal(button) {
-        //     const id = button.getAttribute('data-id');
-
-        //     document.getElementById('user_id').value = id;
-
-        //     window.dispatchEvent(new CustomEvent('open-modal', { detail: 'late-modal' }));
-        // }
 
         function openEditModal(button) {
             const id = button.getAttribute('data-id');
@@ -366,7 +372,7 @@
             document.getElementById('email').value = email;
             document.getElementById('phone').value = phone;
             document.getElementById('Leave_Balance').value = leave;
-            document.getElementById('Total_Overwork').value = overwork;
+            document.getElementById('overwork_balance').value = overwork;
             document.getElementById('positionSelect').value = position;
             document.getElementById('departmentSelect').value = department;
 
@@ -377,8 +383,3 @@
         }
 </script>
 
-
-{{-- <div class="flex flex-col items-start">
-    <span class="font-extrabold text-gray-700 capitalize">Reason For Rejection:</span>
-    <span class="text-gray-900 mt-2 capitalize ${adminNote != '' ? '' : 'text-yellow-800'}">${adminNote != '' ? adminNote : '<i>(This request was rejected without a specified reason.</i> <br> <i>Please consult the admin if you wish to clarify further.)</i>'}</span>
-</div> --}}

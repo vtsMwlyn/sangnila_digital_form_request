@@ -14,26 +14,26 @@
             <table class="w-full text-left justify-center text-sm sm:text-base hidden sm:table">
                 <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-400 text-center">
                     <tr>
-                        <th class="py-3 px-4 sm:px-6 font-semibold whitespace-nowrap">No</th>
-                        <th class="py-3 px-4 sm:px-6 font-semibold whitespace-nowrap">Log Date</th>
+                        <th class="text-start">No</th>
+                        <th class="text-start">Timestamp</th>
                         @if (auth()->user()->role === 'admin')
-                        <th class="py-3 px-4 sm:px-6 font-semibold whitespace-nowrap">Name</th>
+                        <th class="text-start">Name</th>
                         @endif
-                        <th class="py-3 px-4 sm:px-6 font-semibold whitespace-nowrap">Message</th>
+                        <th class="text-start">Message</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     @forelse ($data as $log)
                         <tr class="{{ $loop->odd ? 'bg-white' : '' }} border-b border-gray-300">
-                            <td class="py-3 px-4 sm:px-6">{{ $loop->iteration }}</td>
-                            <td class="py-3 px-4 sm:px-6 whitespace-nowrap">
+                            <td>{{ $loop->iteration }}</td>
+                            <td>
                                 {{ $log->created_at->setTimezone('Asia/Jakarta')->format('d M Y, H:i') }}
                             </td>
                             @if (auth()->user()->role === 'admin')
-                            <td class="py-2 px-4">{{ $log->user->name ?? 'Unknown User' }}</td>
+                            <td>{{ $log->user->name ?? 'Unknown User' }}</td>
                             @endif
-                            <td class="py-3 px-4 sm:px-6 truncate max-w-[150px] sm:max-w-none" title="{{ $log->message }}">
+                            <td title="{{ $log->message }}">
                                 {{ ucfirst(strtolower(Str::limit($log->message, 80))) }}
                             </td>
                         </tr>

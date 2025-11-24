@@ -1,4 +1,4 @@
-@extends('layouts.main')
+@extends('layouts.app')
 
 @section('content')
 <div class="container-login w-full flex flex-col justify-center items-center">

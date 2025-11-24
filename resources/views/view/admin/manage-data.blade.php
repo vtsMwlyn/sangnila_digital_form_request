@@ -1,4 +1,4 @@
-@extends('layouts.request-data')
+@extends('layouts.app')
 
 @section('content')
 <x-modal-success />

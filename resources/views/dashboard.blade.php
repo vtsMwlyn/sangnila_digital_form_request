@@ -27,7 +27,7 @@
                             {{ __('Overwork Balance') }}
                             <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                         </small>
-                        <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['total_overwork']}}</h1>
+                        <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['overwork_balance']}}</h1>
                         <span class="text-sm text-gray-500">Total overworks approved</span>
                     </div>
 
@@ -163,9 +163,9 @@
             <i class="bi bi-file-text text-lg text-gray-500"></i>
             </small>
 
-            <a href="{{ route('LogActivity.show') }}" class="bg-[#F0F3F8] relative overflow-y-auto max-h-[60px] block">
+            <a href="{{ route('LogActivity.show') }}" class="bg-[#F0F3F8] relative overflow-y-auto block">
                 @if($data['logs']->isEmpty())
-                    <p class="text-gray-500 text-sm italic">No recent lateness activity.</p>
+                    <p class="text-gray-500 text-sm italic">No recent activities.</p>
                 @else
                     <ul class="space-y-2">
                         @foreach($data['logs'] as $log)
@@ -228,7 +228,7 @@
                                 <span class="{{ $statusClass }} capitalize">{{ ucfirst($d->request_status) }}</span>
                             </td>
                             <td class="text-center">
-                                <div class="flex justify-center w-full">
+                                <div class="flex justify-center gap-1 w-full">
                                 <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                             </div>
                             </td>
@@ -243,7 +243,7 @@
                 </tbody>
             </table>
 
-               {{-- MOBILE CARD VIEW --}}
+            {{-- MOBILE CARD VIEW --}}
             <div class="sm:hidden block mt-4 mb-3">
                 @forelse ($data['requestData'] as $d)
                     @php

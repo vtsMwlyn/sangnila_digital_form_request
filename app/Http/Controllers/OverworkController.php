@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use App\Models\ActionLog;
 use App\Models\Evidence;
 use App\Models\Overwork;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class OverworkController
 {
@@ -70,6 +72,12 @@ class OverworkController
                     'overwork_id' => $overwork->id,
                 ]);
             }
+
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'mode' => 'overwork',
+                'message' => $status !== 'draft' ? 'Submitted an overwork request' : 'Created an overwork request draft'
+            ]);
 
             DB::commit();
         } catch (Exception $e) {
@@ -162,6 +170,12 @@ class OverworkController
                 ]);
             }
 
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'mode' => 'overwork',
+                'message' => 'Updated an overwork request draft'
+            ]);
+
             if ($request->ajax()) {
                 return response()->json(['success' => true, 'message' => 'Draft updated successfully']);
             }
@@ -193,6 +207,13 @@ class OverworkController
     {
         try {
             $overwork->delete();
+
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'mode' => 'overwork',
+                'message' => 'Deleted an overwork request draft'
+            ]);
+
             return redirect()->back()->with('success', [
                 'title' => 'Overwork draft deleted successfully',
                 'message' => 'Your overwork draft has been deleted.',

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use App\Models\Leave;
-use App\Models\Overwork;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Leave;
+use App\Models\ActionLog;
+use App\Models\Overwork;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isNull;
 
@@ -18,7 +19,7 @@ class LeaveController
      */
     public function create()
     {
-        $allowance = Auth::user()->overwork_allowance;
+        $allowance = Auth::user()->leave_balance;
         $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'approved')->sum('leave_period') / 8;
         return view('view.users.leave-request', compact('allowance', 'leave_period'));
     }
@@ -57,6 +58,12 @@ class LeaveController
             'user_id' => $validate['user_id']
         ]);
 
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'mode' => 'leave',
+            'message' => $status !== 'draft' ? 'Submitted a leave request' : 'Created a leave request draft',
+        ]);
+
         if ($status == 'draft')
             return redirect()->route('leave.show')->with('success', [
                 'title' => 'Saved to draft!',
@@ -76,7 +83,7 @@ class LeaveController
      */
     public function edit(Leave $leave)
     {
-        $allowance = Auth::user()->overwork_allowance;
+        $allowance = Auth::user()->leave_balance;
         $leave_period = Leave::where('user_id', Auth::user()->id)->where('request_status', 'approved')->sum('leave_period') / 8;
         return view('view.users.leave-request', compact('leave', 'allowance', 'leave_period'));
     }
@@ -114,6 +121,12 @@ class LeaveController
             'request_status' => $status,
         ]);
 
+        ActionLog::create([
+            'user_id' => Auth::id(),
+            'mode' => 'leave',
+            'message' => 'Updated a leave request draft',
+        ]);
+
         if ($status == 'draft')
             return redirect()->route('leave.show')->with('success', [
                 'title' => 'Draft updated!',
@@ -135,6 +148,13 @@ class LeaveController
     {
         try {
             $leave->delete();
+
+            ActionLog::create([
+                'user_id' => Auth::id(),
+                'mode' => 'leave',
+                'message' => 'Deleted a leave request draft',
+            ]);
+
             return redirect()->back()->with('success', [
                 'title' => 'Leave draft deleted successfully',
                 'message' => 'Your leave draft has been deleted.',
@@ -145,81 +165,6 @@ class LeaveController
         }
     }
 
-    // public function approve(Request $request, $mode)
-    // {
-    //     $leaveId = $request->leaveId;
-    //     $leave   = Leave::find($leaveId);
-
-
-    //     if (!$leave) {
-    //         return redirect()->back()->with('fail', [
-    //             'title'   => 'Leave not found',
-    //             'message' => 'The selected leave request was not found.',
-    //         ]);
-    //     }
-
-    //     $userId  = $leave->user_id;
-    //     $user    = User::findOrFail($userId);
-    //     $newApproval = (int) $leave->leave_period;
-
-    //     if ($mode === 'leave') {
-    //         $allowance = $user->overwork_allowance;
-    //         $totalLate = floatval($request->input('totalLateValue')) * 8;
-
-    //         if ($newApproval > $allowance) {
-    //             return redirect()->back()->with('fail', [
-    //                 'title'   => 'Insufficient Balance',
-    //                 'message' => 'This user does not have enough leave balance.',
-    //             ]);
-    //         }
-
-    //         $user->overwork_allowance = $allowance - $newApproval - $totalLate ;
-
-    //         // dd([
-    //         //     'mode' => $mode,
-    //         //     'totalOverwork' => $allowance,
-    //         //     'validateBalanceApproval' => $newApproval,
-    //         //     'new_balance' =>  $user->overwork_allowance
-    //          //     'late' =>  $totalLate
-    //         //     ]);
-
-    //         $user->save();
-    //         $leave->update(['request_status' => 'approved']);
-    //     }
-
-
-    //     elseif ($mode === 'overwork') {
-    //         $newApproval = (int) $leave->leave_period;
-    //         $totalApprovedOverwork = $user->total_overwork;
-    //         $maxAllowance = $user->overwork_allowance;
-    //         $totalLate = floatval($request->input('totalLateValue')) * 8;
-
-    //         if ($totalApprovedOverwork < $newApproval) {
-    //             return redirect()->back()->with('fail', [
-    //                 'title'   => 'Exceeds Limit',
-    //                 'message' => 'This user exceeds the allowed overwork limit.',
-    //             ]);
-    //         }
-
-    //         $newTotalOverwork = max($totalApprovedOverwork - $newApproval - $totalLate, 0);
-
-
-    //         // dd([
-    //         //     'mode' => $mode,
-    //         //     'totalOverwork' => $totalApprovedOverwork,
-    //         //     'validateBalanceApproval' => $newApproval,
-    //         //     'new_balance' => $newTotalOverwork,
-    //         //     ]);
-
-    //         $leave->update(['request_status' => 'approved']);
-    //         $user->update(['total_overwork' => $newTotalOverwork]);
-    //     }
-
-    //     return redirect()->back()->with('success', [
-    //         'title'   => ucfirst($mode) . ' Approved!',
-    //         'message' => "This {$mode} request has been approved successfully.",
-    //     ]);
-    // }
     public function approve(Request $request, $mode)
     {
         $adminName = Auth::user()->name;
@@ -238,7 +183,7 @@ class LeaveController
         $newApproval = $leave->leave_period;
 
         if ($mode === 'leave') {
-            $allowance = $user->overwork_allowance;
+            $allowance = $user->leave_balance;
             $totalLate = floatval($request->input('totalLateValue')) * 8;
 
             if ($newApproval > $allowance) {
@@ -248,7 +193,7 @@ class LeaveController
                 ]);
             }
 
-            $user->overwork_allowance = $allowance - $newApproval - $totalLate;
+            $user->leave_balance = $allowance - $newApproval - $totalLate;
             $user->save();
 
             $leave->update([
@@ -256,11 +201,17 @@ class LeaveController
                 'deduction_source' => 'leave_balance',
                 'action_by'      => $adminName,
             ]);
+
+            ActionLog::create([
+                'user_id' => $userId,
+                'mode' => 'leave',
+                'message' => Auth::user()->name . ' has approved your leave request',
+            ]);
         }
 
         elseif ($mode === 'overwork') {
             $newApproval = $leave->leave_period;
-            $totalApprovedOverwork = $user->total_overwork;
+            $totalApprovedOverwork = $user->overwork_balance;
             $totalLate = floatval($request->input('totalLateValue')) * 8;
 
             if ($totalApprovedOverwork < $newApproval) {
@@ -272,12 +223,18 @@ class LeaveController
 
             $newTotalOverwork = max($totalApprovedOverwork - $newApproval - $totalLate, 0);
 
-            $user->update(['total_overwork' => $newTotalOverwork]);
+            $user->update(['overwork_balance' => $newTotalOverwork]);
 
             $leave->update([
                 'request_status'   => 'approved',
-                'deduction_source' => 'total_overwork',
+                'deduction_source' => 'overwork_balance',
                 'action_by'      => $adminName
+            ]);
+
+            ActionLog::create([
+                'user_id' => $userId,
+                'mode' => 'overwork',
+                'message' => Auth::user()->name .  ' has approved your overwork request',
             ]);
         }
 
