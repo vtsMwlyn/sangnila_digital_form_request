@@ -45,7 +45,12 @@
                         <td>{{ Carbon\Carbon::parse($d->start_overwork)->format('H:i') }}-{{ Carbon\Carbon::parse($d->finished_overwork)->format('H:i') }}</td>
                         <td>
                             @php
-                                $duration = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
+                                $start = Carbon\Carbon::parse($d->start_overwork);
+                                $end = Carbon\Carbon::parse($d->finished_overwork);
+                                if ($end->lessThan($start)) {
+                                    $end->addDay();
+                                }
+                                $duration = $start->diff($end);
                                 @endphp
                             @if ($duration->format('%i') == '0')
                                 {{ $duration->format('%h hours') }}

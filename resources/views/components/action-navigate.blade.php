@@ -23,7 +23,12 @@
             $duration = floor($periodDays) . ' days ' . $periodHours . ' hours';
         }
     } else {
-        $duration = Carbon\Carbon::parse($d->start_overwork)->diff($d->finished_overwork);
+        $start = Carbon\Carbon::parse($d->start_overwork);
+        $end = Carbon\Carbon::parse($d->finished_overwork);
+        if ($end->lessThan($start)) {
+            $end->addDay();
+        }
+        $duration = $start->diff($end);
     }
 @endphp
 

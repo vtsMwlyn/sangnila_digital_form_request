@@ -80,7 +80,8 @@ class OverworkController
             ]);
 
             DB::commit();
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             DB::rollBack();
             if ($request->ajax()) {
                 return response()->json(['success' => false, 'message' => $e->getMessage()]);
@@ -110,6 +111,7 @@ class OverworkController
     /**
      * Show the form for editing the specified resource.
      */
+    
     public function edit(Overwork $overwork)
     {
         $request = new RequestController;

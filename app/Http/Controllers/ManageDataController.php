@@ -96,8 +96,11 @@ class ManageDataController extends Controller
 
                 $allowance = User::findOrFail($userId)->overwork_balance;
                 $start = Carbon::parse(Overwork::find($leaveId)->start_overwork);
-                $end   = Carbon::parse(Overwork::find($leaveId)->finished_overwork);
-                $diff  = $start->diffInHours($end);
+                $end = Carbon::parse(Overwork::find($leaveId)->finished_overwork);
+                if ($end->lessThan($start)) {
+                    $end->addDay();
+                }
+                $diff = $start->diffInHours($end);
 
                 $validateBalanceApproval = $allowance - $diff;
 
@@ -170,8 +173,11 @@ class ManageDataController extends Controller
 
                 $allowance = User::findOrFail($userId)->overwork_balance;
                 $start = Carbon::parse(Overwork::find($leaveId)->start_overwork);
-                $end   = Carbon::parse(Overwork::find($leaveId)->finished_overwork);
-                $diff  = $start->diffInHours($end);
+                $end = Carbon::parse(Overwork::find($leaveId)->finished_overwork);
+                if ($end->lessThan($start)) {
+                    $end->addDay();
+                }
+                $diff = $start->diffInHours($end);
 
                 $validateBalanceApproval = $allowance + $diff;
 

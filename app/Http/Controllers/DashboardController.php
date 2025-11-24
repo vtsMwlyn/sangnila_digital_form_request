@@ -55,9 +55,9 @@ class DashboardController extends Controller
         $overworkDays = floor($overworkHours / 8);
         $allDays = floor($allHours / 8);
 
-        $remainingLeave = $leaveHours - $leaveDays;
-        $remainingOverwork = $overworkHours - $overworkDays;
-        $remainingAll = $allHours - $allDays;
+        $remainingLeave = $leaveHours - ($leaveDays * 8);
+        $remainingOverwork = $overworkHours - ($overworkDays * 8);
+        $remainingAll = $allHours - ($allDays * 8);
 
         $leaveBalanceText = "{$leaveDays} days {$remainingLeave} hours";
         $overworkBalanceText = "{$overworkDays} days {$remainingOverwork} hours";

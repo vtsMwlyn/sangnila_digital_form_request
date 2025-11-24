@@ -53,7 +53,7 @@
                         @php
                             $statusClass = match($d->request_status) {
                                 'approved' => 'bg-green-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
-                                'review' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
+                                'draft' => 'bg-gray-500 text-gray-100 rounded-full px-3 py-1 text-sm font-semibold',
                                 'rejected' => 'bg-red-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                                 default => 'bg-yellow-500 text-white rounded-full px-3 py-1 text-sm font-semibold',
                             };
