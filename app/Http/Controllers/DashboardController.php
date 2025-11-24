@@ -65,7 +65,7 @@ class DashboardController extends Controller
 
         $data['logs'] = ActionLog::where('user_id', $user->id)
             ->latest()
-            ->take(3)
+            ->take(10)
             ->get();
 
         $data['overwork_balance'] = $overworkBalanceText;

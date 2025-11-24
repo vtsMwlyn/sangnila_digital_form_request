@@ -51,7 +51,7 @@
                                     $end->addDay();
                                 }
                                 $duration = $start->diff($end);
-                                @endphp
+                            @endphp
                             @if ($duration->format('%i') == '0')
                                 {{ $duration->format('%h hours') }}
                             @else
@@ -167,7 +167,12 @@
 
                         <div class="mb-4">
                             @php
-                                $duration = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
+                                $start = Carbon\Carbon::parse($d->start_overwork);
+                                $end = Carbon\Carbon::parse($d->finished_overwork);
+                                if ($end->lessThan($start)) {
+                                    $end->addDay();
+                                }
+                                $duration = $start->diff($end);
                             @endphp
                             <span class="font-semibold text-gray-700">Time:</span>
                             <div>

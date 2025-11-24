@@ -16,9 +16,9 @@
         </div>
     </x-slot>
 
-    <div class="w-full flex gap-8">
+    <div class="w-full flex flex-col xl:flex-row gap-8">
         {{-- Statistics --}}
-        <div class="w-3/4 flex flex-col space-y-7">
+        <div class="w-full xl:w-3/4 flex flex-col space-y-7">
             <div class="w-full grid grid-cols-1 gap-8 md:grid-cols-2 {{auth()->user()->role === 'user' ? 'sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-2'}}">
                 {{-- Balances --}}
                 @if (auth()->user()->role === 'user')
@@ -157,13 +157,13 @@
         </div>
 
         {{-- Activity Logs --}}
-        <div class="w-1/4 bg-[#F0F3F8] rounded-2xl shadow-md p-6">
+        <div class="w-full xl:w-1/4 bg-[#F0F3F8] rounded-2xl shadow-md p-6">
             <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px] mb-3">
-            {{ __('Recent Activity') }}
+            {{ __('Recent Activities') }}
             <i class="bi bi-file-text text-lg text-gray-500"></i>
             </small>
 
-            <a href="{{ route('LogActivity.show') }}" class="bg-[#F0F3F8] relative overflow-y-auto block">
+            <a href="{{ route('LogActivity.show') }}" class="bg-[#F0F3F8] max-h-80 mt-6 relative overflow-y-auto block">
                 @if($data['logs']->isEmpty())
                     <p class="text-gray-500 text-sm italic">No recent activities.</p>
                 @else
