@@ -261,6 +261,12 @@
 
     {{-- ================= JS Section ================= --}}
     <script>
+        function syncPhotoInput() {
+            const dt = new DataTransfer();
+            photos.forEach(p => dt.items.add(p));
+            document.getElementById("photo-input").files = dt.files;
+        }
+
         // showPicker for custom trigger
         ['date'].forEach(id => {
             const el = document.getElementById(id);
@@ -374,7 +380,9 @@
             if (e.target.id === 'photo-input') {
                 photos = [...photos, ...e.target.files];
                 refreshPreview('photo');
+                syncPhotoInput(); // <— FIX
             }
+
             if (e.target.id === 'video-input') {
                 videos = [...videos, ...e.target.files];
                 refreshPreview('video');
@@ -409,5 +417,20 @@
             });
         });
 
+        // === PASTE IMAGE TO PHOTO INPUT ===
+        document.addEventListener("paste", function (e) {
+            const items = e.clipboardData.items;
+            if (!items) return;
+
+            for (let item of items) {
+                if (item.type.indexOf("image") === 0) {
+                    const file = item.getAsFile();
+                    photos.push(file);
+                    refreshPreview("photo");
+                    syncPhotoInput(); // <— FIX
+                    break;
+                }
+            }
+        });
     </script>
 @endsection
