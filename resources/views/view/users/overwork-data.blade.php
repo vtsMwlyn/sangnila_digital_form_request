@@ -43,21 +43,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ Carbon\Carbon::parse($d->overwork_date)->format('d M Y') }}</td>
                         <td>{{ Carbon\Carbon::parse($d->start_overwork)->format('H:i') }}-{{ Carbon\Carbon::parse($d->finished_overwork)->format('H:i') }}</td>
-                        <td>
-                            @php
-                                $start = Carbon\Carbon::parse($d->start_overwork);
-                                $end = Carbon\Carbon::parse($d->finished_overwork);
-                                if ($end->lessThan($start)) {
-                                    $end->addDay();
-                                }
-                                $duration = $start->diff($end);
-                            @endphp
-                            @if ($duration->format('%i') == '0')
-                                {{ $duration->format('%h hours') }}
-                            @else
-                                {{ $duration->format('%h hours %i minutes') }}
-                            @endif
-                        </td>
+                        <td>{{ rtrim(rtrim(number_format($d->duration, 2, '.', ''), '0'), '.'); }} hours</td>
                         <td title="{{ $d->task_description }}">{{ ucfirst(strtolower(Str::limit($d->task_description, 50))) }}</td>
                         @if (auth()->user()->role === 'admin')
                             <td>
@@ -166,27 +152,8 @@
                         @endif
 
                         <div class="mb-4">
-                            @php
-                                $start = Carbon\Carbon::parse($d->start_overwork);
-                                $end = Carbon\Carbon::parse($d->finished_overwork);
-                                if ($end->lessThan($start)) {
-                                    $end->addDay();
-                                }
-                                $duration = $start->diff($end);
-                            @endphp
                             <span class="font-semibold text-gray-700">Time:</span>
-                            <div>
-                                {{ __(
-                                    Carbon\Carbon::parse($d->start_overwork)->format('H:i') . '-' .
-                                    Carbon\Carbon::parse($d->finished_overwork)->format('H:i') . ' (' .
-                                    (
-                                        $duration->format('%i') == '0'
-                                            ? $duration->format('%h hours')
-                                            : $duration->format('%h hours %i minutes')
-                                    )
-                                    . ')'
-                                ) }}
-                            </div>
+                            <div>{{ rtrim(rtrim(number_format($d->duration, 2, '.', ''), '0'), '.'); }} hours</div>
                         </div>
 
                         <div class="mb-4">

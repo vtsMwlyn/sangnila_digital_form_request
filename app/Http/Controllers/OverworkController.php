@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use App\Models\ActionLog;
+use Carbon\Carbon;
 use App\Models\Evidence;
 use App\Models\Overwork;
+use App\Models\ActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -45,10 +46,24 @@ class OverworkController
         try {
             DB::beginTransaction();
 
+            // Make sure overwork duration is floored to 0.5 multiplication
+            $start = Carbon::parse($validate['start']);
+            $end   = Carbon::parse($validate['finish']);
+
+            if ($end->lessThan($start)) {
+                $end->addDay();
+            }
+
+            $minutes = $start->diffInMinutes($end);
+
+            $hours = $minutes / 60;
+            $adjustedHourDiff = floor($hours * 2) / 2;
+
             $overwork = Overwork::create([
                 'overwork_date' => $validate['date'],
                 'start_overwork' => $validate['start'],
                 'finished_overwork' => $validate['finish'],
+                'duration' => $adjustedHourDiff,
                 'task_description' => $validate['desc'],
                 'request_status' => $status,
                 'user_id' => $validate['user_id'],

@@ -104,20 +104,20 @@
             <div class="flex flex-col sm:flex-row gap-6 my-8">
                 @auth
                     @if (auth()->user()->role === 'user')
-                        <a href="{{ route('leave.form-view') }}" class="flex flex-col h-[125px] items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
-                            <div class="flex items-center gap-3">
-                                <i class="bi bi-calendar-plus text-2xl"></i>
-                                <span class="font-semibold text-lg">Apply for leave</span>
-                            </div>
-                            <small class="mt-1 text-cyan-200">Create new leave request</small>
-                        </a>
-
                         <a href="{{ route('overwork.form-view') }}" class="flex flex-col h-[125px] items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
                             <div class="flex items-center gap-3">
                                 <i class="bi bi-alarm text-2xl"></i>
                                 <span class="font-semibold text-lg">Apply for overwork</span>
                             </div>
                             <small class="mt-1 text-cyan-200">Create new overwork request</small>
+                        </a>
+
+                        <a href="{{ route('leave.form-view') }}" class="flex flex-col h-[125px] items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                            <div class="flex items-center gap-3">
+                                <i class="bi bi-calendar-plus text-2xl"></i>
+                                <span class="font-semibold text-lg">Apply for leave</span>
+                            </div>
+                            <small class="mt-1 text-cyan-200">Create new leave request</small>
                         </a>
 
                         <a href="{{ route('draft') }}" class="flex flex-col h-[125px] items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">

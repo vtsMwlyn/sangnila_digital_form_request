@@ -93,16 +93,10 @@ class ManageDataController extends Controller
 
             // === REJECT OVERWORK ===
             else if ($status === 'overwork') {
-
+                // Make sure kelipatan setengah jam
                 $allowance = User::findOrFail($userId)->overwork_balance;
-                $start = Carbon::parse(Overwork::find($leaveId)->start_overwork);
-                $end = Carbon::parse(Overwork::find($leaveId)->finished_overwork);
-                if ($end->lessThan($start)) {
-                    $end->addDay();
-                }
-                $diff = $start->diffInHours($end);
-
-                $validateBalanceApproval = $allowance - $diff;
+                $overwork_duration = Overwork::find($leaveId)->duration;
+                $validateBalanceApproval = $allowance - $overwork_duration;
 
                 // Prevent saldo minus
                 if ($validateBalanceApproval < 0) {
@@ -172,14 +166,8 @@ class ManageDataController extends Controller
             else if ($status === 'overwork') {
 
                 $allowance = User::findOrFail($userId)->overwork_balance;
-                $start = Carbon::parse(Overwork::find($leaveId)->start_overwork);
-                $end = Carbon::parse(Overwork::find($leaveId)->finished_overwork);
-                if ($end->lessThan($start)) {
-                    $end->addDay();
-                }
-                $diff = $start->diffInHours($end);
-
-                $validateBalanceApproval = $allowance + $diff;
+                $overwork_duration = Overwork::find($leaveId)->duration;
+                $validateBalanceApproval = $allowance + $overwork_duration;
 
                 User::findOrFail($userId)->update([
                     'overwork_balance' => $validateBalanceApproval
