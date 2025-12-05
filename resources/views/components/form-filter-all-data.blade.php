@@ -9,7 +9,7 @@
     <form action="{{route($route)}}" method="get">
         <div class="w-full flex flex-col md:flex-row justify-between items-start md:items-center {{$route === 'dashboard' ? 'py-2' : ''}} gap-3">
             @if ($route === 'dashboard' || $route === 'draft')
-            <x-filter-data-toggle :status="$status" :type="$type" />
+                <x-filter-data-toggle :status="$status" :type="$type" />
             @endif
 
             <div class="grid grid-cols-2 space-x-1 md:space-y-0 md:space-x-1 w-full md:w-auto">

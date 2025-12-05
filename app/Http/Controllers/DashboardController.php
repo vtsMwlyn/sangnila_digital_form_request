@@ -63,11 +63,8 @@ class DashboardController extends Controller
         $overworkBalanceText = "{$overworkDays} days {$remainingOverwork} hours";
         $allBalanceText = "{$allDays} days {$remainingAll} hours";
 
-        $data['logs'] = ActionLog::where('user_id', $user->id)
-            ->latest()
-            ->take(10)
-            ->get();
-
+        $data['logs'] = ActionLog::where('user_id', $user->id)->latest()->take(10)->get();
+        $data['taking_leaves'] = Leave::where('request_status', 'approved')->where('start_leave', Carbon::today()->format('Y-m-d'))->get();
         $data['overwork_balance'] = $overworkBalanceText;
         $data['total_leave'] = $leaveBalanceText;
         $data['total_all'] = $allBalanceText;
@@ -90,7 +87,54 @@ class DashboardController extends Controller
                     stripos($item->reason ?? $item->task_description ?? '', $search) !== false;
             });
         }
-        return view('dashboard', compact('data'));
-    }
 
+        // Full Calendar
+        $leaves = Leave::with('user')->get();
+
+        $data['calendar_events'] = $leaves->flatMap(function ($leave) {
+
+            $days = max(1, ceil($leave->leave_period / 8));
+            $startDate = Carbon::parse($leave->start_leave);
+            $endDate   = $startDate->copy()->addWeekdays($days - 1);
+
+            $segments = [];
+            $current = $startDate->copy();
+
+            while ($current->lte($endDate)) {
+
+                // Skip weekends
+                if ($current->isWeekend()) {
+                    $current->addDay();
+                    continue;
+                }
+
+                // End of current weekday streak
+                $segmentStart = $current->copy();
+
+                while ($current->isWeekday() && $current->lte($endDate)) {
+                    $current->addDay();
+                }
+
+                $segmentEnd = $current->copy(); // exclusive for FullCalendar
+
+                $segments[] = [
+                    'id'       => $leave->id,
+                    'title'    => implode(' ', array_slice(explode(' ', trim($leave->user->name)), 0, 2)),
+                    'subtitle' => $leave->reason,
+                    'start'    => $segmentStart->toDateString(),
+                    'end'      => $segmentEnd->toDateString(),
+                    'color'    => 'oklch(71.5% 0.143 215.221)',
+                ];
+            }
+
+            return $segments;
+        });
+
+        if(Auth::user()->role == 'admin'){
+            return view('admin-dashboard', compact('data'));
+        }
+        else {
+            return view('employee-dashboard', compact('data'));
+        }
+    }
 }
