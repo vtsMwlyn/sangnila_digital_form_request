@@ -16,12 +16,12 @@
         </div>
     </x-slot>
 
-    <div class="w-full flex flex-col gap-3">
+    <div class="w-full flex flex-col gap-3 p-3 xl:p-0">
         {{-- Statistics --}}
         <div class="w-full flex flex-col">
             {{-- Upper row cards --}}
-            <div class="w-full grid grid-cols-4 grid-rows-2 gap-8">
-                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+            <div class="w-full flex flex-col xl:grid xl:grid-cols-4 xl:grid-rows-2 gap-4 xl:gap-8">
+                <div class="w-full bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                         {{ __('Approved Request') }}
                         <i class="bi bi-check-circle-fill text-green-600 text-lg"></i>
@@ -30,7 +30,7 @@
                     <span class="text-sm text-gray-500">{{ __('Request has been approved') }}</span>
                 </div>
 
-                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                <div class="w-full bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                         {{ __('Rejected Request') }}
                         <i class="bi bi-x-circle-fill text-red-600 text-lg"></i>
@@ -39,7 +39,7 @@
                     <span class="text-sm text-gray-500">{{ __('Request rejected') }}</span>
                 </div>
 
-                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                <div class="w-full bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                         {{ __('Pending Request') }}
                         <i class="bi bi-hourglass-split text-gray-500 text-lg"></i>
@@ -49,7 +49,7 @@
                 </div>
 
                 {{-- Taking Leave --}}
-                <div class="bg-[#F0F3F8] row-span-2 rounded-2xl shadow-md p-6">
+                <div class="w-full bg-[#F0F3F8] row-span-2 rounded-2xl shadow-md p-6">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px] mb-3">
                         {{ __('Employees Taking Leave Today') }}
                         <i class="bi bi-file-text text-lg text-gray-500"></i>
@@ -73,7 +73,7 @@
                 </div>
 
                 {{-- Bottom row cards --}}
-                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                <div class="w-full bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                         {{ __('Total Overwork') }}
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
@@ -82,7 +82,7 @@
                     <span class="text-sm text-gray-500">{{ __('Total overwork approved') }}</span>
                 </div>
 
-                <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
+                <div class="w-full bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
                         {{ __('Total Leave ') }}
                         <i class="bi bi-calendar-check text-gray-500 text-lg"></i>
@@ -100,11 +100,11 @@
                 </a>
 
                 {{-- Recent Request --}}
-                <div id="data" class="bg-[#F0F3F8] rounded-xl shadow-6xl p-6 overflow-x-auto col-span-3 h-[500px]">
+                <div id="data" class="w-full bg-[#F0F3F8] rounded-xl shadow-6xl p-6 overflow-x-auto col-span-3 xl:h-[500px]">
                     <x-form-filter-all-data title="recent request" route="dashboard" :status="$requestStatus" :type="$requestType" />
                     
                     {{-- Table --}}
-                    <div class="overflow-auto max-h-80">
+                    <div class="overflow-auto max-h-100 xl:max-h-80">
                         <table class="min-w-full text-left border-collapse text-sm md:text-base hidden sm:table mb-3">
                             <thead class="bg-transparent text-[#1e293b] border-b-2 border-gray-400">
                                 <tr>

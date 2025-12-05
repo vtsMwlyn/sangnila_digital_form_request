@@ -13,3 +13,7 @@ button, a {
 th, td {
     @apply py-3 px-4;
 }
+
+.fc-toolbar-title {
+    @apply !text-base xl:!text-xl text-blue-900 font-bold;
+  }
