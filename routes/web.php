@@ -1,17 +1,18 @@
 <?php
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Leave;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\OverworkController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeductionController;
-use App\Http\Controllers\LogController;
 use Symfony\Component\Routing\RequestContext;
 use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
@@ -112,8 +113,49 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     Route::prefix('LogActivity')->name('LogActivity.')->group(function () {
      Route::get('/LogActivity', [LogController::class, 'show'])->name('show');
     });
+});
 
+Route::get('/api/employee/leave/calendar', function(){
+    $leaves = Leave::with('user')->where('start_leave', 'like', Carbon::today()->format('Y-m') . '%')->get();
 
+    $data['calendar_events'] = $leaves->flatMap(function ($leave) {
+
+        $days = max(1, ceil($leave->leave_period / 8));
+        $startDate = Carbon::parse($leave->start_leave);
+        $endDate   = $startDate->copy()->addWeekdays($days - 1);
+
+        $segments = [];
+        $current = $startDate->copy();
+
+        while ($current->lte($endDate)) {
+
+            // Skip weekends
+            if ($current->isWeekend()) {
+                $current->addDay();
+                continue;
+            }
+
+            // End of current weekday streak
+            $segmentStart = $current->copy();
+
+            while ($current->isWeekday() && $current->lte($endDate)) {
+                $current->addDay();
+            }
+
+            $segmentEnd = $current->copy(); // exclusive for FullCalendar
+
+            $segments[] = [
+                'id'       => $leave->id,
+                'title'    => implode(' ', array_slice(explode(' ', trim($leave->user->name)), 0, 2)),
+                'subtitle' => $leave->reason,
+                'start'    => $segmentStart->toDateString(),
+                'end'      => $segmentEnd->toDateString(),
+                'color'    => 'oklch(71.5% 0.143 215.221)',
+            ];
+        }
+
+        return response()->json(['data' => $segments]);
+    });
 });
 
 require __DIR__ . '/auth.php';
