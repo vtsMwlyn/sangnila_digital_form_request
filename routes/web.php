@@ -116,7 +116,9 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
 });
 
 Route::get('/api/employee/leave/calendar', function(){
-    $leaves = Leave::with('user')->where('is_teacher', 1)->where('request_status', 'approved')->where('start_leave', 'like', Carbon::today()->format('Y-m') . '%')->get();
+    $leaves = Leave::with('user', function($q) {
+        $q->where('is_teacher', 1);
+    })->where('request_status', 'approved')->where('start_leave', 'like', Carbon::today()->format('Y-m') . '%')->get();
 
     $data['calendar_events'] = $leaves->flatMap(function ($leave) {
 
