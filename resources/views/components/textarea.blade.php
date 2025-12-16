@@ -9,7 +9,7 @@
 	}
 @endphp
 
-<textarea {{ $disabled ? 'disabled' : '' }} {!! $attributes->merge(['class' => $classList, 'style' => 'border-width: 3px;']) !!}></textarea>
+<textarea {{ $disabled ? 'disabled' : '' }} {!! $attributes->merge(['class' => $classList, 'style' => 'border-width: 3px;']) !!}>{{ $slot }}</textarea>
 
 @error($attributes->get('name'))
     <p class="text-red font-bold mt-2 error-messages"><i class="bi bi-exclamation-circle"></i> {{ $message }}</p>

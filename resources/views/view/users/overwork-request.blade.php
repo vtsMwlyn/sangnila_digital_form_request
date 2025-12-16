@@ -15,7 +15,7 @@
         <x-back-button onclick="history.back();" />
 
         <h2 class="text-[#042E66] text-3xl font-black mt-2 mb-1">
-            New Overwork Request
+            {{ isset($overwork) ? 'Edit Overwork Draft' : 'New Overwork Request' }}
         </h2>
         <span class="text-slate-500 italic">Pengajuan Lembur</span>
         <x-separator-line/>
@@ -29,88 +29,14 @@
 
                 <x-submisson />
 
-                {{-- Evidence Preview --}}
-                @if (isset($evidence) && count($evidence) > 0)
-                    <div class="p-2 py-5">
-                        {{-- Images --}}
-                        <div class="flex flex-wrap mb-4">
-                            @foreach ($evidence as $e)
-                                @php
-                                    $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
-                                @endphp
-
-                                @if (in_array($ext, ['jpg', 'jpeg', 'png', 'webp']))
-                                    <div class="relative group mr-2 mb-2 rounded overflow-hidden" style="width: 100px; height: 100px">
-                                        <img src="{{ asset('storage/' . $e->path) }}" alt="" class="w-full h-full object-cover rounded" />
-
-                                        @if(isset($overwork))
-                                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
-                                                    type="button"
-                                                    class="text-white hover:text-gray-300 preview-evidence"
-                                                    data-path="{{ asset('storage/' . $e->path) }}"
-                                                    data-type="image"
-                                                    data-id="{{ $e->id }}"
-                                                    title="Preview"
-                                                >
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    class="text-white hover:text-gray-300 delete-evidence"
-                                                    data-id="{{ $e->id }}"
-                                                    title="Delete"
-                                                >
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-
-                        {{-- Videos --}}
-                        <div class="flex flex-wrap">
-                            @foreach ($evidence as $e)
-                                @php
-                                    $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
-                                @endphp
-
-                                @if (in_array($ext, ['mp4', 'mov', 'avi']))
-                                    <div class="relative group mr-2 mb-2 rounded overflow-hidden" style="width: 100px; height: 100px">
-                                        <video autoplay loop muted playsinline class="w-full h-full object-cover rounded">
-                                            <source src="{{ asset('storage/' . $e->path) }}" type="video/mp4" />
-                                        </video>
-
-                                        @if(isset($overwork))
-                                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button
-                                                    type="button"
-                                                    class="text-white hover:text-gray-300 preview-evidence"
-                                                    data-path="{{ asset('storage/' . $e->path) }}"
-                                                    data-type="video"
-                                                    data-id="{{ $e->id }}"
-                                                    title="Preview"
-                                                >
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    class="text-white hover:text-gray-300 delete-evidence"
-                                                    data-id="{{ $e->id }}"
-                                                    title="Delete"
-                                                >
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
+                {{-- Media Preview --}}
+                <div id="media-preview" class="mt-12 hidden">
+                    <h3 class="text-blue-800 font-extrabold text-lg mb-4">
+                        Selected Files Preview
+                    </h3>
+                    <div id="preview-images" class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-2 w-full"></div>
+                    <div id="preview-videos" class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full"></div>
+                </div>
             </div>
 
             {{-- ================= Overwork Section ================= --}}
@@ -203,13 +129,6 @@
                             <div class="text-red-500 text-sm">{{ $message }}</div>
                         @enderror
                     </div>
-                </div>
-
-                {{-- Media Preview --}}
-                <div id="media-preview" class="mt-4 hidden">
-                    <h4 class="font-bold text-md mb-2">Selected Files Preview:</h4>
-                    <div id="preview-images" class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-2 w-full"></div>
-                    <div id="preview-videos" class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full"></div>
                 </div>
 
                 <span class="text-slate-600 italic mt-10">By submitting, you confirm that all provided information is accurate and you acknowledge that <b>any false or invalid data may result in consequences</b>.</span>
