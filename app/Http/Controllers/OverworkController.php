@@ -10,6 +10,7 @@ use App\Models\ActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class OverworkController
 {
@@ -147,73 +148,108 @@ class OverworkController
      */
     public function update(Request $request, Overwork $overwork)
     {
-        $validate = $request->validate([
-            'date' => ['required', 'date'],
-            'start' => ['required'],
+        $validated = $request->validate([
+            'date'   => ['required', 'date'],
+            'start'  => ['required'],
             'finish' => ['required'],
-            'desc' => ['required'],
-            'photo' => 'array|mimes:jpg,jpeg,png,webp|max:5120',
-            'video' => 'array|mimes:mp4,mov,avi|max:10240'
+            'desc'   => ['required'],
+
+            'photo.*' => ['mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'video.*' => ['mimes:mp4,mov,avi', 'max:10240'],
+
+            'deleted_evidence_ids'   => ['array'],
+            'deleted_evidence_ids.*' => ['integer'],
         ]);
 
         $status = $request->action === 'submit' ? 'review' : 'draft';
 
         try {
+            // ===== UPDATE MAIN DATA =====
             $overwork->update([
-                'overwork_date' => $validate['date'],
-                'start_overwork' => $validate['start'],
-                'finished_overwork' => $validate['finish'],
-                'task_description' => $validate['desc'],
-                'request_status' => $status,
+                'overwork_date'     => $validated['date'],
+                'start_overwork'    => $validated['start'],
+                'finished_overwork' => $validated['finish'],
+                'task_description'  => $validated['desc'],
+                'request_status'    => $status,
             ]);
 
-            $path = [];
+            // ===== DELETE REMOVED EVIDENCE =====
+            if (!empty($validated['deleted_evidence_ids'])) {
+                $evidences = Evidence::whereIn('id', $validated['deleted_evidence_ids'])
+                    ->where('overwork_id', $overwork->id)
+                    ->get();
 
+                foreach ($evidences as $evidence) {
+                    Storage::disk('public')->delete($evidence->path);
+                    $evidence->delete();
+                }
+            }
+
+            // ===== SAVE NEW PHOTOS =====
             if ($request->hasFile('photo')) {
                 foreach ($request->file('photo') as $photo) {
-                    $path[] = $photo->store('evidence/photo', 'public');
+                    Evidence::create([
+                        'overwork_id' => $overwork->id,
+                        'path' => $photo->store('evidence/photo', 'public'),
+                    ]);
                 }
             }
+
+            // ===== SAVE NEW VIDEOS =====
             if ($request->hasFile('video')) {
                 foreach ($request->file('video') as $video) {
-                    $path[] = $video->store('evidence/video', 'public');
+                    Evidence::create([
+                        'overwork_id' => $overwork->id,
+                        'path' => $video->store('evidence/video', 'public'),
+                    ]);
                 }
             }
 
-            foreach ($path as $p) {
-                Evidence::create([
-                    'path' => $p,
-                    'overwork_id' => $overwork->id,
-                ]);
-            }
-
+            // ===== LOG ACTION =====
             ActionLog::create([
                 'user_id' => Auth::id(),
-                'mode' => 'overwork',
-                'message' => 'Updated an overwork request draft'
+                'mode'    => 'overwork',
+                'message' => $status === 'draft'
+                    ? 'Updated an overwork request draft'
+                    : 'Submitted an overwork request',
             ]);
 
+            // ===== RESPONSE =====
             if ($request->ajax()) {
-                return response()->json(['success' => true, 'message' => 'Draft updated successfully']);
+                return response()->json([
+                    'success' => true,
+                    'message' => $status === 'draft'
+                        ? 'Draft updated successfully'
+                        : 'Overwork submitted successfully',
+                ]);
             }
 
-            if ($status == 'draft')
-                return redirect()->route('overwork.show')->with('success', [
-                    'title' => 'Draft Updated!',
-                    'message' => 'Your overwork request has been draft updated.',
-                    'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+            return redirect()
+                ->route('overwork.show')
+                ->with('success', [
+                    'title'   => $status === 'draft'
+                        ? 'Draft Updated!'
+                        : 'Overwork Submitted!',
+                    'message' => $status === 'draft'
+                        ? 'Your overwork request has been saved as draft.'
+                        : 'Please wait for admin approval.',
+                    'time'    => now()
+                        ->setTimezone('Asia/Jakarta')
+                        ->format('Y-m-d | H:i'),
                 ]);
 
-            if ($status === 'review') return redirect()->route('overwork.show')->with('success', [
-                'title' => 'Overwork Submitted!',
-                'message' => 'Please wait for admin approval.',
-                'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
-            ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+
             if ($request->ajax()) {
-                return response()->json(['success' => false, 'message' => $e->getMessage()]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Something went wrong.',
+                ], 500);
             }
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+
+            return redirect()
+                ->back()
+                ->withErrors(['error' => $e->getMessage()]);
         }
     }
 

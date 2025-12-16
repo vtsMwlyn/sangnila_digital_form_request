@@ -1,6 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $existingEvidences = [];
+
+        if (isset($overwork)) {
+            foreach ($overwork->evidence as $e) {
+                $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
+
+                $existingEvidences[] = [
+                    'id'   => $e->id,
+                    'type' => in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'])
+                                ? 'photo'
+                                : 'video',
+                    'path' => asset('storage/' . $e->path),
+                ];
+            }
+        }
+    @endphp
+
     <form
         action="{{ isset($overwork) ? route('overwork.update', $overwork) : route('overwork.insert') }}"
         method="post"
@@ -34,8 +52,12 @@
                     <h3 class="text-blue-800 font-extrabold text-lg mb-4">
                         Selected Files Preview
                     </h3>
-                    <div id="preview-images" class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-2 w-full"></div>
-                    <div id="preview-videos" class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full"></div>
+                    <div id="preview-images-existing" class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-2 w-full"></div>
+                    <div id="preview-images-new" class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-2 w-full"></div>
+
+                    <div id="preview-videos-existing" class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full"></div>
+                    <div id="preview-videos-new" class="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full"></div>
+
                 </div>
             </div>
 
@@ -55,6 +77,7 @@
                         id="date"
                         value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
                         class="w-full"
+                        onclick="this.showPicker();"
                     />
 
                     <x-unvalid-input field="date" />
@@ -179,196 +202,209 @@
     </x-modal>
 
     {{-- ================= JS Section ================= --}}
+    @if(isset($overwork))
+        <script>
+            window.existingEvidences = @json($existingEvidences);
+        </script>
+    @else
+        <script>
+            window.existingEvidences = [];
+        </script>
+    @endif
+
     <script>
+        /* ================= STATE ================= */
+        let photos = [];
+        let videos = [];
+
+        /* ================= SYNC FILE INPUT ================= */
         function syncInput(type) {
             const dt = new DataTransfer();
-            const arr = type === "photo" ? photos : videos;
-
-            arr.forEach(f => dt.items.add(f));
-
-            document.getElementById(type === "photo" ? "photo-input" : "video-input").files = dt.files;
+            const files = type === "photo" ? photos : videos;
+            files.forEach(f => dt.items.add(f));
+            document.getElementById(type + "-input").files = dt.files;
         }
 
-        // showPicker for custom trigger
-        ['date'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener('click', () => el.showPicker());
-        });
-
-        // Auto-update finish time +2h
-        function updateFinishTime(startTimeStr) {
-            if (!startTimeStr) return;
-            const [h, m] = startTimeStr.split(':').map(Number);
-            const finish = new Date();
-            finish.setHours(h + 2, m, 0);
-            const timeStr = `${String(finish.getHours()).padStart(2, '0')}:${String(finish.getMinutes()).padStart(2, '0')}`;
-            const finishInput = document.getElementById('finish');
-            finishInput.value = timeStr;
-            finishInput.min = timeStr;
-            finishInput.disabled = false;
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const start = document.getElementById('start');
-            if (start?.value) updateFinishTime(start.value);
-            start?.addEventListener('change', e => updateFinishTime(e.target.value));
-        });
-
-        // === Evidence Viewer Logic ===
-        let evidences = [], currentIndex = 0;
-
-        function collectEvidences() {
-            evidences = [...document.querySelectorAll('.preview-evidence')].map(btn => ({
-                path: btn.dataset.path,
-                type: btn.dataset.type,
-                id: btn.dataset.id,
-            }));
-        }
-
-        function showEvidence(index) {
-            const e = evidences[index];
-            const body = document.getElementById('evidence-viewer-body');
-            body.innerHTML = e.type === 'image'
-                ? `<img src="${e.path}" class="max-w-full max-h-[80vh] rounded shadow-lg" />`
-                : `<video src="${e.path}" controls autoplay class="max-w-full max-h-[80vh] rounded shadow-lg"></video>`;
-            document.getElementById('prev-evidence').style.display = index > 0 ? 'block' : 'none';
-            document.getElementById('next-evidence').style.display = index < evidences.length - 1 ? 'block' : 'none';
-        }
-
-        document.addEventListener('click', e => {
-            const preview = e.target.closest('.preview-evidence');
-            const del = e.target.closest('.delete-evidence');
-
-            if (preview) {
-                e.preventDefault();
-                collectEvidences();
-                currentIndex = evidences.findIndex(ev => ev.path === preview.dataset.path);
-                showEvidence(currentIndex);
-                window.dispatchEvent(new CustomEvent('open-modal', { detail: 'evidence-viewer-modal' }));
-            }
-
-            if (del && confirm('Are you sure you want to delete this evidence?')) {
-                const id = del.dataset.id;
-                fetch(`/overwork/evidence/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) del.closest('.relative').remove();
-                    else alert('Failed to delete: ' + data.message);
-                })
-                .catch(() => alert('An error occurred while deleting.'));
-            }
-        });
-
-        document.getElementById('prev-evidence')?.addEventListener('click', () => currentIndex > 0 && showEvidence(--currentIndex));
-        document.getElementById('next-evidence')?.addEventListener('click', () => currentIndex < evidences.length - 1 && showEvidence(++currentIndex));
-
-        // === Media Preview ===
-        let photos = [], videos = [];
-
+        /* ================= PREVIEW ================= */
         function refreshPreview(type) {
-            const container = document.getElementById(type === 'photo' ? 'preview-images' : 'preview-videos');
-            container.innerHTML = '';
-            const files = type === 'photo' ? photos : videos;
+            const container = document.getElementById(
+                type === "photo" ? "preview-images-new" : "preview-videos-new"
+            );
+
+            const files = type === "photo" ? photos : videos;
+            container.innerHTML = "";
 
             files.forEach((file, i) => {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    const div = document.createElement('div');
-                    div.className = 'relative group';
+                    const div = document.createElement("div");
+                    div.className = "relative group";
                     div.innerHTML = `
-                        <div class="h-[150px] rounded overflow-hidden border-2 border-gray-300">
-                            ${type === 'photo'
-                                ? `<img src="${e.target.result}" class="w-full h-full object-cover">`
-                                : `<video src="${e.target.result}" muted controls autoplay loop class="w-full h-full object-cover"></video>`}
+                        <div class="h-[150px] rounded overflow-hidden border">
+                            ${
+                                type === "photo"
+                                    ? `<img src="${e.target.result}" class="w-full h-full object-cover">`
+                                    : `<video src="${e.target.result}" muted controls class="w-full h-full object-cover"></video>`
+                            }
                         </div>
                         <button type="button"
-                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600 remove-file"
-                            data-type="${type}" data-index="${i}">×</button>`;
+                            class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs remove-file"
+                            data-type="${type}" data-index="${i}">×</button>
+                    `;
                     container.appendChild(div);
                 };
                 reader.readAsDataURL(file);
             });
 
-            document.getElementById('media-preview').classList.toggle('hidden', photos.length === 0 && videos.length === 0);
+            togglePreview();
         }
 
-        document.addEventListener('change', e => {
-            if (e.target.id === 'photo-input') {
-                photos = [...photos, ...e.target.files];
-                refreshPreview('photo');
-                syncInput('photo');
-            }
 
-            if (e.target.id === 'video-input') {
-                videos = [...videos, ...e.target.files];
-                refreshPreview('video');
-                syncInput('video');
-            }
-        });
+        /* ================= EXISTING EVIDENCE ================= */
+        function renderExistingEvidence() {
+            if (!window.existingEvidences.length) return;
 
-        document.addEventListener('click', e => {
-            const rm = e.target.closest('.remove-file');
-            if (rm) {
-                const type = rm.dataset.type;
-                const idx = +rm.dataset.index;
+            window.existingEvidences.forEach(ev => {
+                const container = document.getElementById(
+                    ev.type === "photo"
+                        ? "preview-images-existing"
+                        : "preview-videos-existing"
+                );
 
-                if (type === "photo") {
-                    photos.splice(idx, 1);
-                    refreshPreview('photo');
-                    syncInput('photo');
-                } else {
-                    videos.splice(idx, 1);
-                    refreshPreview('video');
-                    syncInput('video');
-                }
-            }
-        });
+                const div = document.createElement("div");
+                div.className = "relative group preview-evidence";
+                div.dataset.id = ev.id;
+                div.dataset.path = ev.path;
+                div.dataset.type = ev.type === "photo" ? "image" : "video";
 
-        document.addEventListener("DOMContentLoaded", function() {
+                div.innerHTML = `
+                    <div class="h-[150px] rounded overflow-hidden border">
+                        ${
+                            ev.type === "photo"
+                                ? `<img src="${ev.path}" class="w-full h-full object-cover">`
+                                : `<video src="${ev.path}" muted controls class="w-full h-full object-cover"></video>`
+                        }
+                    </div>
+                    <button type="button"
+                        class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 text-xs delete-evidence"
+                        data-id="${ev.id}">×</button>
+                `;
+
+                container.appendChild(div);
+            });
+
+            togglePreview();
+        }
+
+
+        /* ================= HELPERS ================= */
+        function togglePreview() {
+            const hasExisting =
+                document.querySelectorAll(".preview-evidence").length > 0;
+
+            const hasNew = photos.length > 0 || videos.length > 0;
+
+            document
+                .getElementById("media-preview")
+                .classList.toggle("hidden", !hasExisting && !hasNew);
+        }
+
+
+        /* ================= EVENTS ================= */
+        document.addEventListener("DOMContentLoaded", () => {
+            renderExistingEvidence();
+
+            const start = document.getElementById("start");
+            const finish = document.getElementById("finish");
             const dateInput = document.getElementById("date");
 
-            dateInput.addEventListener("change", function() {
-                const selectedDate = new Date(this.value);
-                const today = new Date();
+            function updateFinishTime(startTime) {
+                if (!startTime) return;
+                const [h, m] = startTime.split(":").map(Number);
+                const d = new Date();
+                d.setHours(h + 2, m, 0);
+                const val = `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`;
+                finish.value = val;
+                finish.min = val;
+            }
 
-                const oneMonthAgo = new Date();
-                oneMonthAgo.setMonth(today.getMonth() - 1);
+            if (start.value) updateFinishTime(start.value);
+            start.addEventListener("change", e => updateFinishTime(e.target.value));
 
-                if (selectedDate < oneMonthAgo) {
-                    alert("The selected date must not be more than one month ago.");
-                    this.value = "";
+            dateInput.addEventListener("change", () => {
+                const selected = new Date(dateInput.value);
+                const limit = new Date();
+                limit.setMonth(limit.getMonth() - 1);
+                if (selected < limit) {
+                    alert("Date cannot be more than 1 month ago.");
+                    dateInput.value = "";
                 }
             });
         });
 
-        // === PASTE IMAGE TO PHOTO INPUT ===
-        document.addEventListener("paste", function (e) {
-            const items = e.clipboardData.items;
-            if (!items) return;
+        /* ================= FILE INPUT ================= */
+        document.addEventListener("change", e => {
+            if (e.target.id === "photo-input") {
+                photos.push(...e.target.files);
+                refreshPreview("photo");
+                syncInput("photo");
+            }
 
-            for (let item of items) {
+            if (e.target.id === "video-input") {
+                videos.push(...e.target.files);
+                refreshPreview("video");
+                syncInput("video");
+            }
+        });
+
+        /* ================= REMOVE ================= */
+        document.addEventListener("click", e => {
+            const remove = e.target.closest(".remove-file");
+            const del = e.target.closest(".delete-evidence");
+
+            if (remove) {
+                const { type, index } = remove.dataset;
+                (type === "photo" ? photos : videos).splice(index, 1);
+                refreshPreview(type);
+                syncInput(type);
+            }
+
+            if (del && confirm("Delete this evidence?")) {
+                fetch(`/overwork/evidence/${del.dataset.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    },
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        del.closest(".preview-evidence").remove();
+                        togglePreview();
+                    } else {
+                        alert(data.message || "Failed to delete");
+                    }
+                });
+            }
+        });
+
+        /* ================= PASTE ================= */
+        document.addEventListener("paste", e => {
+            for (const item of e.clipboardData.items) {
                 if (item.type.startsWith("image")) {
-                    const file = item.getAsFile();
-                    photos.push(file);
+                    photos.push(item.getAsFile());
                     refreshPreview("photo");
                     syncInput("photo");
                     break;
                 }
-
                 if (item.type.startsWith("video")) {
-                    const file = item.getAsFile();
-                    videos.push(file);
+                    videos.push(item.getAsFile());
                     refreshPreview("video");
                     syncInput("video");
                     break;
                 }
             }
         });
-    </script>
+        </script>
+
 @endsection
