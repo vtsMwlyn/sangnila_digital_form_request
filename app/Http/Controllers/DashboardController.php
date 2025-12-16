@@ -89,7 +89,7 @@ class DashboardController extends Controller
         }
 
         // Full Calendar
-        $leaves = Leave::with('user')->get();
+        $leaves = Leave::with('user')->where('request_status', 'approved')->get();
 
         $data['calendar_events'] = $leaves->flatMap(function ($leave) {
 
