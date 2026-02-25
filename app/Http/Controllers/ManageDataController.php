@@ -45,45 +45,53 @@ class ManageDataController extends Controller
         return view('view.admin.manage-data', compact('data'));
     }
 
+    // ADMIN LEAVE/OVERWORK APPROVAL/REJECTION
     public function edit(Request $request, string $leaveId, string $userId)
     {
         $adminName = Auth::user()->name;
+        $requestId = $leaveId;
 
         // Review/Approved -> Rejected
         if ($request->has('rejected')) {
-            // Overwork/leave flag
             $status = $request->input('rejected');
-
-            // Reason
             $adminNote = $request->input('admin_note');
 
-            // Update balance
+            // === REJECT LEAVE ===
             if ($status === 'leave') {
+                $leave = Leave::findOrFail($requestId);
                 $user = User::findOrFail($userId);
-                $leave = Leave::findOrFail($leaveId);
+                
+                // Revert user's balance if the leave has been approved before, then cancelled
+                if($leave->request_status != 'review'){
+                    $requested_leave_duration = $leave->leave_period;
+                    $source = $leave->deduction_source;
 
-                $newApproval = $leave->leave_period;
-                $source = $leave->deduction_source;
-                $allowance = User::findOrFail($userId)->overwork_balance;
-                $leave_balance = User::findOrFail($userId)->leave_balance;
+                    if($source == 'overwork_balance'){
+                        $current_overwork_balance = $user->overwork_balance;
+                        $reverted_overwork_balance =  $current_overwork_balance + $requested_leave_duration;
 
-                if ($source === 'overwork_balance') {
-                    $new_overwork_balance =  $allowance + $newApproval;
+                        $user->update([
+                            'overwork_balance' => $reverted_overwork_balance,
+                        ]);
+                    }
+                    else {
+                        $current_leave_balance = $user->leave_balance;
+                        $reverted_leave_balance = $current_leave_balance + $requested_leave_duration;
 
-                    User::findOrFail($userId)->update(['overwork_balance' => $new_overwork_balance]);
-                } else {
-                    $new_leave_balance = $leave_balance + $newApproval;
-
-                    User::findOrFail($userId)->update(['leave_balance' => $new_leave_balance]);
+                        $user->update([
+                            'leave_balance' => $reverted_leave_balance,
+                        ]);
+                    }
                 }
 
-                $adminNote = $request->input('admin_note');
+                // Update the leave rejection data
                 $leave->update([
                     'request_status' => 'rejected',
                     'admin_note'     => $adminNote,
                     'action_by'      => $adminName,
                 ]);
 
+                // Log the action
                 ActionLog::create([
                     'user_id' => $userId,
                     'mode' => 'leave',
@@ -93,30 +101,37 @@ class ManageDataController extends Controller
 
             // === REJECT OVERWORK ===
             else if ($status === 'overwork') {
-                // Make sure kelipatan setengah jam
-                $allowance = User::findOrFail($userId)->overwork_balance;
-                $overwork_duration = Overwork::find($leaveId)->duration;
-                $validateBalanceApproval = $allowance - $overwork_duration;
+                $user = User::findOrFail($userId);
+                $overwork = Overwork::find($requestId);
 
-                // Prevent saldo minus
-                if ($validateBalanceApproval < 0) {
-                    return redirect()->back()->with('fail', [
-                        'title' => 'Illegal balance value',
-                        'message' => 'Overwork cancelation causing the balance below 0.',
-                        'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+                $current_overwork_balance = $user->overwork_balance;
+                $overwork_duration = $overwork->duration;
+
+                // If the admin has approved the overwork before, but then cancelled
+                if($overwork->request_status != 'review'){
+                    $reverted_overwork_balance = $current_overwork_balance - $overwork_duration;
+
+                    if ($reverted_overwork_balance < 0) {
+                        return redirect()->back()->with('fail', [
+                            'title' => 'Illegal balance value',
+                            'message' => 'Overwork cancelation causing the balance below 0.',
+                            'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
+                        ]);
+                    }
+
+                    $user->update([
+                        'overwork_balance' => $reverted_overwork_balance
                     ]);
                 }
 
-                User::findOrFail($userId)->update([
-                    'overwork_balance' => $validateBalanceApproval
-                ]);
-
-                Overwork::where('id', $leaveId)->update([
+                // Update the overwork rejection data
+                $overwork->update([
                     'request_status' => 'rejected',
                     'admin_note'     => $adminNote,
                     'action_by'      => $adminName,
                 ]);
 
+                // Log the action
                 ActionLog::create([
                     'user_id' => $userId,
                     'mode' => 'overwork',
@@ -130,18 +145,21 @@ class ManageDataController extends Controller
             ]);
         }
 
-
+        // Review -> Approved
         else if ($request->has('approved')) {
-
             $status = $request->input('approved');
+            $user = User::findOrFail($userId);
 
             // === APPROVE LEAVE ===
             if($status === 'leave'){
-                $allowance = User::findOrFail($userId)->leave_balance; // Saldo saat ini
-                $newApproval = Leave::find($leaveId)->leave_period; // Yang di-request
-                $validateBalanceApproval = $allowance - $newApproval; // New balance = Saldo saat ini - Yang di-request
+                $leave = Leave::find($requestId);
 
-                if ($validateBalanceApproval < 0) {
+                // Counting balance update
+                $current_leave_balance = $user->leave_balance; // Saldo saat ini
+                $requested_leave_period = $leave->leave_period; // Yang di-request
+                $updated_leave_balance = $current_leave_balance - $requested_leave_period; // New balance = Saldo saat ini - Yang di-request
+
+                if ($updated_leave_balance < 0) {
                     return redirect()->back()->with('fail', [
                         'title' => 'Illegal balance value',
                         'message' => 'Leave cancelation causing the balance below 0.',
@@ -149,12 +167,17 @@ class ManageDataController extends Controller
                     ]);
                 }
 
-                User::findOrFail($userId)->update(['leave_balance' => $validateBalanceApproval]);
-                Leave::where('id', $leaveId)->update([
+                // Update balance and leave status
+                $user->update([
+                    'leave_balance' => $updated_leave_balance
+                ]);
+
+                $leave->update([
                     'request_status' => 'approved',
                     'action_by'=> $adminName,
                 ]);
 
+                // Log the action
                 ActionLog::create([
                     'user_id' => $userId,
                     'mode' => 'leave',
@@ -164,20 +187,24 @@ class ManageDataController extends Controller
 
             // === APPROVE OVERWORK ===
             else if ($status === 'overwork') {
+                $overwork = Overwork::findOrFail($requestId);
 
-                $allowance = User::findOrFail($userId)->overwork_balance;
-                $overwork_duration = Overwork::find($leaveId)->duration;
-                $validateBalanceApproval = $allowance + $overwork_duration;
+                // Counting balance update
+                $current_overwork_balance = $user->overwork_balance;
+                $requested_overwork_duration = $overwork->duration;
+                $updated_overwork_balance = $current_overwork_balance + $requested_overwork_duration;
 
-                User::findOrFail($userId)->update([
-                    'overwork_balance' => $validateBalanceApproval
+                // Update user balance and overwork status
+                $user->update([
+                    'overwork_balance' => $updated_overwork_balance
                 ]);
 
-                Overwork::where('id', $leaveId)->update([
+                $overwork->update([
                     'request_status' => 'approved',
                     'action_by'      => $adminName,
                 ]);
 
+                // Log the action
                 ActionLog::create([
                     'user_id' => $userId,
                     'mode' => 'overwork',
@@ -190,14 +217,5 @@ class ManageDataController extends Controller
                 'message' => "This {$status} request has been approved.",
             ]);
         }
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
