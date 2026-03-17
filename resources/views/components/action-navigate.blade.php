@@ -77,6 +77,8 @@
             name="this_leave_period"
             value="{{$d->leave_period}}"
         />
+
+        {{-- When the approve button is clicked, the handler function is in manage-data.blade.php --}}
         <button
             type="submit"
             name="approved"
@@ -96,6 +98,7 @@
             <img src="{{ asset('img/yesbox.svg') }}" alt="view" >
         </button>
 
+        {{-- When the reject button is clicked, a popup (modal-reject.blade.php is opened, handled in manage-data.blade.php) --}}
         <button
             type="button"
             value="{{$d->type}}"

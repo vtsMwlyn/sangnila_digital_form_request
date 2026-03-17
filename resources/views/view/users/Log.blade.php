@@ -34,7 +34,7 @@
                             <td>{{ $log->user->name ?? 'Unknown User' }}</td>
                             @endif
                             <td title="{{ $log->message }}">
-                                {{ ucfirst(strtolower(Str::limit($log->message, 80))) }}
+                                {{ $log->message }}
                             </td>
                         </tr>
                     @empty

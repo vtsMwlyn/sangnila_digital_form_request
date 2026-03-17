@@ -18,16 +18,18 @@ use App\Http\Controllers\ManageDataController;
 use App\Http\Controllers\ManageAccountController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-
+// Home
 Route::get('/', function () {
     $view = Auth::id() === null ? route('login') : route('dashboard');
     return redirect($view);
 });
 
+// Login
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
+// Account Suspended
 Route::middleware(['active'])->group(function () {
     Route::prefix('info')->name('info.')->group(function () {
         Route::get('/account-suspended', function () {
@@ -36,7 +38,107 @@ Route::middleware(['active'])->group(function () {
     });
 });
 
+// MAIN APP ROUTES
 Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
+    // ==== ACCESSIBLE BY ADMIN AND EMPLOYEE ==== //
+    // Dashboard
+    Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+
+    // All overworks
+    Route::get('/overwork', [RequestController::class, 'showRecent'])->name('overwork.show');
+
+    // All leaves
+    Route::get('/leave', [RequestController::class, 'showRecent'])->name('leave.show');
+
+    // Logging
+    Route::get('/LogActivity', [LogController::class, 'show'])->name('LogActivity.show');
+
+
+    // ==== EMPLOYEE ==== //
+    Route::middleware('role:user')->group(function(){
+        // Draft
+        Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
+
+        // Overwork
+        Route::prefix('overwork')->name('overwork.')->group(function () {
+            Route::middleware(['auth', 'role:user'])->group(function () {
+                // New overwork request page
+                Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
+
+                // Store new overwork request
+                Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
+
+                // Edit overwork request page
+                Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
+
+                // Update overwork request data
+                Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
+
+                // Destroy overwork request data
+                Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
+
+                // Remove overwork request evidence
+                Route::delete('/evidence/{evidence}', [OverworkController::class, 'deleteEvidence'])->name('evidence.delete');
+            });
+        });
+
+        // Leave
+        Route::prefix('leave')->name('leave.')->group(function () {
+            Route::middleware(['auth', 'role:user'])->group(function () {
+                // New leave request page
+                Route::get('/form', [LeaveController::class, 'create'])->name('form-view')->middleware('balance');
+
+                // Create and store leave request
+                Route::match(['get', 'post'], '/proccess', [LeaveController::class, 'store'])->name('insert');
+
+                // Edit leave request page
+                Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
+
+                // Update leave request data
+                Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
+
+                // Destroy leave request data
+                Route::delete('/{leave}', [LeaveController::class, 'destroy'])->name('delete');
+            });
+            
+        });
+    });
+
+
+    // ==== ADMIN ==== //
+    Route::middleware('role:admin')->group(function () {
+        // Manage overwork and leave requests
+
+        // Approve and reject overwork, reject leave
+        Route::match(['get', 'post'], '/request/edit/{id}/{userId}', [ManageDataController::class, 'edit'])->name('request.edit');
+
+        // Approve leave
+        Route::post('/admin/leave/approve/{mode}', [LeaveController::class, 'approve'])->name('admin.leave.approve');
+
+        // Manage employee accounts
+        Route::prefix('account')->name('account.')->group(function () {
+            // All accounts
+            Route::get('/', [ManageAccountController::class, 'show'])->name('show');
+
+            // Edit account
+            Route::get('edit/user/{id}/status/{status}', [ManageAccountController::class, 'edit'])
+            ->name('edit');
+
+            // Destroy account
+            Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
+        });
+    });
+
+
+    // ==== MISCELANEOUS ==== //
+    // Profile
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/update', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/delete', [ProfileController::class, 'destroy'])->name('destroy');
+    });
+
+    // Get current leave balance
     Route::get('leave_allowance', function (Request $request) {
         if (!$request->expectsJson()) {
             abort(403, 'Forbidden');
@@ -50,71 +152,9 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             'leave_period' => $total
         ]);
     });
-
-    //! dashboard
-    Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
-        Route::patch('/update', [ProfileController::class, 'update'])->name('update');
-        Route::delete('/delete', [ProfileController::class, 'destroy'])->name('destroy');
-    });
-
-    //! manage data
-    Route::middleware('role:admin')->group(function () {
-        Route::prefix('request')->name('request.')->group(function () {
-            Route::get('/data', [ManageDataController::class, 'show'])->name('show');
-            Route::match(['get', 'post'], 'edit/{id}/{userId}', [ManageDataController::class, 'edit'])->name('edit');
-        });
-        Route::prefix('account')->name('account.')->group(function () {
-            Route::get('/', [ManageAccountController::class, 'show'])->name('show');
-            // Route::get('edit/user/{id}/status/{status?}', [ManageAccountController::class, 'edit'])->name('edit');
-            Route::get('edit/user/{id}/status/{status}', [ManageAccountController::class, 'edit'])
-            ->name('edit');
-            Route::get('fetch/{id}', [ManageAccountController::class, 'fetch'])->name('fetch');
-
-            Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
-        });
-    });
-
-    //! draft
-    Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft')->middleware('role:user');
-
-    //! overwork
-    Route::prefix('overwork')->name('overwork.')->group(function () {
-        Route::middleware(['auth', 'role:user'])->group(function () {
-            Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
-            Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
-            Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
-            Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
-            Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
-            Route::delete('/evidence/{evidence}', [OverworkController::class, 'deleteEvidence'])->name('evidence.delete');
-        });
-        Route::get('/', [RequestController::class, 'showRecent'])->name('show');
-    });
-
-    //! leave
-    Route::prefix('leave')->name('leave.')->group(function () {
-        Route::middleware(['auth', 'role:user'])->group(function () {
-            Route::middleware(['auth', 'balance'])->group(function () {
-                Route::get('/form', [LeaveController::class, 'create'])->name('form-view');
-            });
-            Route::match(['get', 'post'], '/proccess', [LeaveController::class, 'store'])->name('insert');
-            Route::get('/{leave}/edit', [LeaveController::class, 'edit'])->name('edit');
-            Route::put('/{leave}', [LeaveController::class, 'update'])->name('update');
-            Route::delete('/{leave}', [LeaveController::class, 'destroy'])->name('delete');
-        });
-        Route::get('/', [RequestController::class, 'showRecent'])->name('show');
-    });
-
-    Route::post('/admin/leave/approve/{mode}', [LeaveController::class, 'approve'])
-    ->name('admin.leave.approve');
-
-    Route::prefix('LogActivity')->name('LogActivity.')->group(function () {
-     Route::get('/LogActivity', [LogController::class, 'show'])->name('show');
-    });
 });
 
+// API for external apps
 Route::get('/api/employee/leave/calendar', function(){
     $leaves = Leave::whereHas('user', function($q) {
         return $q->where('is_teacher', 1);

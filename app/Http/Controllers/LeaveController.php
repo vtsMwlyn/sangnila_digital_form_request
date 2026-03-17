@@ -6,11 +6,8 @@ use Exception;
 use App\Models\User;
 use App\Models\Leave;
 use App\Models\ActionLog;
-use App\Models\Overwork;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use function PHPUnit\Framework\isNull;
 
 class LeaveController
 {
@@ -182,6 +179,7 @@ class LeaveController
         $user    = User::findOrFail($userId);
         $newApproval = $leave->leave_period;
 
+        // Deduct from leave balance
         if ($mode === 'leave') {
             $allowance = $user->leave_balance;
             $totalLate = floatval($request->input('totalLateValue')) * 8;
@@ -205,10 +203,11 @@ class LeaveController
             ActionLog::create([
                 'user_id' => $userId,
                 'mode' => 'leave',
-                'message' => Auth::user()->name . ' has approved your leave request',
+                'message' => Auth::user()->name . ' has approved your leave request. ' . $newApproval . ' hours has been deducted from your leave balance.',
             ]);
         }
 
+        // Deduct from overwork balance
         elseif ($mode === 'overwork') {
             $newApproval = $leave->leave_period;
             $totalApprovedOverwork = $user->overwork_balance;
@@ -234,7 +233,7 @@ class LeaveController
             ActionLog::create([
                 'user_id' => $userId,
                 'mode' => 'overwork',
-                'message' => Auth::user()->name .  ' has approved your overwork request',
+                'message' => Auth::user()->name .  ' has approved your overwork request. ' . $newApproval . ' hours has been deducted from your overwork balance.',
             ]);
         }
 

@@ -75,7 +75,7 @@
         style="background: url('{{ asset('img/bg.webp') }}') no-repeat center center / cover;"
     >
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
-            <div>
+            <div class="bg-white rounded-3xl p-10 xl:p-8 w-full max-w-sm sm:max-w-md md:w-[500px] xl:w-[900px] mx-4 sm:mx-0 shadow-lg">
                 {{ $slot }}
             </div>
         </div>

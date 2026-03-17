@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Leave;
-use Illuminate\Http\Request;
 
 class ManageAccountController extends Controller
 {
@@ -54,12 +52,4 @@ class ManageAccountController extends Controller
             'message' => 'The account has been successfully removed.',
         ]);
     }
-
-
-    public function fetch(string $id)
-    {
-        $user = User::findOrFail($id);
-        return response()->json($user);
-    }
-
 }
