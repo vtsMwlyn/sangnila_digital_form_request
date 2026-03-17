@@ -47,7 +47,7 @@
                         <td title="{{ $d->task_description }}">{{ ucfirst(strtolower(Str::limit($d->task_description, 50))) }}</td>
                         @if (auth()->user()->role === 'admin')
                             <td>
-                                {{ Str::words($d->user->name, 2) ?? 'N/A' }}
+                                {{ $d->user->name }}
                             </td>
                         @endif
                         <td>

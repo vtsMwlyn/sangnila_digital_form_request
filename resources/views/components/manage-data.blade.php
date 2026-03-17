@@ -18,42 +18,6 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById('search').addEventListener("input", function () {
-            let parentForm = this.closest('form')
-
-            if (!this.value) {
-                parentForm.submit()
-                return
-            }
-
-            const query = new URLSearchParams(new FormData(parentForm)).toString();
-            const newUrl = new URL(window.location);
-            console.log(query);
-            console.log(newUrl);
-            newUrl.search = query;
-            window.history.pushState({}, "", newUrl);
-
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll("tbody tr");
-            const isAdmin = "{{ auth()->user()->role }}" === "admin";
-            const reasonIndex = isAdmin ? 4 : 3;
-
-            rows.forEach((row) => {
-                if (row.cells.length > 1) {
-                    const reason = row.textContent.toLowerCase();
-                    if (reason.includes(searchTerm)) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                }
-            });
-            if (rows[0].className === 'empty') {
-                parentForm.submit();
-                return
-            }
-        });
-
         document.querySelectorAll('.status-btn').forEach(s => {
             s.addEventListener('click', function() {
                     document.querySelectorAll('.buttonSubmit').forEach(b => {

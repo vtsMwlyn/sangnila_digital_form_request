@@ -77,6 +77,7 @@ class RequestController extends Controller
         $status = $request->input('status');
         $month = $request->input('month');
         $search = $request->input('search');
+        $employeeSearch = $request->input('employee') ?? '';
 
         if (Auth::user()->role === 'user') {
             if ($routeName != 'dashboard') {
@@ -100,13 +101,13 @@ class RequestController extends Controller
         } elseif (Auth::user()->role === 'admin') {
             if ($routeName != 'dashboard') {
                 if (Str::before($routeName, '.') === 'overwork') {
-                    $data = $this->applyFilters($data, $month, $search)->where('type', 'overwork')->where('request_status', '!=', 'draft');
+                    $data = $this->applyFilters($data, $month, $employeeSearch)->where('type', 'overwork')->where('request_status', '!=', 'draft');
                     if ($status && $status !== 'all') {
                         $data = $data->where('request_status', $status);
                     }
                     return view('view.users.overwork-data', compact('data'));
                 } else {
-                    $data = $this->applyFilters($data, $month, $search)->where('type', 'leave')->where('request_status', '!=', 'draft');
+                    $data = $this->applyFilters($data, $month, $employeeSearch)->where('type', 'leave')->where('request_status', '!=', 'draft');
                     if ($status && $status !== 'all') {
                         $data = $data->where('request_status', $status);
                     }

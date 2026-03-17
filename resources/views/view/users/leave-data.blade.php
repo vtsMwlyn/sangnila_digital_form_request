@@ -63,13 +63,13 @@
 
                         <tr class="{{ $loop->odd ? 'bg-white' : '' }}">
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}</td>
+                            <td>{{ Carbon\Carbon::parse($d->start_leave)->format('d M Y') }}</td>
                             <td class="capitalize">{{ $duration }}</td>
                             <td title="{{ $d->reason }}">
                                 {{ ucfirst(strtolower(Str::limit($d->reason, 50))) }}
                             </td>
                             @if (auth()->user()->role === 'admin')
-                                <td>{{ Str::words($d->user->name, 2) }}</td>
+                                <td>{{ $d->user->name }}</td>
                             @endif
                             <td>
                                 @php
