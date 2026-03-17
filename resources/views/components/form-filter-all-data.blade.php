@@ -34,15 +34,17 @@
                     @endforeach
                 </x-select>
 
-                <x-select name="status" id="status" class="w-40" onchange="this.form.submit()">
-                    <option value="" {{ request('status') === 'all' ? 'selected' : '' }}>All</option>
-                    <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
-                    <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
-                    <option value="review" {{ request('status') === 'review' ? 'selected' : '' }}>Review</option>
-                    @if(Auth::user()->role != 'admin')
-                        <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
-                    @endif
-                </x-select>
+                @if(!Route::is('dashboard*'))
+                    <x-select name="status" id="status" class="w-40" onchange="this.form.submit()">
+                        <option value="" {{ request('status') === 'all' ? 'selected' : '' }}>All</option>
+                        <option value="approved" {{ request('status') === 'approved' ? 'selected' : '' }}>Approved</option>
+                        <option value="rejected" {{ request('status') === 'rejected' ? 'selected' : '' }}>Rejected</option>
+                        <option value="review" {{ request('status') === 'review' ? 'selected' : '' }}>Review</option>
+                        @if(Auth::user()->role != 'admin')
+                            <option value="draft" {{ request('status') === 'draft' ? 'selected' : '' }}>Draft</option>
+                        @endif
+                    </x-select>
+                @endif
 
                 @if(Auth::user()->role != 'admin')
                     <x-text-input
