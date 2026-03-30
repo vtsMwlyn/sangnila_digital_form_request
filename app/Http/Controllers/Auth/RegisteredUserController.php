@@ -41,10 +41,10 @@ class RegisteredUserController extends Controller
             'department' => ['required'],
             'department_other' => 'nullable|string',
             'role' => ['required', 'in:admin,user'],
-            'Leave_Balance_Day' => ['required', 'integer'],
+            'Leave_Balance_Day' => 'required|numeric',
             'Leave_Balance_Hour' => 'nullable|numeric',
-            'overwork_balance_Day' => ['required', 'integer'],
-            'overwork_balance_Hour' => 'nullable|numeric',
+            'Total_Overwork_Day' => 'required|numeric',
+            'Total_Overwork_Hour' => 'nullable|numeric',
         ]);
 
         $validate['position'] = $validate['position'] === 'other'
@@ -58,7 +58,7 @@ class RegisteredUserController extends Controller
         unset($validate['position_other'], $validate['department_other']);
 
         $overworkAllowance = (int) $validate['Leave_Balance_Day'] * 8 +  $validate['Leave_Balance_Hour'];
-        $TotalOverwork = (int) $validate['overwork_balance_Day'] * 8 + $validate['overwork_balance_Hour'] ;
+        $TotalOverwork = (int) $validate['Total_Overwork_Day'] * 8 + $validate['Total_Overwork_Hour'] ;
 
         $user = User::create([
             'name' => $validate['name'],
