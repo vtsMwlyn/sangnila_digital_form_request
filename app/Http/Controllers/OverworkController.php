@@ -7,10 +7,12 @@ use Carbon\Carbon;
 use App\Models\Evidence;
 use App\Models\Overwork;
 use App\Models\ActionLog;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class OverworkController
 {
@@ -94,6 +96,13 @@ class OverworkController
                 'mode' => 'overwork',
                 'message' => $status !== 'draft' ? 'Submitted an overwork request' : 'Created an overwork request draft'
             ]);
+
+            if($status === 'review'){
+                Mail::html('Hello Sangnila HR, <b>' . $overwork->user->name . '</b> has submitted an <b>overwork</b> request that he/she did on <b>' . $overwork->overwork_date . '</b>. <br/>Please do a review to the request <a href="https://ems.sangnilaindonesia.com">here</a>. Thank you!', function ($message) use ($overwork) {
+                    $message->to('hr@sangnilaindonesia.com')
+                            ->subject('New Employee Overwork Request from ' . $overwork->user->name);
+                });
+            }
 
             DB::commit();
         }

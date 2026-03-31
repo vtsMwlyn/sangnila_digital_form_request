@@ -8,6 +8,7 @@ use App\Models\Leave;
 use App\Models\ActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class LeaveController
 {
@@ -47,7 +48,7 @@ class LeaveController
         $totalPeriod = (float) ($validate['many_days'] * 8) + $validate['many_hours'];
         $status = $request->action === 'submit' ? 'review' : 'draft';
 
-        Leave::create([
+        $leave = Leave::create([
             'start_leave' => $validate['start_leave'],
             'leave_period' => $totalPeriod,
             'reason' => $validate['reason'],
@@ -60,6 +61,13 @@ class LeaveController
             'mode' => 'leave',
             'message' => $status !== 'draft' ? 'Submitted a leave request' : 'Created a leave request draft',
         ]);
+
+        if($status === 'review'){
+            Mail::html('Hello Sangnila HR, <b>' . $leave->user->name . '</b> has submitted a <b>leave</b> request (starting from <b>' . $leave->leave_date . '</b> for <b>' . $validate['many_days'] . ' days ' . $validate['many_hours'] . ' hours</b>).<br/>Please do a review to the request <a href="https://ems.sangnilaindonesia.com">here</a>. Thank you!', function ($message) use ($leave) {
+                $message->to('hr@sangnilaindonesia.com')
+                        ->subject('New Employee Leave Request from ' . $leave->user->name);
+            });
+        }
 
         if ($status == 'draft')
             return redirect()->route('leave.show')->with('success', [
