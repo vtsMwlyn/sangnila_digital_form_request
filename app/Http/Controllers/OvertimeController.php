@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Evidence;
-use App\Models\Overwork;
+use App\Models\Overtime;
 use App\Models\ActionLog;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,14 +14,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Mail;
 
-class OverworkController
+class OvertimeController
 {
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('view.users.overwork-request');
+        return view('view.users.overtime-request');
     }
 
     /**
@@ -49,7 +49,7 @@ class OverworkController
         try {
             DB::beginTransaction();
 
-            // Make sure overwork duration is floored to 0.5 multiplication
+            // Make sure overtime duration is floored to 0.5 multiplication
             $start = Carbon::parse($validate['start']);
             $end   = Carbon::parse($validate['finish']);
 
@@ -62,10 +62,10 @@ class OverworkController
             $hours = $minutes / 60;
             $adjustedHourDiff = floor($hours * 2) / 2;
 
-            $overwork = Overwork::create([
-                'overwork_date' => $validate['date'],
-                'start_overwork' => $validate['start'],
-                'finished_overwork' => $validate['finish'],
+            $overtime = Overtime::create([
+                'overtime_date' => $validate['date'],
+                'start_overtime' => $validate['start'],
+                'finished_overtime' => $validate['finish'],
                 'duration' => $adjustedHourDiff,
                 'task_description' => $validate['desc'],
                 'request_status' => $status,
@@ -87,20 +87,20 @@ class OverworkController
             foreach ($path as $p) {
                 Evidence::create([
                     'path' => $p,
-                    'overwork_id' => $overwork->id,
+                    'overtime_id' => $overtime->id,
                 ]);
             }
 
             ActionLog::create([
                 'user_id' => Auth::id(),
-                'mode' => 'overwork',
-                'message' => $status !== 'draft' ? 'Submitted an overwork request' : 'Created an overwork request draft'
+                'mode' => 'overtime',
+                'message' => $status !== 'draft' ? 'Submitted an overtime request' : 'Created an overtime request draft'
             ]);
 
             if($status === 'review'){
-                Mail::html('Hello Sangnila HR, <b>' . $overwork->user->name . '</b> has submitted an <b>overwork</b> request that he/she did on <b>' . $overwork->overwork_date . '</b>. <br/>Please do a review to the request <a href="https://ems.sangnilaindonesia.com">here</a>. Thank you!', function ($message) use ($overwork) {
+                Mail::html('Hello Sangnila HR, <b>' . $overtime->user->name . '</b> has submitted an <b>overtime</b> request that he/she did on <b>' . $overtime->overtime_date . '</b>. <br/>Please do a review to the request <a href="https://ems.sangnilaindonesia.com">here</a>. Thank you!', function ($message) use ($overtime) {
                     $message->to('hr@sangnilaindonesia.com')
-                            ->subject('New Employee Overwork Request from ' . $overwork->user->name);
+                            ->subject('New Employee Overtime Request from ' . $overtime->user->name);
                 });
             }
 
@@ -115,14 +115,14 @@ class OverworkController
         }
 
         if ($status == 'draft')
-            return redirect()->route('overwork.show')->with('success', [
+            return redirect()->route('overtime.show')->with('success', [
                 'title' => 'Saved to draft!',
-                'message' => 'Your overwork request has been saved to draft.',
+                'message' => 'Your overtime request has been saved to draft.',
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
 
-        if ($status === 'review') return redirect()->route('overwork.show')->with('success', [
-            'title' => 'Overwork Submitted!',
+        if ($status === 'review') return redirect()->route('overtime.show')->with('success', [
+            'title' => 'Overtime Submitted!',
             'message' => 'Please wait for admin approval.',
             'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
         ]);
@@ -131,31 +131,31 @@ class OverworkController
     /**
      * Display the specified resource.
      */
-    public function show(Overwork $overwork) {}
+    public function show(Overtime $overtime) {}
 
     /**
      * Show the form for editing the specified resource.
      */
     
-    public function edit(Overwork $overwork)
+    public function edit(Overtime $overtime)
     {
         $request = new RequestController;
         $evidence = [];
         foreach ($request->requestData() as $item) {
-            if ($item->id === $overwork->id && $item->type === 'overwork') {
+            if ($item->id === $overtime->id && $item->type === 'overtime') {
                 foreach ($item->evidence as $e) {
                     $evidence[] = $e;
                 }
                 break;
             }
         }
-        return view('view.users.overwork-request', compact('evidence', 'overwork'));
+        return view('view.users.overtime-request', compact('evidence', 'overtime'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Overwork $overwork)
+    public function update(Request $request, Overtime $overtime)
     {
         $validated = $request->validate([
             'date'   => ['required', 'date'],
@@ -174,10 +174,10 @@ class OverworkController
 
         try {
             // ===== UPDATE MAIN DATA =====
-            $overwork->update([
-                'overwork_date'     => $validated['date'],
-                'start_overwork'    => $validated['start'],
-                'finished_overwork' => $validated['finish'],
+            $overtime->update([
+                'overtime_date'     => $validated['date'],
+                'start_overtime'    => $validated['start'],
+                'finished_overtime' => $validated['finish'],
                 'task_description'  => $validated['desc'],
                 'request_status'    => $status,
             ]);
@@ -185,7 +185,7 @@ class OverworkController
             // ===== DELETE REMOVED EVIDENCE =====
             if (!empty($validated['deleted_evidence_ids'])) {
                 $evidences = Evidence::whereIn('id', $validated['deleted_evidence_ids'])
-                    ->where('overwork_id', $overwork->id)
+                    ->where('overtime_id', $overtime->id)
                     ->get();
 
                 foreach ($evidences as $evidence) {
@@ -198,7 +198,7 @@ class OverworkController
             if ($request->hasFile('photo')) {
                 foreach ($request->file('photo') as $photo) {
                     Evidence::create([
-                        'overwork_id' => $overwork->id,
+                        'overtime_id' => $overtime->id,
                         'path' => $photo->store('evidence/photo', 'public'),
                     ]);
                 }
@@ -208,7 +208,7 @@ class OverworkController
             if ($request->hasFile('video')) {
                 foreach ($request->file('video') as $video) {
                     Evidence::create([
-                        'overwork_id' => $overwork->id,
+                        'overtime_id' => $overtime->id,
                         'path' => $video->store('evidence/video', 'public'),
                     ]);
                 }
@@ -217,10 +217,10 @@ class OverworkController
             // ===== LOG ACTION =====
             ActionLog::create([
                 'user_id' => Auth::id(),
-                'mode'    => 'overwork',
+                'mode'    => 'overtime',
                 'message' => $status === 'draft'
-                    ? 'Updated an overwork request draft'
-                    : 'Submitted an overwork request',
+                    ? 'Updated an overtime request draft'
+                    : 'Submitted an overtime request',
             ]);
 
             // ===== RESPONSE =====
@@ -229,18 +229,18 @@ class OverworkController
                     'success' => true,
                     'message' => $status === 'draft'
                         ? 'Draft updated successfully'
-                        : 'Overwork submitted successfully',
+                        : 'Overtime submitted successfully',
                 ]);
             }
 
             return redirect()
-                ->route('overwork.show')
+                ->route('overtime.show')
                 ->with('success', [
                     'title'   => $status === 'draft'
                         ? 'Draft Updated!'
-                        : 'Overwork Submitted!',
+                        : 'Overtime Submitted!',
                     'message' => $status === 'draft'
-                        ? 'Your overwork request has been saved as draft.'
+                        ? 'Your overtime request has been saved as draft.'
                         : 'Please wait for admin approval.',
                     'time'    => now()
                         ->setTimezone('Asia/Jakarta')
@@ -265,24 +265,24 @@ class OverworkController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Overwork $overwork)
+    public function destroy(Overtime $overtime)
     {
         try {
-            $overwork->delete();
+            $overtime->delete();
 
             ActionLog::create([
                 'user_id' => Auth::id(),
-                'mode' => 'overwork',
-                'message' => 'Deleted an overwork request draft'
+                'mode' => 'overtime',
+                'message' => 'Deleted an overtime request draft'
             ]);
 
             return redirect()->back()->with('success', [
-                'title' => 'Overwork draft deleted successfully',
-                'message' => 'Your overwork draft has been deleted.',
+                'title' => 'Overtime draft deleted successfully',
+                'message' => 'Your overtime draft has been deleted.',
                 'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
             ]);
         } catch (Exception $e) {
-            return redirect()->route('dashboard')->withErrors(['error' => 'Failed to delete overwork draft: ' . $e->getMessage()]);
+            return redirect()->route('dashboard')->withErrors(['error' => 'Failed to delete overtime draft: ' . $e->getMessage()]);
         }
     }
 

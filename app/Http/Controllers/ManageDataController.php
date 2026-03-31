@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Leave;
-use App\Models\Overwork;
+use App\Models\Overtime;
 use App\Models\ActionLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,15 +36,15 @@ class ManageDataController extends Controller
                     $source = $leave->deduction_source;
 
                     // Recover the balance from the deduction source
-                    if($source == 'overwork_balance'){
-                        $current_overwork_balance = $user->overwork_balance;
-                        $reverted_overwork_balance =  $current_overwork_balance + $requested_leave_duration;
+                    if($source == 'overtime_balance'){
+                        $current_overtime_balance = $user->overtime_balance;
+                        $reverted_overtime_balance =  $current_overtime_balance + $requested_leave_duration;
 
                         $user->update([
-                            'overwork_balance' => $reverted_overwork_balance,
+                            'overtime_balance' => $reverted_overtime_balance,
                         ]);
 
-                        $logMessage .= ' ' . $requested_leave_duration . ' hours has been added to your overwork balance.';
+                        $logMessage .= ' ' . $requested_leave_duration . ' hours has been added to your overtime balance.';
                     }
                     else {
                         $current_leave_balance = $user->leave_balance;
@@ -74,36 +74,36 @@ class ManageDataController extends Controller
             }
 
             // === REJECT OVERWORK ===
-            else if ($status === 'overwork') {
+            else if ($status === 'overtime') {
                 $user = User::findOrFail($userId);
-                $overwork = Overwork::find($requestId);
+                $overtime = Overtime::find($requestId);
 
-                $current_overwork_balance = $user->overwork_balance;
-                $overwork_duration = $overwork->duration;
+                $current_overtime_balance = $user->overtime_balance;
+                $overtime_duration = $overtime->duration;
 
-                $logMessage = Auth::user()->name . ' has rejected your overwork request because of ' . $adminNote . '.';
+                $logMessage = Auth::user()->name . ' has rejected your overtime request because of ' . $adminNote . '.';
 
-                // If the admin has approved the overwork before, but then cancelled
-                if($overwork->request_status != 'review'){
-                    $reverted_overwork_balance = $current_overwork_balance - $overwork_duration;
+                // If the admin has approved the overtime before, but then cancelled
+                if($overtime->request_status != 'review'){
+                    $reverted_overtime_balance = $current_overtime_balance - $overtime_duration;
 
-                    if ($reverted_overwork_balance < 0) {
+                    if ($reverted_overtime_balance < 0) {
                         return redirect()->back()->with('fail', [
                             'title' => 'Illegal balance value',
-                            'message' => 'Overwork cancelation causing the balance below 0.',
+                            'message' => 'Overtime cancelation causing the balance below 0.',
                             'time' => now()->setTimezone('Asia/Jakarta')->format('Y-m-d | H:i'),
                         ]);
                     }
 
                     $user->update([
-                        'overwork_balance' => $reverted_overwork_balance
+                        'overtime_balance' => $reverted_overtime_balance
                     ]);
 
-                    $logMessage .= ' ' . $overwork_duration . ' hours has been deducted from your overwork balance.';
+                    $logMessage .= ' ' . $overtime_duration . ' hours has been deducted from your overtime balance.';
                 }
 
-                // Update the overwork rejection data
-                $overwork->update([
+                // Update the overtime rejection data
+                $overtime->update([
                     'request_status' => 'rejected',
                     'admin_note'     => $adminNote,
                     'action_by'      => $adminName,
@@ -112,14 +112,14 @@ class ManageDataController extends Controller
                 // Log the action
                 ActionLog::create([
                     'user_id' => $userId,
-                    'mode' => 'overwork',
+                    'mode' => 'overtime',
                     'message' => $logMessage,
                 ]);
             }
 
             return redirect()->back()->with('success', [
                 'title' => $status . ' Rejected!',
-                'message' => 'This overwork request has been rejected.',
+                'message' => 'This overtime request has been rejected.',
             ]);
         }
 
@@ -164,20 +164,20 @@ class ManageDataController extends Controller
             }
 
             // === APPROVE OVERWORK ===
-            else if ($status === 'overwork') {
-                $overwork = Overwork::findOrFail($requestId);
+            else if ($status === 'overtime') {
+                $overtime = Overtime::findOrFail($requestId);
 
                 // Counting balance update
-                $current_overwork_balance = $user->overwork_balance;
-                $requested_overwork_duration = $overwork->duration;
-                $updated_overwork_balance = $current_overwork_balance + $requested_overwork_duration;
+                $current_overtime_balance = $user->overtime_balance;
+                $requested_overtime_duration = $overtime->duration;
+                $updated_overtime_balance = $current_overtime_balance + $requested_overtime_duration;
 
-                // Update user balance and overwork status
+                // Update user balance and overtime status
                 $user->update([
-                    'overwork_balance' => $updated_overwork_balance
+                    'overtime_balance' => $updated_overtime_balance
                 ]);
 
-                $overwork->update([
+                $overtime->update([
                     'request_status' => 'approved',
                     'action_by'      => $adminName,
                 ]);
@@ -185,8 +185,8 @@ class ManageDataController extends Controller
                 // Log the action
                 ActionLog::create([
                     'user_id' => $userId,
-                    'mode' => 'overwork',
-                    'message' => Auth::user()->name . ' has approved your overwork request. ' . $requested_overwork_duration . ' hours has been added to your overwork balance.',
+                    'mode' => 'overtime',
+                    'message' => Auth::user()->name . ' has approved your overtime request. ' . $requested_overtime_duration . ' hours has been added to your overtime balance.',
                 ]);
             }
 

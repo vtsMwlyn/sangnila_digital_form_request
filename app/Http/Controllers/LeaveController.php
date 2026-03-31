@@ -215,33 +215,33 @@ class LeaveController
             ]);
         }
 
-        // Deduct from overwork balance
-        elseif ($mode === 'overwork') {
+        // Deduct from overtime balance
+        elseif ($mode === 'overtime') {
             $newApproval = $leave->leave_period;
-            $totalApprovedOverwork = $user->overwork_balance;
+            $totalApprovedOvertime = $user->overtime_balance;
             $totalLate = floatval($request->input('totalLateValue')) * 8;
 
-            if ($totalApprovedOverwork < $newApproval) {
+            if ($totalApprovedOvertime < $newApproval) {
                 return redirect()->back()->with('fail', [
                     'title'   => 'Exceeds Limit',
-                    'message' => 'This user exceeds the allowed overwork limit.',
+                    'message' => 'This user exceeds the allowed overtime limit.',
                 ]);
             }
 
-            $newTotalOverwork = max($totalApprovedOverwork - $newApproval - $totalLate, 0);
+            $newTotalOvertime = max($totalApprovedOvertime - $newApproval - $totalLate, 0);
 
-            $user->update(['overwork_balance' => $newTotalOverwork]);
+            $user->update(['overtime_balance' => $newTotalOvertime]);
 
             $leave->update([
                 'request_status'   => 'approved',
-                'deduction_source' => 'overwork_balance',
+                'deduction_source' => 'overtime_balance',
                 'action_by'      => $adminName
             ]);
 
             ActionLog::create([
                 'user_id' => $userId,
-                'mode' => 'overwork',
-                'message' => Auth::user()->name .  ' has approved your overwork request. ' . $newApproval . ' hours has been deducted from your overwork balance.',
+                'mode' => 'overtime',
+                'message' => Auth::user()->name .  ' has approved your overtime request. ' . $newApproval . ' hours has been deducted from your overtime balance.',
             ]);
         }
 

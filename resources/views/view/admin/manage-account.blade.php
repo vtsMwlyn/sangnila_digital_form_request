@@ -36,7 +36,7 @@
                 <th class="text-start">No</th>
                 <th class="text-start">Name</th>
                 <th class="text-start">Position & Department</th>
-                <th class="text-start">Leave Balance & <br> Total Overwork</th>
+                <th class="text-start">Leave Balance & <br> Total Overtime</th>
                 <th class="text-start">Status</th>
                 <th class="text-start">Action</th>
             </tr>
@@ -53,8 +53,8 @@
                             $allowanceDay  = intdiv($d->leave_balance, 8);
                             $allowanceHour = ($d->leave_balance / 8 - $allowanceDay) * 8;
 
-                            $totalDay  = intdiv($d->overwork_balance, 8);
-                            $totalHour = ($d->overwork_balance / 8 - $totalDay) * 8
+                            $totalDay  = intdiv($d->overtime_balance, 8);
+                            $totalHour = ($d->overtime_balance / 8 - $totalDay) * 8
                         @endphp
 
                         {{ $allowanceDay }} Day
@@ -88,14 +88,14 @@
                                 $balanceDay = intdiv($d->leave_balance, 8);
                                 $balanceHour = $d->leave_balance % 8;
 
-                                $overworkDay = intdiv($d->overwork_balance, 8);
-                                $overworkHour = $d->overwork_balance % 8;
+                                $overtimeDay = intdiv($d->overtime_balance, 8);
+                                $overtimeHour = $d->overtime_balance % 8;
 
                                 $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
-                                $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+                                $formattedOvertime = "{$overtimeDay} Day" . ($overtimeDay != 1 ? 's' : '') . " {$overtimeHour} Hour" . ($overtimeHour != 1 ? 's' : '');
                             @endphp
                                 data-balance="{{ $formattedBalance }}"
-                                data-overwork="{{ $formattedOverwork }}"
+                                data-overtime="{{ $formattedOvertime }}"
                             >
                              <img src="{{ asset('img/view.svg') }}" alt="view" class="" >
                              </button>
@@ -110,7 +110,7 @@
                                 data-position="{{ $d->position }}"
                                 data-department="{{ $d->department }}"
                                 data-balance="{{ $d->leave_balance }}"
-                                data-overwork="{{ $d->overwork_balance }}"
+                                data-overtime="{{ $d->overtime_balance }}"
                                 data-status_employee="{{ $d->status }}"
                                 onclick="openEditModal(this)"
                             >
@@ -217,7 +217,7 @@
                    <div class="mb-1">
                        <span class="font-semibold text-gray-700">Leave Balance: </span>
                        <br>
-                       <div class="mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
+                       <div class="mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">
                             @php
                             $allowanceDay = intdiv($d->leave_balance, 8);
                             $allowanceHour = $d->leave_balance % 8;
@@ -229,12 +229,12 @@
                    </div>
 
                    <div class="mb-1">
-                    <span class="font-semibold text-gray-700">Total Overwork: </span>
+                    <span class="font-semibold text-gray-700">Total Overtime: </span>
                     <br>
-                    <div class="mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
+                    <div class="mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">
                          @php
-                         $totalDay = intdiv($d->overwork_balance, 8);
-                         $totalHour = $d->overwork_balance % 8;
+                         $totalDay = intdiv($d->overtime_balance, 8);
+                         $totalHour = $d->overtime_balance % 8;
                          @endphp
 
                          {{ $totalDay }} Day
@@ -285,20 +285,20 @@
                                 $balanceHour = ($d->leave_balance / 8 - $balanceDay) * 8;
 
                                 // OVERWORK
-                                $overworkDay  = floor($d->overwork_balance / 8);
-                                $overworkHour = ($d->overwork_balance / 8 - $overworkDay) * 8;
+                                $overtimeDay  = floor($d->overtime_balance / 8);
+                                $overtimeHour = ($d->overtime_balance / 8 - $overtimeDay) * 8;
 
                                 $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') .
                                                     " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
 
-                                $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') .
-                                                     " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+                                $formattedOvertime = "{$overtimeDay} Day" . ($overtimeDay != 1 ? 's' : '') .
+                                                     " {$overtimeHour} Hour" . ($overtimeHour != 1 ? 's' : '');
 
-                                // dd([$balanceDay,$balanceHour, $overworkDay, $overworkHour,  $formattedBalance, $formattedOverwork])
+                                // dd([$balanceDay,$balanceHour, $overtimeDay, $overtimeHour,  $formattedBalance, $formattedOvertime])
 
                             @endphp
                             data-balance="{{ $formattedBalance }}"
-                            data-overwork="{{ $formattedOverwork }}"
+                            data-overtime="{{ $formattedOvertime }}"
 
                             >
                              <img src="{{ asset('img/view.svg') }}" alt="view" class="h-[40px] w-[40px]" >
@@ -314,7 +314,7 @@
                                 data-position="{{ $d->position }}"
                                 data-department="{{ $d->department }}"
                                 data-balance="{{ $d->leave_balance }}"
-                                data-overwork="{{ $d->overwork_balance }}"
+                                data-overtime="{{ $d->overtime_balance }}"
                                 data-status_employee="{{ $d->status }}"
                                 onclick="openEditModal(this)"
                             >
@@ -426,7 +426,7 @@
                     const position = this.dataset.position;
                     const department = this.dataset.department;
                     const role = this.dataset.role;
-                    const overwork = this.dataset.overwork;
+                    const overtime = this.dataset.overtime;
                     const status_employee = this.dataset.status_employee;
                     const statusClass = getStatusClass(status);
                     let body = `
@@ -486,8 +486,8 @@
                                 <td class="text-gray-900 py-2">${balance}</td>
                             </tr>
                             <tr>
-                                <th class="text-left font-semibold text-gray-700 py-2 pr-4">Total Overwork:</th>
-                                <td class="text-gray-900 py-2">${overwork}</td>
+                                <th class="text-left font-semibold text-gray-700 py-2 pr-4">Total Overtime:</th>
+                                <td class="text-gray-900 py-2">${overtime}</td>
                             </tr>
                             `
                             : ''
@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = button.getAttribute('data-email');
         const phone = button.getAttribute('data-phone');
         const leaveBalance = button.getAttribute('data-balance');
-        const totalOverwork = button.getAttribute('data-overwork');
+        const totalOvertime = button.getAttribute('data-overtime');
         const position = button.getAttribute('data-position');
         const status_employee = button.getAttribute('data-status_employee');
         const department = button.getAttribute('data-department');
@@ -544,9 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('email').value = email;
         document.getElementById('phone').value = phone ?? '';
         document.getElementById('Leave_Balance_Day').value = Math.floor(leaveBalance / 8);
-        document.getElementById('overwork_balance_Day').value = Math.floor(totalOverwork / 8);
+        document.getElementById('overtime_balance_Day').value = Math.floor(totalOvertime / 8);
         document.getElementById('Leave_Balance_Hour').value = leaveBalance - (Math.floor(leaveBalance / 8) * 8);
-        document.getElementById('overwork_balance_Hour').value = totalOverwork - (Math.floor(totalOverwork / 8) * 8);
+        document.getElementById('overtime_balance_Hour').value = totalOvertime - (Math.floor(totalOvertime / 8) * 8);
 
         document.getElementById('editForm').action = `/account/update/${id}`;
 
@@ -588,16 +588,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = $(button).data('user');
 
         document.getElementById('lateUserIdLeave').value = user.id;
-        document.getElementById('lateUserIdOverwork').value = user.id;
+        document.getElementById('lateUserIdOvertime').value = user.id;
 
         leaveDays = Math.floor(user.leave_balance / 8);
-        overworkDays = Math.floor(user.overwork_balance / 8);
+        overtimeDays = Math.floor(user.overtime_balance / 8);
 
         leaveHours = user.leave_balance - (leaveDays * 8);
-        overworkHours = user.overwork_balance - (overworkDays * 8);
+        overtimeHours = user.overtime_balance - (overtimeDays * 8);
 
         $('#late-modal-user-leave-balance').text(`Available: ${leaveDays} day(s) ${leaveHours} hour(s)`);
-        $('#late-modal-user-overwork-balance').text(`Available: ${overworkDays} day(s) ${overworkHours} hour(s)`);
+        $('#late-modal-user-overtime-balance').text(`Available: ${overtimeDays} day(s) ${overtimeHours} hour(s)`);
 
         window.dispatchEvent(new CustomEvent('open-modal', { detail: 'late-modal' }));
     }
@@ -605,11 +605,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('DOMContentLoaded', () => {
         const totalLateInput = document.getElementById('totalLate');
         const totalLateLeave = document.getElementById('totalLateLeave');
-        const totalLateOverwork = document.getElementById('totalLateOverwork');
+        const totalLateOvertime = document.getElementById('totalLateOvertime');
 
         totalLateInput.addEventListener('input', () => {
             totalLateLeave.value = totalLateInput.value;
-            totalLateOverwork.value = totalLateInput.value;
+            totalLateOvertime.value = totalLateInput.value;
         });
     });
 

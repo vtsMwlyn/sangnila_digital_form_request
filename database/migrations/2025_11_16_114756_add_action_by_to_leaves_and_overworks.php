@@ -14,8 +14,8 @@ return new class extends Migration
             }
         });
 
-        Schema::table('overworks', function (Blueprint $table) {
-            if (!Schema::hasColumn('overworks', 'action_by')) {
+        Schema::table('overtimes', function (Blueprint $table) {
+            if (!Schema::hasColumn('overtimes', 'action_by')) {
                 $table->string('action_by')->nullable()->after('request_status');
             }
         });
@@ -29,8 +29,8 @@ return new class extends Migration
             }
         });
 
-        Schema::table('overworks', function (Blueprint $table) {
-            if (Schema::hasColumn('overworks', 'action_by')) {
+        Schema::table('overtimes', function (Blueprint $table) {
+            if (Schema::hasColumn('overtimes', 'action_by')) {
                 $table->dropColumn('action_by');
             }
         });

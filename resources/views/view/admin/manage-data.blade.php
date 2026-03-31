@@ -31,15 +31,15 @@
                     <td class="py-4 px-6">{{ $loop->iteration }}</td>
 
                     <!-- Date -->
-                    @if ($d->type === 'overwork')
-                        <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}</td>
+                    @if ($d->type === 'overtime')
+                        <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->overtime_date)->format('d F Y') }}</td>
                     @else
                         <td class="py-4 px-6">{{ Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}</td>
                     @endif
 
                     <!-- Type -->
                     <td class="py-4 px-6">
-                        <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
+                        <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                     </td>
 
                     <!-- Status -->

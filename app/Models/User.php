@@ -37,8 +37,8 @@ class User extends Authenticatable
         return $this->hasMany(leave::class);
     }
 
-    public function overwork() {
-        return $this->hasMany(Overwork::class);
+    public function overtime() {
+        return $this->hasMany(Overtime::class);
     }
 
     protected $fillable = [
@@ -50,7 +50,7 @@ class User extends Authenticatable
         'position',
         'department',
         'leave_balance',
-        'overwork_balance',
+        'overtime_balance',
         'role',
     ];
 

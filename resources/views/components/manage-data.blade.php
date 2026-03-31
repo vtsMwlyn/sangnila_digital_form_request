@@ -33,7 +33,7 @@
 
                 const id = this.dataset.id;
                 const date = this.dataset.date;
-                const overworkDate = this.dataset.overwork_date;
+                const overtimeDate = this.dataset.overtime_date;
                 const start = this.dataset.start;
                 const finish = this.dataset.finished;
                 const type = this.dataset.type;
@@ -42,23 +42,23 @@
                 const duration = this.dataset.duration;
                 const adminNote = this.dataset.admin_note;
                 const balance = this.dataset.balance;
-                const overwork = this.dataset.overwork;
+                const overtime = this.dataset.overtime;
                 const changeby = this.dataset.admin_change;
                 const evidences = this.dataset.evidences
                     ? JSON.parse(this.dataset.evidences)
                     : [];
                 const statusClass = getStatusClass(status);
                 let rejectedOnly = "";
-                let overworkOnly = "";
+                let overtimeOnly = "";
 
 
-                if (type === "overwork") {
-                    overworkOnly = `
+                if (type === "overtime") {
+                    overtimeOnly = `
                     <table class="w-full text-sm text-gray-800 border-collapse">
                         <tbody class="divide-y divide-gray-200">
                             <tr>
                             <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">${type} Date:</th>
-                            <td class="text-gray-900 py-2">${overworkDate}</td>
+                            <td class="text-gray-900 py-2">${overtimeDate}</td>
                         </tr>
                             `;
                 }
@@ -81,12 +81,12 @@
                             <td class="text-gray-900 py-2">${date}</td>
                         </tr>
 
-                        ${overworkOnly}
+                        ${overtimeOnly}
 
                         <tr>
                             <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">
                                 ${
-                                type === "overwork"
+                                type === "overtime"
                                 ? `${type} time`
                                 : `${type} date`
                                 }
@@ -120,8 +120,8 @@
                         </tr>
 
                         <tr>
-                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Total Overwork</th>
-                            <td class="text-gray-900 py-2">${overwork}</td>
+                            <th class="text-left font-semibold text-gray-700 py-2 pr-4 w-1/3">Total Overtime</th>
+                            <td class="text-gray-900 py-2">${overtime}</td>
                         </tr>
 
                         <tr>
@@ -143,7 +143,7 @@
                             <td class="${statusClass} mt-2 mb-2 py-1 px-3 inline-block rounded-full capitalize text-white">${status}</td>
                          </tr>
                         `;
-                if (type === "overwork") {
+                if (type === "overtime") {
                     body += `
                     <table class="w-full text-sm text-gray-800 border-collapse">
                         <tbody class="divide-y divide-gray-200">
@@ -304,17 +304,17 @@
             const user = $(button).data('user');
 
             leaveDays = Math.floor(user.leave_balance / 8);
-            overworkDays = Math.floor(user.overwork_balance / 8);
+            overtimeDays = Math.floor(user.overtime_balance / 8);
             requestedDays = Math.floor(parseFloat(leavePeriod) / 8);
 
             leaveHours = user.leave_balance - (leaveDays * 8);
-            overworkHours = user.overwork_balance - (overworkDays * 8);
+            overtimeHours = user.overtime_balance - (overtimeDays * 8);
             requestedHours = leavePeriod - (requestedDays * 8);
 
             $('input[name="leaveId"]').val(leaveId);
             $('#choose-modal-requested').text(`${requestedDays} day(s) ${requestedHours} hour(s)`);
             $('#choose-modal-user-leave-balance').text(`Available: ${leaveDays} day(s) ${leaveHours} hour(s)`);
-            $('#choose-modal-user-overwork-balance').text(`Available: ${overworkDays} day(s) ${overworkHours} hour(s)`);
+            $('#choose-modal-user-overtime-balance').text(`Available: ${overtimeDays} day(s) ${overtimeHours} hour(s)`);
 
             window.dispatchEvent(new CustomEvent('open-modal', { detail: 'choose-modal' }));
         }
@@ -327,7 +327,7 @@
             const email = row.querySelector('.user-email').innerText;
             const phone = row.querySelector('.user-phone').innerText;
             const leave = row.querySelector('.user-leave').innerText;
-            const overwork = row.querySelector('.user-overwork').innerText;
+            const overtime = row.querySelector('.user-overtime').innerText;
             const position = row.querySelector('.user-position').innerText;
             const department = row.querySelector('.user-department').innerText;
 
@@ -336,7 +336,7 @@
             document.getElementById('email').value = email;
             document.getElementById('phone').value = phone;
             document.getElementById('Leave_Balance').value = leave;
-            document.getElementById('overwork_balance').value = overwork;
+            document.getElementById('overtime_balance').value = overtime;
             document.getElementById('positionSelect').value = position;
             document.getElementById('departmentSelect').value = department;
 

@@ -14,11 +14,11 @@ class Evidence extends Model
     
     protected $fillable = [
         'path',
-        'overwork_id',
+        'overtime_id',
     ];
 
-    public function overwork()
+    public function overtime()
     {
-        return $this->belongsTo(Overwork::class);
+        return $this->belongsTo(Overtime::class);
     }
 }

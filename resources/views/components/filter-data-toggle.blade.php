@@ -4,7 +4,7 @@
         @auth
             @if (auth()->user()->role === 'user')
                 <option value="all" {{ $type === 'all' ? 'selected' : '' }}>All Data</option>
-                <option value="overwork" {{ $type === 'overwork' ? 'selected' : '' }}>Overwork</option>
+                <option value="overtime" {{ $type === 'overtime' ? 'selected' : '' }}>Overtime</option>
                 <option value="leave" {{ $type === 'leave' ? 'selected' : '' }}>Leave</option>
             @elseif (auth()->user()->role === 'admin')
                 <option value="review" {{ $status === 'review' ? 'selected' : '' }}>Review</option>
@@ -25,9 +25,9 @@
                     class="status-btn hover:text-cyan-600 transition">All Data</button>
             </li>
 
-            <li class="{{ $type === 'overwork' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
-                <button type="button" name="type" value="overwork"
-                    class="status-btn hover:text-cyan-600 transition">Overwork</button>
+            <li class="{{ $type === 'overtime' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
+                <button type="button" name="type" value="overtime"
+                    class="status-btn hover:text-cyan-600 transition">Overtime</button>
             </li>
 
             <li class="{{ $type === 'leave' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
@@ -87,8 +87,8 @@
             <li class="{{ $type === 'all' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
                 <button type="button" name="type" value="all" class="status-btn hover:text-cyan-600 transition">All Data</button>
             </li>
-            <li class="{{ $type === 'overwork' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
-                <button type="button" name="type" value="overwork" class="status-btn hover:text-cyan-600 transition">Overwork</button>
+            <li class="{{ $type === 'overtime' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
+                <button type="button" name="type" value="overtime" class="status-btn hover:text-cyan-600 transition">Overtime</button>
             </li>
             <li class="{{ $type === 'leave' ? 'border-b-4 border-cyan-400 pb-1' : '' }} cursor-pointer">
                 <button type="button" name="type" value="leave" class="status-btn hover:text-cyan-600 transition">Leave</button>

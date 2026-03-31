@@ -10,13 +10,13 @@
     @if (request()->segment(1) === 'leave')
         @php
             $leaveBalance = $allowance / 8;
-            $overworkBalance = Auth::user()->overwork_balance / 8;
+            $overtimeBalance = Auth::user()->overtime_balance / 8;
             $balanceL = floor($leaveBalance) . ' days ' . ($leaveBalance - floor($leaveBalance)) * 8 . ' hours';
-            $balanceO = floor($overworkBalance) . ' days ' . ($overworkBalance - floor($overworkBalance)) * 8 . ' hours';
+            $balanceO = floor($overtimeBalance) . ' days ' . ($overtimeBalance - floor($overtimeBalance)) * 8 . ' hours';
         @endphp
         <x-input-label for="department" class="font-bold text-md">Leave Balance:</x-input-label>
         <h1 class="mb-1 border-[3px] border-gray-300 py-2 px-3 bg-white rounded-2xl">{{ $balanceL }}</h1>
-        <x-input-label for="department" class="font-bold text-md">Overwork Balance:</x-input-label>
+        <x-input-label for="department" class="font-bold text-md">Overtime Balance:</x-input-label>
         <h1 class="mb-1 border-[3px] border-gray-300 py-2 px-3 bg-white rounded-2xl">{{ $balanceO }}</h1>
     @endif
 </div>

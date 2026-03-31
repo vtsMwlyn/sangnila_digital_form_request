@@ -23,11 +23,11 @@
                 {{-- Balances --}}
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                        {{ __('Overwork Balance') }}
+                        {{ __('Overtime Balance') }}
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['overwork_balance']}}</h1>
-                    <span class="text-sm text-gray-500">Total overworks approved</span>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{ $data['overtime_balance']}}</h1>
+                    <span class="text-sm text-gray-500">Total overtimes approved</span>
                 </div>
 
                 <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -82,12 +82,12 @@
             {{-- Quick Buttons --}}
             <div class="flex flex-col sm:flex-row gap-6 my-8">
                 @auth
-                    <a href="{{ route('overwork.form-view') }}" class="flex flex-col h-[125px] items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
+                    <a href="{{ route('overtime.form-view') }}" class="flex flex-col h-[125px] items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
                         <div class="flex items-center gap-3">
                             <i class="bi bi-alarm text-2xl"></i>
-                            <span class="font-semibold text-lg">Apply for overwork</span>
+                            <span class="font-semibold text-lg">Apply for overtime</span>
                         </div>
-                        <small class="mt-1 text-cyan-200">Create new overwork request</small>
+                        <small class="mt-1 text-cyan-200">Create new overtime request</small>
                     </a>
 
                     <a href="{{ route('leave.form-view') }}" class="flex flex-col h-[125px] items-start bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] rounded-xl p-5 shadow-lg text-white w-full sm:w-1/3 hover:from-cyan-600 hover:to-blue-800 transition">
@@ -159,9 +159,9 @@
                     @forelse ($data['requestData'] as $d)
                         <tr class="{{ $loop->odd ? 'bg-white' : '' }}">
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</td>
+                            <td>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}</td>
                             <td>
-                                <span class="py-1 px-3 rounded-full capitalize text-white  {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
+                                <span class="py-1 px-3 rounded-full capitalize text-white  {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                             </td>
                             @if (auth()->user()->role === "admin")
                                 <td>{{ $d->user->name }}</td>
@@ -223,12 +223,12 @@
                                 <div class="flex items-center mb-2">
                                     <span class="font-semibold text-gray-700 mr-2">Type:</span>
                                     <span class="py-1/2 px-2 rounded-full capitalize text-white
-                                        {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
+                                        {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">
                                         {{ $d->type }}
                                     </span>
                                 </div>
                                 <div class="flex items-center text-xs text-gray-500">
-                                    {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
+                                    {{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}
                                 </div>
                             </div>
 
@@ -247,7 +247,7 @@
 
                             <div class="mb-1">
                                 <span class="font-semibold text-gray-700 mb-2">Date:</span>
-                                <div>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</div>
+                                <div>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}</div>
                             </div>
 
                             <div class="mb-1">

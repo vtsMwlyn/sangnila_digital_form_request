@@ -4,22 +4,24 @@
     @php
         $requestType = request('type', 'all');
         $requestStatus = request('status', 'all');
+
+        $title = Auth::user()->role === 'user' ? 'My Overtime Requests' : 'All Overtime Request List';
     @endphp
 
     <div class="container-draft bg-[#FEFEFEB2] p-6 rounded-2xl w-full shadow-lg overflow-x-auto">
-        <x-form-filter-all-data title="My Overwork List" route="overwork.show" :status="$requestStatus" :type="$requestType" />
+        <x-form-filter-all-data title="{{ $title }}" route="overtime.show" :status="$requestStatus" :type="$requestType" />
 
         <!-- New Data Button -->
         @if (auth()->user()->role === 'user')
-            <x-anchor-button href="{{ route('overwork.form-view') }}" class="mt-6 xl:mt-0">
+            <x-anchor-button href="{{ route('overtime.form-view') }}" class="mt-6 xl:mt-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                     <path d="M12 6v12M6 12h12" />
                 </svg>
-                <span>New Overwork Data</span>
+                <span>New Overtime Request</span>
             </x-anchor-button>
         @endif
 
-        <!-- Overwork Table -->
+        <!-- Overtime Table -->
         <div class="mt-4 w-full overflow-x-auto overflow-y-auto max-h-[600px]">
         <table class="hidden sm:table w-full text-left justify-center text-sm sm:text-base" >
             <thead class="bg-transparent text-[#1e293b] border-b-2 border-slate-400">
@@ -41,8 +43,8 @@
                 @forelse($data as $d)
                     <tr class="{{ $loop->odd ? 'bg-white' : '' }} items-center justify-center">
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ Carbon\Carbon::parse($d->overwork_date)->format('d M Y') }}</td>
-                        <td>{{ Carbon\Carbon::parse($d->start_overwork)->format('H:i') }}-{{ Carbon\Carbon::parse($d->finished_overwork)->format('H:i') }}</td>
+                        <td>{{ Carbon\Carbon::parse($d->overtime_date)->format('d M Y') }}</td>
+                        <td>{{ Carbon\Carbon::parse($d->start_overtime)->format('H:i') }}-{{ Carbon\Carbon::parse($d->finished_overtime)->format('H:i') }}</td>
                         <td>{{ rtrim(rtrim(number_format($d->duration, 2, '.', ''), '0'), '.'); }} hours</td>
                         <td title="{{ $d->task_description }}">{{ ucfirst(strtolower(Str::limit($d->task_description, 50))) }}</td>
                         @if (auth()->user()->role === 'admin')
@@ -66,10 +68,10 @@
                                 <!-- Show Details Button -->
                                 <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                                 @if ($d->request_status === 'draft')
-                                    <a href="{{ route('overwork.edit', $d->id) }}" title="Edit" class="transition hover:scale-105">
+                                    <a href="{{ route('overtime.edit', $d->id) }}" title="Edit" class="transition hover:scale-105">
                                         <img src="{{ asset('img/edit.svg') }}" alt="edit">
                                     </a>
-                                    <form action="{{ route('overwork.delete', $d->id) }}" method="POST" class="flex items-center" onsubmit="return confirm('Are you sure want to delete this overwork draft?')">
+                                    <form action="{{ route('overtime.delete', $d->id) }}" method="POST" class="flex items-center" onsubmit="return confirm('Are you sure want to delete this overtime draft?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" title="Delete" class="transition hover:scale-105">
@@ -88,10 +90,10 @@
                                     <circle cx="12" cy="12" r="9" />
                                     <path d="M12 7v5l3 3" />
                                 </svg>
-                                <p class="capitalize text-sm sm:text-base">No overwork {{request()->segment(2)}} data found</p>
+                                <p class="capitalize text-sm sm:text-base">No overtime {{request()->segment(2)}} data found</p>
                                 @if (auth()->user()->role === 'user')
-                                    <a href="{{ route('overwork.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2 text-sm sm:text-base">
-                                        Create your first overwork request
+                                    <a href="{{ route('overtime.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2 text-sm sm:text-base">
+                                        Create your first overtime request
                                     </a>
                                 @endif
                             </div>
@@ -128,7 +130,7 @@
                                 </span>
                             </div>
                             <div class="flex text-sm text-gray-500">
-                                {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
+                                {{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}
                             </div>
                         </div>
 
@@ -194,7 +196,7 @@
         @endif
     </div>
 
-    <x-preview-data title="overwork" />
+    <x-preview-data title="overtime" />
     <x-modal-reject/>
     <x-modal-choose/>
     <x-modal-success />

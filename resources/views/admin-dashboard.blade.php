@@ -75,11 +75,11 @@
                 {{-- Bottom row cards --}}
                 <div class="w-full bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
                     <small class="text-[#012967] font-semibold flex items-center justify-between text-[15px]">
-                        {{ __('Total Overwork') }}
+                        {{ __('Total Overtime') }}
                         <i class="bi bi-clock-history text-gray-500 text-lg"></i>
                     </small>
-                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['approved']->where('type', 'overwork')->count()}} {{__('Data')}}</h1>
-                    <span class="text-sm text-gray-500">{{ __('Total overwork approved') }}</span>
+                    <h1 class="text-3xl font-extrabold text-gray-900 py-2">{{$data['approved']->where('type', 'overtime')->count()}} {{__('Data')}}</h1>
+                    <span class="text-sm text-gray-500">{{ __('Total overtime approved') }}</span>
                 </div>
 
                 <div class="w-full bg-[#F0F3F8] rounded-2xl shadow-md p-6 relative">
@@ -123,9 +123,9 @@
                                 @forelse ($data['requestData'] as $d)
                                     <tr class="{{ $loop->odd ? 'bg-white' : '' }}">
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</td>
+                                        <td>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}</td>
                                         <td>
-                                            <span class="py-1 px-3 rounded-full capitalize text-white  {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
+                                            <span class="py-1 px-3 rounded-full capitalize text-white  {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                                         </td>
                                         @if (auth()->user()->role === "admin")
                                             <td>{{ $d->user->name }}</td>
@@ -186,12 +186,12 @@
                                             <div class="flex items-center mb-2">
                                                 <span class="font-semibold text-gray-700 mr-2">Type:</span>
                                                 <span class="py-1/2 px-2 rounded-full capitalize text-white
-                                                    {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">
+                                                    {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">
                                                     {{ $d->type }}
                                                 </span>
                                             </div>
                                             <div class="flex items-center text-xs text-gray-500">
-                                                {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
+                                                {{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}
                                             </div>
                                         </div>
 
@@ -210,7 +210,7 @@
 
                                         <div class="mb-1">
                                             <span class="font-semibold text-gray-700 mb-2">Date:</span>
-                                            <div>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}</div>
+                                            <div>{{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}</div>
                                         </div>
 
                                         <div class="mb-1">

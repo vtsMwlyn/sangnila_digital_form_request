@@ -20,7 +20,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->decimal('leave_balance', 8, 2)->default(0);
-            $table->decimal('overwork_balance', 8, 2)->default(0);
+            $table->decimal('overtime_balance', 8, 2)->default(0);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

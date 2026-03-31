@@ -10,7 +10,7 @@ use App\Http\Controllers\LogController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
-use App\Http\Controllers\OverworkController;
+use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DeductionController;
 use Symfony\Component\Routing\RequestContext;
@@ -44,8 +44,8 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
     // Dashboard
     Route::match(['get', 'post'], '/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
-    // All overworks
-    Route::get('/overwork', [RequestController::class, 'showRecent'])->name('overwork.show');
+    // All overtimes
+    Route::get('/overtime', [RequestController::class, 'showRecent'])->name('overtime.show');
 
     // All leaves
     Route::get('/leave', [RequestController::class, 'showRecent'])->name('leave.show');
@@ -59,26 +59,26 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
         // Draft
         Route::get('/draft', [RequestController::class, 'showDraft'])->name('draft');
 
-        // Overwork
-        Route::prefix('overwork')->name('overwork.')->group(function () {
+        // Overtime
+        Route::prefix('overtime')->name('overtime.')->group(function () {
             Route::middleware(['auth', 'role:user'])->group(function () {
-                // New overwork request page
-                Route::get('/form', [OverworkController::class, 'create'])->name('form-view');
+                // New overtime request page
+                Route::get('/form', [OvertimeController::class, 'create'])->name('form-view');
 
-                // Store new overwork request
-                Route::post('/proccess', [OverworkController::class, 'store'])->name('insert');
+                // Store new overtime request
+                Route::post('/proccess', [OvertimeController::class, 'store'])->name('insert');
 
-                // Edit overwork request page
-                Route::get('/{overwork}/edit', [OverworkController::class, 'edit'])->name('edit');
+                // Edit overtime request page
+                Route::get('/{overtime}/edit', [OvertimeController::class, 'edit'])->name('edit');
 
-                // Update overwork request data
-                Route::put('/{overwork}', [OverworkController::class, 'update'])->name('update');
+                // Update overtime request data
+                Route::put('/{overtime}', [OvertimeController::class, 'update'])->name('update');
 
-                // Destroy overwork request data
-                Route::delete('/{overwork}', [OverworkController::class, 'destroy'])->name('delete');
+                // Destroy overtime request data
+                Route::delete('/{overtime}', [OvertimeController::class, 'destroy'])->name('delete');
 
-                // Remove overwork request evidence
-                Route::delete('/evidence/{evidence}', [OverworkController::class, 'deleteEvidence'])->name('evidence.delete');
+                // Remove overtime request evidence
+                Route::delete('/evidence/{evidence}', [OvertimeController::class, 'deleteEvidence'])->name('evidence.delete');
             });
         });
 
@@ -107,9 +107,7 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
 
     // ==== ADMIN ==== //
     Route::middleware('role:admin')->group(function () {
-        // Manage overwork and leave requests
-
-        // Approve and reject overwork, reject leave
+        // Approve and reject overtime, reject leave
         Route::match(['get', 'post'], '/request/edit/{id}/{userId}', [ManageDataController::class, 'edit'])->name('request.edit');
 
         // Approve leave
@@ -127,6 +125,11 @@ Route::middleware(['auth', 'verified', 'suspended'])->group(function () {
             // Destroy account
             Route::get('delete/{id}', [ManageAccountController::class, 'destroy'])->name('delete');
         });
+
+        // Check employee attendance data
+        Route::get('/admin/fingerprint-attendance', function(){
+            return view('view.admin.fingerprint-attendance');
+        })->name('admin.fingerprint-attendance');
     });
 
 

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('path')->nullable();
 
-            $table->foreignId('overwork_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('overtime_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

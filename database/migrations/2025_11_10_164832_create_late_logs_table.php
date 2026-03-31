@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('late_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('mode', ['leave', 'overwork']);
+            $table->enum('mode', ['leave', 'overtime']);
             $table->decimal('amount', 5, 2); // jumlah keterlambatan (dalam JAM)
             $table->string('message');
             $table->timestamps();

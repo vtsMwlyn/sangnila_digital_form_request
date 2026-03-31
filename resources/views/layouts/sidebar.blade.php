@@ -42,49 +42,43 @@
                 font-semibold transition-all duration-300
                 {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
                     >
-                <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        d="M3 9.75L12 3l9 6.75V21a1.5 1.5 0 01-1.5 1.5H4.5A1.5 1.5 0 013 21V9.75z"
-                    />
-                    <path d="M9 22.5V12h6v10.5" />
-                </svg>
+                <i class="bi bi-grid-1x2-fill text-2xl"></i>
                 <span>Home</span>
             </a>
 
             <a
-                href="{{ route('overwork.show') }}"
-                class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'overwork') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
+                href="{{ route('overtime.show') }}"
+                class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'overtime') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
             >
-                <i class="bi bi-alarm text-2xl"></i>
-                <span>Overwork Request</span>
+                <i class="bi bi-clock-history text-2xl"></i>
+                <span>Overtime Requests</span>
             </a>
 
             <a
                 href="{{ route('leave.show') }}"
                 class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'leave') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
             >
-                <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    viewBox="0 0 24 24"
-                >
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                    <path d="M16 2v4M8 2v4M3 10h18" />
-                </svg>
-                <span>Leave Request</span>
+                <i class="bi bi-calendar2-event text-2xl"></i>
+                <span>Leave Requests</span>
             </a>
+
+            @if (auth()->user()->role === 'admin')
+                <a
+                href="{{ route('account.show') }}"
+                    class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'account') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
+                >
+                    <i class="bi bi-people-fill text-2xl"></i>
+                    <span>Employees</span>
+                </a>
+
+                <a
+                href="{{ route('admin.fingerprint-attendance') }}"
+                    class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Request::is('admin/fingerprint-attendance*') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
+                >
+                    <i class="bi bi-fingerprint text-2xl"></i>
+                    <span>Fingerprint Attendance</span>
+                </a>
+            @endif
 
             <a
                 href="{{ route('LogActivity.show') }}"
@@ -93,56 +87,14 @@
                 {{ request()->routeIs('LogActivity.show') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
                     >
                 <i class="bi bi-file-text text-2xl"></i>
-                <span>Log Activity</span>
+                <span>Activity Log</span>
             </a>
-
-            @if (auth()->user()->role === 'admin')
-                <a
-                href="{{ route('account.show') }}"
-                    class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ Str::startsWith(request()->route()->getName(), 'account') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-6 h-6"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <circle cx="12" cy="7" r="3" />
-                        <path
-                            d="M12 10c-2.5 0-4.5 2-4.5 4.5V18h9v-3.5c0-2.5-2-4.5-4.5-4.5z"
-                        />
-
-                        <circle cx="5" cy="8" r="2.5" />
-                        <path d="M5 10.5c-2 0-3 1.5-3 3V17h4" />
-
-                        <circle cx="19" cy="8" r="2.5" />
-                        <path d="M19 10.5c2 0 3 1.5 3 3V17h-4" />
-                    </svg>
-
-                    <span>Manage Account</span>
-                </a>
-            @endif
 
             <a
                 href="{{ route('profile.edit') }}"
                 class="flex items-center space-x-4 px-5 py-3 font-semibold transition-all duration-300 {{ request()->routeIs('profile.edit') ? 'bg-gradient-to-r from-[#1EB8CD] to-[#1EB8CD]/10' : 'hover:bg-gradient-to-r hover:from-[#597493] hover:to-[#1EB8CD]/10' }}"
             >
-                <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    viewBox="0 0 24 24"
-                >
-                    <circle cx="12" cy="7" r="4" />
-                    <path d="M5.5 21a6.5 6.5 0 0113 0" />
-                </svg>
+                <i class="bi bi-gear-fill text-2xl"></i>
                 <span>Profile</span>
             </a>
         </nav>
@@ -218,7 +170,7 @@
 
         <nav class="flex flex-col text-gray-800 divide-y">
             <a href="{{ route('dashboard') }}" class="px-5 py-4 font-semibold hover:bg-gray-100">Home</a>
-            <a href="{{ route('overwork.show') }}" class="px-5 py-4 font-semibold hover:bg-gray-100">Overwork Data</a>
+            <a href="{{ route('overtime.show') }}" class="px-5 py-4 font-semibold hover:bg-gray-100">Overtime Data</a>
             <a href="{{ route('leave.show') }}" class="px-5 py-4 font-semibold hover:bg-gray-100">Leave Data</a>
             <a href="{{ route('LogActivity.show') }}" class="px-5 py-4 font-semibold hover:bg-gray-100">Log Activity</a>
 

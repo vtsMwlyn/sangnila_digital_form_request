@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('overworks', function (Blueprint $table) {
+        Schema::create('overtimes', function (Blueprint $table) {
             $table->id();
-            $table->date('overwork_date');
-            $table->time('start_overwork');
-            $table->time('finished_overwork');
+            $table->date('overtime_date');
+            $table->time('start_overtime');
+            $table->time('finished_overtime');
             $table->text('task_description');
             $table->enum('request_status', ['draft', 'review', 'approved', 'rejected']);
             $table->text('admin_note')->nullable();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('overworks');
+        Schema::dropIfExists('overtimes');
     }
 };

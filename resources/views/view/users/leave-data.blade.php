@@ -4,10 +4,12 @@
     @php
         $requestType = request('type', 'all');
         $requestStatus = request('status', 'all');
+
+        $title = Auth::user()->role === 'user' ? 'My Leave Requests' : 'All Leave Request List';
     @endphp
 
     <div class="container-draft bg-[#FEFEFEB2] p-4 sm:p-6 rounded-2xl w-full shadow-lg overflow-x-auto">
-        <x-form-filter-all-data title="My Leave List" route="leave.show" :status="$requestStatus" :type="$requestType" />
+        <x-form-filter-all-data title="{{ $title }}" route="leave.show" :status="$requestStatus" :type="$requestType" />
 
         @if(auth()->user()->role === 'user')
             <x-anchor-button href="{{ route('leave.form-view') }}" class="mt-6 xl:mt-0">
@@ -148,7 +150,7 @@
                                     </span>
                                 </div>
                             <div class="flex text-sm text-gray-500">
-                                {{ Carbon\Carbon::parse($d->start_leave ?? $d->overwork_date)->format('d F Y') }}
+                                {{ Carbon\Carbon::parse($d->start_leave ?? $d->overtime_date)->format('d F Y') }}
                             </div>
                         </div>
 

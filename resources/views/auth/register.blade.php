@@ -314,7 +314,7 @@
             
                 <div class="mb-4 w-full">
                     <label
-                        for="overwork_allowance"
+                        for="overtime_allowance"
                         class="font-semibold text-sm block mb-1"
                         >Leave Balance</label
                     >
@@ -347,33 +347,33 @@
                 </div>
 
                 <div class="mb-4 w-full">
-                    <label for="Total_Overwork" class="font-semibold text-sm block mb-1">
-                        Total Overwork
+                    <label for="Total_Overtime" class="font-semibold text-sm block mb-1">
+                        Total Overtime
                     </label>
 
                     <div class="flex flex-col md:flex-row gap-4">
                         <x-text-input
-                            placeholder="Enter Total Overwork in Days"
-                            id="Total_Overwork_Day"
+                            placeholder="Enter Total Overtime in Days"
+                            id="Total_Overtime_Day"
                             type="text"
-                            name="Total_Overwork_Day"
-                            :value="old('Total_Overwork_Day')"
+                            name="Total_Overtime_Day"
+                            :value="old('Total_Overtime_Day')"
                             required
                             class=" w-full md:w-1/2 rounded border px-3 py-2"
                         />
 
                         <x-text-input
-                            placeholder="Enter Total Overwork in Hours"
-                            id="Total_Overwork_Hour"
+                            placeholder="Enter Total Overtime in Hours"
+                            id="Total_Overtime_Hour"
                             type="text"
-                            name="Total_Overwork_Hour"
-                            :value="old('Total_Overwork_Hour')"
+                            name="Total_Overtime_Hour"
+                            :value="old('Total_Overtime_Hour')"
 
                             class=" w-full md:w-1/2 rounded border px-3 py-2"
                         />
                     </div>
 
-                    <x-input-error :messages="$errors->get('Total_Overwork')" class="mt-1 text-red-600" />
+                    <x-input-error :messages="$errors->get('Total_Overtime')" class="mt-1 text-red-600" />
                 </div>
 
                 <div class="w-full mb-4">

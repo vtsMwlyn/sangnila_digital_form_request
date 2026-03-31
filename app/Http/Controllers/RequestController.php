@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Leave;
 use App\Models\Evidence;
-use App\Models\Overwork;
+use App\Models\Overtime;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -21,20 +21,20 @@ class RequestController extends Controller
             return $item;
         });
 
-        $overwork = Overwork::with('evidence')->orderByDesc('created_at')->get()->map(function ($item) {
-            $item->type = 'overwork';
+        $overtime = Overtime::with('evidence')->orderByDesc('created_at')->get()->map(function ($item) {
+            $item->type = 'overtime';
             return $item;
         });
 
-        return $leaves->concat($overwork)->sortByDesc('created_at');
+        return $leaves->concat($overtime)->sortByDesc('created_at');
     }
 
     private function applyFilters($data, $month, $search)
     {
         if ($month && $month !== 'all') {
             $data = $data->filter(function ($item) use ($month) {
-                if ($item->type === 'overwork') {
-                    return Carbon::parse($item->overwork_date)->format('m-Y') === $month;
+                if ($item->type === 'overtime') {
+                    return Carbon::parse($item->overtime_date)->format('m-Y') === $month;
                 } else {
                     return Carbon::parse($item->start_leave)->format('m-Y') === $month;
                 }
@@ -81,12 +81,12 @@ class RequestController extends Controller
 
         if (Auth::user()->role === 'user') {
             if ($routeName != 'dashboard') {
-                if (Str::before($routeName, '.') === 'overwork') {
-                    $data = $this->applyFilters($data, $month, $search)->where('type', 'overwork')->where('user_id', Auth::id());
+                if (Str::before($routeName, '.') === 'overtime') {
+                    $data = $this->applyFilters($data, $month, $search)->where('type', 'overtime')->where('user_id', Auth::id());
                     if ($status && $status != 'all') {
                         $data = $data->where('request_status', $status);
                     }
-                    return view('view.users.overwork-data', compact('data'));
+                    return view('view.users.overtime-data', compact('data'));
                 } else {
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'leave')->where('user_id', Auth::id());
                     if ($status && $status != 'all') {
@@ -100,12 +100,12 @@ class RequestController extends Controller
             }
         } elseif (Auth::user()->role === 'admin') {
             if ($routeName != 'dashboard') {
-                if (Str::before($routeName, '.') === 'overwork') {
-                    $data = $this->applyFilters($data, $month, $employeeSearch)->where('type', 'overwork')->where('request_status', '!=', 'draft');
+                if (Str::before($routeName, '.') === 'overtime') {
+                    $data = $this->applyFilters($data, $month, $employeeSearch)->where('type', 'overtime')->where('request_status', '!=', 'draft');
                     if ($status && $status !== 'all') {
                         $data = $data->where('request_status', $status);
                     }
-                    return view('view.users.overwork-data', compact('data'));
+                    return view('view.users.overtime-data', compact('data'));
                 } else {
                     $data = $this->applyFilters($data, $month, $employeeSearch)->where('type', 'leave')->where('request_status', '!=', 'draft');
                     if ($status && $status !== 'all') {

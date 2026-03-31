@@ -48,7 +48,7 @@
 
                     <td class="py-4 px-6">
                         @php
-                            $duration = \Carbon\Carbon::parse($d->start_overwork)->diff(\Carbon\Carbon::parse($d->finished_overwork));
+                            $duration = \Carbon\Carbon::parse($d->start_overtime)->diff(\Carbon\Carbon::parse($d->finished_overtime));
                             @endphp
                         @if ($duration->format('%i') == '0')
                             {{ $duration->format('%h hours') }}
@@ -58,19 +58,19 @@
                     </td>
 
                     <td class="py-4 px-6">
-                        <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overwork' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
+                        <span class="py-1 px-3 rounded-full capitalize text-white {{ $d->type === 'overtime' ? 'bg-amber-500' : 'bg-sky-500' }}">{{ $d->type }}</span>
                     </td>
 
                     <td class="py-4 px-6 text-center">
                         <div class="flex space-x-2">
                             <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                             <a
-                                href="{{ route('overwork.edit', $d->id) }}"
+                                href="{{ route('overtime.edit', $d->id) }}"
                                 title="Edit"
                             >
                             <img src="{{ asset('img/edit.svg') }}" alt="edit" class=" h-6 w-6">
                             </a>
-                            <form action="{{ route('overwork.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure want to delete this overwork draft?')">
+                            <form action="{{ route('overtime.delete', $d->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure want to delete this overtime draft?')">
                                 @csrf
                                 @method('DELETE')
                                 <button
@@ -90,14 +90,14 @@
                     @endphp
                     <td colspan="6" class="py-8 px-6 text-center text-gray-500 bg-white">
                         <div class="flex flex-col items-center">
-                            @if ($requestType === 'overwork')
+                            @if ($requestType === 'overtime')
                                 <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                     <circle cx="12" cy="12" r="9" />
                                     <path d="M12 7v5l3 3" />
                                 </svg>
-                                <p class="capitalize">No overwork data found</p>
-                                <a href="{{ route('overwork.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
-                                    Create your first overwork request
+                                <p class="capitalize">No overtime data found</p>
+                                <a href="{{ route('overtime.form-view') }}" class="text-[#1EB8CD] hover:underline mt-2">
+                                    Create your first overtime request
                                 </a>
                             @elseif ($requestType === 'leave')
                                 <svg class="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@
                                         <path d="M16 2v4M8 2v4M3 10h18" />
                                     </svg>
                                 </div>
-                                <p>Draft overwork or leave data not found</p>
+                                <p>Draft overtime or leave data not found</p>
                             @endif
                         </div>
                     </td>

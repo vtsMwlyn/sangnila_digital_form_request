@@ -5,7 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Overwork extends Model
+class Overtime extends Model
 {
     protected $guarded = ['id'];
 
@@ -21,17 +21,17 @@ class Overwork extends Model
 
     public static function getTotalApprovedHours($userId)
     {
-        $overworks = self::where('user_id', $userId) ->where('request_status', 'approved') ->get();
+        $overtimes = self::where('user_id', $userId) ->where('request_status', 'approved') ->get();
 
-        $totalHours = $user->overwork_balance ?? 0;
+        $totalHours = $user->overtime_balance ?? 0;
 
-        $overworks = self::where('user_id', $userId)
+        $overtimes = self::where('user_id', $userId)
             ->where('request_status', 'approved')
             ->get();
 
-        foreach ($overworks as $o) {
-            $start = \Carbon\Carbon::parse($o->start_overwork);
-            $end = \Carbon\Carbon::parse($o->finished_overwork);
+        foreach ($overtimes as $o) {
+            $start = \Carbon\Carbon::parse($o->start_overtime);
+            $end = \Carbon\Carbon::parse($o->finished_overtime);
             $totalHours += $start->diffInHours($end);
         }
 

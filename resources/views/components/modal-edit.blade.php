@@ -68,16 +68,16 @@
 
                 <div class="flex gap-4">
                 <div class="mb-4  w-1/2">
-                    <label for="overwork_balance" class="font-semibold text-sm block mb-1">Total Overwork</label>
+                    <label for="overtime_balance" class="font-semibold text-sm block mb-1">Total Overtime</label>
                     <div class="relative">
-                    <x-text-input id="overwork_balance_Day" name="overwork_balance_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Day"/>
+                    <x-text-input id="overtime_balance_Day" name="overtime_balance_Day" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overtime in Day"/>
                     <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Days</label>
                     </div>
                 </div>
 
                 <div class="mt-6 w-1/2">
                     <div class="relative">
-                    <x-text-input id="overwork_balance_Hour" name="overwork_balance_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overwork in Hours" />
+                    <x-text-input id="overtime_balance_Hour" name="overtime_balance_Hour" type="text" class="w-full rounded border px-3 py-2"  placeholder="Enter Total Overtime in Hours" />
                     <label class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none">Hours</label>
                 </div>
                 </div>

@@ -43,8 +43,8 @@ class RegisteredUserController extends Controller
             'role' => ['required', 'in:admin,user'],
             'Leave_Balance_Day' => 'required|numeric',
             'Leave_Balance_Hour' => 'nullable|numeric',
-            'Total_Overwork_Day' => 'required|numeric',
-            'Total_Overwork_Hour' => 'nullable|numeric',
+            'Total_Overtime_Day' => 'required|numeric',
+            'Total_Overtime_Hour' => 'nullable|numeric',
         ]);
 
         $validate['position'] = $validate['position'] === 'other'
@@ -57,8 +57,8 @@ class RegisteredUserController extends Controller
 
         unset($validate['position_other'], $validate['department_other']);
 
-        $overworkAllowance = (int) $validate['Leave_Balance_Day'] * 8 +  $validate['Leave_Balance_Hour'];
-        $TotalOverwork = (int) $validate['Total_Overwork_Day'] * 8 + $validate['Total_Overwork_Hour'] ;
+        $overtimeAllowance = (int) $validate['Leave_Balance_Day'] * 8 +  $validate['Leave_Balance_Hour'];
+        $TotalOvertime = (int) $validate['Total_Overtime_Day'] * 8 + $validate['Total_Overtime_Hour'] ;
 
         $user = User::create([
             'name' => $validate['name'],
@@ -69,8 +69,8 @@ class RegisteredUserController extends Controller
             'position' => $validate['position'],
             'department' => $validate['department'],
             'role' => $validate['role'],
-            'leave_balance' => $overworkAllowance,
-            'overwork_balance' => $TotalOverwork,
+            'leave_balance' => $overtimeAllowance,
+            'overtime_balance' => $TotalOvertime,
         ]);
 
         event(new Registered($user));
@@ -88,8 +88,8 @@ class RegisteredUserController extends Controller
             'status' => 'nullable|string|max:255',
             'Leave_Balance_Day' => 'nullable|numeric',
             'Leave_Balance_Hour' => 'nullable|numeric',
-            'overwork_balance_Day' => 'nullable|numeric',
-            'overwork_balance_Hour' => 'nullable|numeric',
+            'overtime_balance_Day' => 'nullable|numeric',
+            'overtime_balance_Hour' => 'nullable|numeric',
             'position' => 'nullable|string|max:255',
             'position_other' => 'nullable|string',
             'department' => 'nullable|string|max:255',
@@ -108,11 +108,11 @@ class RegisteredUserController extends Controller
 
         $leaveBalanceTimes8 = isset($validate['Leave_Balance_Day'], $validate['Leave_Balance_Hour'] )
             ? (int) $validate['Leave_Balance_Day'] * 8 + $validate['Leave_Balance_Hour']
-            : $user->overwork;
+            : $user->overtime;
 
-        $totalOverworkTimes8 = isset($validate['overwork_balance_Day'], $validate['Leave_Balance_Hour'])
-            ? (int) $validate['overwork_balance_Day'] * 8 +  $validate['overwork_balance_Hour']
-            : $user->overwork_balance;
+        $totalOvertimeTimes8 = isset($validate['overtime_balance_Day'], $validate['Leave_Balance_Hour'])
+            ? (int) $validate['overtime_balance_Day'] * 8 +  $validate['overtime_balance_Hour']
+            : $user->overtime_balance;
 
         $user->update([
             'name' => $validate['name'],
@@ -122,7 +122,7 @@ class RegisteredUserController extends Controller
             'position' => $validate['position'] ?? $user->position,
             'department' => $validate['department'] ?? $user->department,
             'leave_balance' => $leaveBalanceTimes8,
-            'overwork_balance' => $totalOverworkTimes8,
+            'overtime_balance' => $totalOvertimeTimes8,
         ]);
 
         return redirect()->back()->with('success', [
@@ -145,22 +145,22 @@ class RegisteredUserController extends Controller
             if ($user->leave_balance < $totalLate) {
                 return redirect()->back()->with('fail', [
                     'title'   => 'Exceeds Limit',
-                    'message' => 'This user exceeds the allowed overwork limit.',
+                    'message' => 'This user exceeds the allowed overtime limit.',
                 ]);
             }
             $user->leave_balance =max(0, $user->leave_balance - $totalLate);
-        } elseif ($mode === 'overwork') {
-            if ($user->overwork_balance < $totalLate) {
+        } elseif ($mode === 'overtime') {
+            if ($user->overtime_balance < $totalLate) {
                 return redirect()->back()->with('fail', [
                     'title'   => 'Exceeds Limit',
-                    'message' => 'This user exceeds the allowed overwork limit.',
+                    'message' => 'This user exceeds the allowed overtime limit.',
                 ]);
             }
-            $user->overwork_balance = max(0, $user->overwork_balance - $totalLate);
+            $user->overtime_balance = max(0, $user->overtime_balance - $totalLate);
         } else {
             return redirect()->back()->with('fail', [
                 'title' => 'Invalid Mode',
-                'message' => 'Mode must be either leave or overwork.',
+                'message' => 'Mode must be either leave or overtime.',
             ]);
         }
 
@@ -168,7 +168,7 @@ class RegisteredUserController extends Controller
         //     'user' => $user,
         //     'total' =>  $totalLate,
         //     'dt leave' =>   $user->leave_balance,
-        //     'dt leaveoverwork' =>  $user->overwork_balance,
+        //     'dt leaveovertime' =>  $user->overtime_balance,
         // ]);
 
         $user->save();

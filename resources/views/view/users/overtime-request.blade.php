@@ -4,8 +4,8 @@
     @php
         $existingEvidences = [];
 
-        if (isset($overwork)) {
-            foreach ($overwork->evidence as $e) {
+        if (isset($overtime)) {
+            foreach ($overtime->evidence as $e) {
                 $ext = strtolower(pathinfo($e->path, PATHINFO_EXTENSION));
 
                 $existingEvidences[] = [
@@ -20,20 +20,20 @@
     @endphp
 
     <form
-        action="{{ isset($overwork) ? route('overwork.update', $overwork) : route('overwork.insert') }}"
+        action="{{ isset($overtime) ? route('overtime.update', $overtime) : route('overtime.insert') }}"
         method="post"
         enctype="multipart/form-data"
         class="container-draft bg-[#FEFEFEB2] p-8 rounded-2xl w-full shadow-lg overflow-x-auto"
     >
         @csrf
-        @if(isset($overwork))
+        @if(isset($overtime))
             @method('PUT')
         @endif
 
         <x-back-button onclick="history.back();" />
 
         <h2 class="text-[#042E66] text-3xl font-black mt-2 mb-1">
-            {{ isset($overwork) ? 'Edit Overwork Draft' : 'New Overwork Request' }}
+            {{ isset($overtime) ? 'Edit Overtime Draft' : 'New Overtime Request' }}
         </h2>
         <span class="text-slate-500 italic">Pengajuan Lembur</span>
         <x-separator-line/>
@@ -61,9 +61,9 @@
                 </div>
             </div>
 
-            {{-- ================= Overwork Section ================= --}}
+            {{-- ================= Overtime Section ================= --}}
             <div class="flex-1 flex flex-col w-full">
-                <h3 class="text-blue-800 font-extrabold text-lg xl:mt-0 mt-2">Overwork Information</h3>
+                <h3 class="text-blue-800 font-extrabold text-lg xl:mt-0 mt-2">Overtime Information</h3>
 
                 {{-- Date Input --}}
                 <div class="w-full relative mt-4">
@@ -75,7 +75,7 @@
                         type="date"
                         name="date"
                         id="date"
-                        value="{{ old('date', isset($overwork) ? $overwork->overwork_date : '') }}"
+                        value="{{ old('date', isset($overtime) ? $overtime->overtime_date : '') }}"
                         class="w-full"
                         onclick="this.showPicker();"
                     />
@@ -93,7 +93,7 @@
                             type="time"
                             name="start"
                             id="start"
-                            value="{{ old('start', isset($overwork) ? $overwork->start_overwork : '17:00') }}"
+                            value="{{ old('start', isset($overtime) ? $overtime->start_overtime : '17:00') }}"
                             class="border-2 w-full"
                             />
                             <x-unvalid-input field="start" />
@@ -109,7 +109,7 @@
                             type="time"
                             name="finish"
                             id="finish"
-                            value="{{ old('finish', isset($overwork) ? $overwork->finished_overwork : '') }}"
+                            value="{{ old('finish', isset($overtime) ? $overtime->finished_overtime : '') }}"
                             class="border-2 w-full"
                             required
                         />
@@ -126,11 +126,11 @@
                         name="desc"
                         id="desc"
                         rows="4"
-                        placeholder="Describe or list the tasks you did for this overwork"
+                        placeholder="Describe or list the tasks you did for this overtime"
                         required
                         class="w-full"
                     >
-                        {{ old('desc', isset($overwork) ? $overwork->task_description : '') }}
+                        {{ old('desc', isset($overtime) ? $overtime->task_description : '') }}
                     </x-textarea>
                 </div>
 
@@ -202,7 +202,7 @@
     </x-modal>
 
     {{-- ================= JS Section ================= --}}
-    @if(isset($overwork))
+    @if(isset($overtime))
         <script>
             window.existingEvidences = @json($existingEvidences);
         </script>
@@ -370,7 +370,7 @@
             }
 
             if (del && confirm("Delete this evidence?")) {
-                fetch(`/overwork/evidence/${del.dataset.id}`, {
+                fetch(`/overtime/evidence/${del.dataset.id}`, {
                     method: "DELETE",
                     headers: {
                         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,

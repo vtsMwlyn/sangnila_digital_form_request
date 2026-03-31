@@ -32,12 +32,12 @@
     title="Show Details"
     data-id="{{ $d->id }}"
     data-date="{{ Carbon\Carbon::parse($d->created_at)->format('d F Y') }}"
-    data-overwork_date="{{ Carbon\Carbon::parse($d->overwork_date)->format('d F Y') }}"
-    data-start="{{ $d->type === 'overwork'
-                                ? Carbon\Carbon::parse($d->start_overwork)->format('H : i')
+    data-overtime_date="{{ Carbon\Carbon::parse($d->overtime_date)->format('d F Y') }}"
+    data-start="{{ $d->type === 'overtime'
+                                ? Carbon\Carbon::parse($d->start_overtime)->format('H : i')
                                 : Carbon\Carbon::parse($d->start_leave)->format('d F Y') }}"
-    data-finished="{{ $d->type === 'overwork'
-                                ? Carbon\Carbon::parse($d->finished_overwork)->format('H : i')
+    data-finished="{{ $d->type === 'overtime'
+                                ? Carbon\Carbon::parse($d->finished_overtime)->format('H : i')
                                 : $finish->format('d F Y') }}"
     data-type="{{ $d->type }}"
     data-description="{{ ucfirst(strtolower($d->reason ?? $d->task_description)) }}"
@@ -50,17 +50,17 @@
         $balanceHour = ($d->user->leave_balance / 8 - $balanceDay) * 8;
 
         // OVERWORK
-        $overworkDay  = floor($d->user->overwork_balance / 8);
-        $overworkHour = ($d->user->overwork_balance / 8 - $overworkDay) * 8;
+        $overtimeDay  = floor($d->user->overtime_balance / 8);
+        $overtimeHour = ($d->user->overtime_balance / 8 - $overtimeDay) * 8;
 
         $formattedBalance = "{$balanceDay} Day" . ($balanceDay != 1 ? 's' : '') . " {$balanceHour} Hour" . ($balanceHour != 1 ? 's' : '');
-        $formattedOverwork = "{$overworkDay} Day" . ($overworkDay != 1 ? 's' : '') . " {$overworkHour} Hour" . ($overworkHour != 1 ? 's' : '');
+        $formattedOvertime = "{$overtimeDay} Day" . ($overtimeDay != 1 ? 's' : '') . " {$overtimeHour} Hour" . ($overtimeHour != 1 ? 's' : '');
     @endphp
     data-balance="{{ $formattedBalance }}"
-    data-overwork="{{ $formattedOverwork }}"
+    data-overtime="{{ $formattedOvertime }}"
     data-admin_note="{{ ucfirst(strtolower($d->admin_note)) }}"
     data-admin_change="{{$d->role}}"
-    @if($d->type === 'overwork') data-evidences="{{ $d->evidence->toJson() }}" @endif
+    @if($d->type === 'overtime') data-evidences="{{ $d->evidence->toJson() }}" @endif
 >
     <img src="{{ asset('img/view.svg') }}" alt="view">
 </button>
@@ -89,7 +89,7 @@
             value="{{ $d->type }}"
             class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }} transition hover:scale-105"
             title="Accept"
-            @if($d->type === 'overwork')
+            @if($d->type === 'overtime')
                 onclick="return confirm('Are you sure want to accept this request?')"
             @else
                 onclick="event.preventDefault(); openChooseModal(this);"

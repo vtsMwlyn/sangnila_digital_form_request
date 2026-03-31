@@ -33,14 +33,14 @@
                     </button>
                 </form>
 
-                <form method="post" action="{{ route('admin.leave.approve', ['mode' => 'overwork']) }}" class="w-full flex flex-col items-center">
+                <form method="post" action="{{ route('admin.leave.approve', ['mode' => 'overtime']) }}" class="w-full flex flex-col items-center">
                     @csrf
                     <input type="hidden" name="leaveId" value="0" />
-                    <p class="mb-2 text-slate-500" id="choose-modal-user-overwork-balance"></p>
+                    <p class="mb-2 text-slate-500" id="choose-modal-user-overtime-balance"></p>
                     <button type="submit"
                         class="w-full py-3 bg-gradient-to-r from-[#1EB8CD] to-[#2652B8] hover:from-cyan-600 hover:to-blue-700 text-white font-semibold rounded-xl shadow-md transition duration-200 transform hover:scale-[1.02]">
                         <i class="bi bi-alarm mr-2"></i>
-                        Overwork Balance
+                        Overtime Balance
                     </button>
                 </form>
             </div>
