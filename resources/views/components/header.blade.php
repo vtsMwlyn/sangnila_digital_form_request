@@ -7,7 +7,7 @@
         class="cursor-pointer h-[45px] xl:h-[50px] ml-3 invert-0 brightness-0 saturate-100 hue-rotate-[200deg]"
         />
         <div class="bg-[#042E66] w-[3px] h-12"></div>
-        <h1 class="text-md xl:text-xl text-[#042E66] uppercase">Sangnila Employee Management System</h1>
+        <h1 class="text-md xl:text-xl text-[#042E66] uppercase">Employee Management System</h1>
     </div>
 
     <div class="hidden sm:flex items-center mr-4">
