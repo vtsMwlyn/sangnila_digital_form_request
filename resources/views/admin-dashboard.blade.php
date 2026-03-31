@@ -309,7 +309,7 @@
                             textColor: '#fff',
                             extendedProps: {
                                 subtitle: 'Hari Libur Nasional',
-                                type: 'holiday'
+                                // type: 'holiday'
                             }
                         }));
 

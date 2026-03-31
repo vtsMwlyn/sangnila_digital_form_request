@@ -279,9 +279,77 @@
         </div>
     </div>
 
+    {{-- Calendar --}}
+    <div class="bg-[#F0F3F8] rounded-2xl shadow-md p-6 mt-10">
+        <div id="calendar" class="w-full h-full"></div>
+    </div>
+
     <x-modal-success />
     <x-modal-reject/>
     <x-modal-choose/>
     <x-preview-data title="request" />
     <x-manage-data />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+
+            const baseEvents = @json($data['calendar_events']);
+
+            const API_KEY = "AIzaSyA4MmeGJ_-lmQP5jTi02YnBcM0rfoUuMko";
+            const calendarId = "en.indonesian#holiday@group.v.calendar.google.com";
+
+            const googleUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${API_KEY}&timeMin=2026-01-01T00:00:00Z&timeMax=2026-12-31T23:59:59Z`;
+
+            fetch(googleUrl)
+                .then(res => res.json())
+                .then(data => {
+
+                    // 🟥 Map Google holidays
+                    const holidayEvents = (data.items || [])
+                        .filter(item => item.start && item.start.date) // only all-day
+                        .map((item, i) => ({
+                            id: 'g-' + i,
+                            title: item.summary,
+                            start: item.start.date,
+                            end: item.end ? item.end.date : null,
+                            allDay: true,
+                            backgroundColor: '#ef4444',
+                            borderColor: '#ef4444',
+                            textColor: '#fff',
+                            extendedProps: {
+                                subtitle: 'Hari Libur Nasional',
+                                // type: 'holiday'
+                            }
+                        }));
+
+                    // 🔥 Merge with your Blade events
+                    const mergedEvents = [...baseEvents, ...holidayEvents];
+
+                    const calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        height: 'auto',
+                        events: mergedEvents,
+                        firstDay: 1,
+
+                        eventContent: function(arg) {
+                            const type = arg.event.extendedProps.type;
+
+                            return {
+                                html: `
+                                    <div class="text-xs leading-tight ${type === 'holiday' ? 'text-red-700' : ''}">
+                                        ${arg.event.title}
+                                    </div>
+                                    <div class="text-[10px] opacity-80">
+                                        ${arg.event.extendedProps.subtitle ?? ''}
+                                    </div>
+                                `
+                            };
+                        },
+                    });
+
+                    calendar.render();
+                });
+        });
+    </script>
 @endsection

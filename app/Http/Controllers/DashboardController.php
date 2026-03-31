@@ -91,6 +91,10 @@ class DashboardController extends Controller
         // Full Calendar
         $leaves = Leave::with('user')->where('request_status', 'approved')->get();
 
+        if(Auth::user()->role === 'user'){
+            $leaves = $leaves->where('user_id', Auth::id());
+        }
+
         $data['calendar_events'] = $leaves->flatMap(function ($leave) {
 
             $days = max(1, ceil($leave->leave_period / 8));
