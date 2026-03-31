@@ -161,31 +161,29 @@ Route::get('/api/employee/leave/calendar', function(){
     })->where('request_status', 'approved')->where('start_leave', 'like', Carbon::today()->format('Y-m') . '%')->get();
 
     $data['calendar_events'] = $leaves->flatMap(function ($leave) {
-
+    
         $days = max(1, ceil($leave->leave_period / 8));
         $startDate = Carbon::parse($leave->start_leave);
         $endDate   = $startDate->copy()->addWeekdays($days - 1);
-
+    
         $segments = [];
         $current = $startDate->copy();
-
+    
         while ($current->lte($endDate)) {
-
-            // Skip weekends
+    
             if ($current->isWeekend()) {
                 $current->addDay();
                 continue;
             }
-
-            // End of current weekday streak
+    
             $segmentStart = $current->copy();
-
+    
             while ($current->isWeekday() && $current->lte($endDate)) {
                 $current->addDay();
             }
-
-            $segmentEnd = $current->copy(); // exclusive for FullCalendar
-
+    
+            $segmentEnd = $current->copy();
+    
             $segments[] = [
                 'id'       => $leave->id,
                 'title'    => implode(' ', array_slice(explode(' ', trim($leave->user->name)), 0, 2)),
@@ -195,9 +193,13 @@ Route::get('/api/employee/leave/calendar', function(){
                 'color'    => 'oklch(71.5% 0.143 215.221)',
             ];
         }
-
-        return response()->json(['data' => $segments]);
+    
+        return $segments; // ✅ FIX HERE
     });
+    
+    return response()->json([
+        'data' => $data['calendar_events']
+    ]);
 });
 
 require __DIR__ . '/auth.php';
