@@ -2,12 +2,12 @@
 
     <div class="flex items-center space-x-4">
         <img
-        src="{{ asset('img/logo.png') }}"
+        src="{{ asset('img/sangnila_blue.webp') }}"
         alt="Logo"
-        class="cursor-pointer h-[45px] xl:h-[50px] ml-3 invert-0 brightness-0 saturate-100 hue-rotate-[200deg]"
+        class="cursor-pointer w-16 ml-3"
         />
-        <div class="bg-[#042E66] w-[3px] h-12"></div>
-        <h1 class="text-md xl:text-xl text-[#042E66] uppercase">Employee Management System</h1>
+        <div class="bg-[#344C9B] w-[2px] h-12"></div>
+        <h1 class="text-md xl:text-lg text-[#344C9B] uppercase">Employee Management System</h1>
     </div>
 
     <div class="hidden sm:flex items-center mr-4">
