@@ -24,13 +24,25 @@
                 <label>End Date</label>
                 <x-text-input type="date" onclick="this.showPicker()" id="endDate" class="mt-1 block w-full border rounded px-2 py-1" />
             </div>
+        </div>
 
-            <div class="col-span-3">
-                <x-button type="button" id="submitBtn"
-                    class="bg-blue-500 text-white px-4 py-2 rounded">
-                    Fetch Attendance
-                </x-button>
+        <div class="w-full mb-4 flex justify-between items-center">
+            <div class="flex gap-6">
+                <label for="isRamadhan" class="flex items-center gap-2">
+                    <input type="checkbox" id="isRamadhan">
+                    <p>Is Ramadhan Month</p>
+                </label>
+
+                <label for="fridayFellowship" class="flex items-center gap-2">
+                    <input type="checkbox" id="fridayFellowship">
+                    <p>Friday has Fellowship</p>
+                </label>
             </div>
+
+            <x-button type="button" id="submitBtn"
+                class="bg-blue-500 text-white px-4 py-2 rounded">
+                Fetch Attendance
+            </x-button>
         </div>
 
         {{-- Result --}}
@@ -45,22 +57,19 @@
     </section>
 
     <script>
-        document.addEventListener("DOMContentLoaded", async function () {
-            const startInput = document.getElementById("startDate");
-            const endInput = document.getElementById("endDate");
-            const resultContainer = document.getElementById('resultContainer');
-            const submitBtn = document.getElementById('submitBtn');
-            const loader = document.getElementById('global-loading');
+        $(document).ready(function () {
 
-            const now = new Date();
+            const $startInput = $("#startDate");
+            const $endInput = $("#endDate");
+            const $resultContainer = $("#resultContainer");
+            const $submitBtn = $("#submitBtn");
+            const $loader = $("#global-loading");
+            const $keyword = $("#keyword");
+            const $isRamadhan = $('#isRamadhan');
+            const $fridayFellowship = $('#fridayFellowship');
 
-            // End date = 25th of current month
-            const endDate = new Date(now.getFullYear(), now.getMonth(), 25);
+            // ===== UTILS =====
 
-            // Start date = 26th of previous month
-            const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 26);
-
-            // Format to YYYY-MM-DD
             function formatInputDate(date) {
                 const yyyy = date.getFullYear();
                 const mm = String(date.getMonth() + 1).padStart(2, "0");
@@ -68,60 +77,19 @@
                 return `${yyyy}-${mm}-${dd}`;
             }
 
-            startInput.value = formatInputDate(startDate);
-            endInput.value = formatInputDate(endDate);
-
-            try {
-                const employeesData = await fetch("https://cron.sangnilaindonesia.com/get-employees", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "x-api-key": "your_super_secret_key"
-                    },
-                });
-
-                const result = await employeesData.json();
-
-                if (!result.success || !result.data || result.data.length === 0) {
-                    resultContainer.innerHTML = "<p>No data</p>";
-                } else {
-                    const selectEmployee = document.getElementById('keyword');
-                    selectEmployee.innerHTML = '';
-
-                    result.data.forEach(employee => {
-                        const employeeOption = document.createElement('option');
-                        employeeOption.setAttribute('value', employee.name);
-                        employeeOption.innerText = employee.name;
-                        selectEmployee.appendChild(employeeOption);
-                    });
-                }
-
-            } catch (err) {
-                console.error(err);
-            }
-
-            const formatDate = (dateStr) => {
+            function formatDate(dateStr) {
                 if (!dateStr) return "-";
 
                 const d = new Date(dateStr);
 
-                const days = [
-                    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-                ];
+                const days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+                const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-                const months = [
-                    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-                ];
+                return `${days[d.getDay()]}, ${String(d.getDate()).padStart(2, "0")} ${months[d.getMonth()]} ${d.getFullYear()}`;
+            }
 
-                return days[d.getDay()] + ", " +
-                    String(d.getDate()).padStart(2, "0") + " " +
-                    months[d.getMonth()] + " " +
-                    d.getFullYear();
-            };
-
-            const formatTime = (timeStr) => {
-                if (!timeStr) return "-";
+            function formatTime(timeStr) {
+                if (!timeStr || timeStr === '—') return "—";
 
                 const [h, m, s] = timeStr.split(":").map(Number);
 
@@ -130,57 +98,155 @@
                 date.setMinutes(m);
                 date.setSeconds(s || 0);
 
-                return String(date.getHours()).padStart(2, "0") + ":" +
-                    String(date.getMinutes()).padStart(2, "0");
-            };
+                return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+            }
 
-            submitBtn.addEventListener('click', async function(e) {
-                e.preventDefault();
+            function checkLateness(date, checkInTime) {
+                if (!checkInTime) return false;
 
-                if(loader) loader.classList.remove('hidden');
+                const [h, m] = checkInTime.split(":").map(Number);
 
-                submitBtn.innerText = "Loading...";
-                submitBtn.disabled = true;
+                const ramadhan = $isRamadhan.is(':checked');
+                const hasFellowship = $fridayFellowship.is(':checked');
 
-                const payload = {
-                    keyword: document.getElementById('keyword').value,
-                    startDate: document.getElementById('startDate').value,
-                    endDate: document.getElementById('endDate').value
-                };
+                const isFriday = new Date(date).getDay() === 5;
 
-                try {
-                    // console.log('🕘 Fetching data...', payload);
+                const isSpecialDay = ramadhan || (hasFellowship && isFriday);
 
-                    const attendancesData = await fetch("https://cron.sangnilaindonesia.com/get-attendances", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "x-api-key": "your_super_secret_key"
-                        },
-                        body: JSON.stringify(payload)
-                    });
+                // adjust timezone if needed
+                const hour = h + 1;
 
-                    const result = await attendancesData.json();
+                const totalMinutes = hour * 60 + m;
+
+                const cutoff = (isSpecialDay ? 8 : 9) * 60 + 15;
+
+                return totalMinutes > cutoff;
+            }
+
+            function normalizeAttendance(date, checkIn, checkOut) {
+                if (!checkIn || !checkOut) {
+                    return {
+                        checkIn: checkIn || "—",
+                        checkOut: checkOut || "—"
+                    };
+                }
+
+                if (checkIn === checkOut) {
+                    const [h, m] = checkIn.split(":").map(Number);
+                    const totalMinutes = h * 60 + m;
+
+                    const ramadhan = $isRamadhan.is(':checked');
+                    const hasFellowship = $fridayFellowship.is(':checked');
+                    const isFriday = new Date(date).getDay() === 5;
+
+                    const isSpecialDay = ramadhan || (hasFellowship && isFriday);
+
+                    // dynamic threshold
+                    const threshold = (isSpecialDay ? 12 : 13) * 60;
+
+                    if (totalMinutes < threshold) {
+                        return {
+                            checkIn: checkIn,
+                            checkOut: "—"
+                        };
+                    } else {
+                        return {
+                            checkIn: "—",
+                            checkOut: checkOut
+                        };
+                    }
+                }
+
+                return { checkIn, checkOut };
+            }
+
+            // ===== INIT DATE =====
+
+            const now = new Date();
+
+            const endDate = new Date(now.getFullYear(), now.getMonth(), 25);
+            const startDate = new Date(now.getFullYear(), now.getMonth() - 1, 26);
+
+            $startInput.val(formatInputDate(startDate));
+            $endInput.val(formatInputDate(endDate));
+
+            // ===== FETCH EMPLOYEES =====
+
+            $.ajax({
+                url: "https://cron.sangnilaindonesia.com/get-employees",
+                method: "POST",
+                headers: {
+                    "x-api-key": "your_super_secret_key"
+                },
+                success: function (result) {
 
                     if (!result.success || !result.data || result.data.length === 0) {
-                        resultContainer.innerHTML = "<p>No data</p>";
+                        $resultContainer.html("<p>No data</p>");
+                        return;
+                    }
 
-                        // console.log('🟡 No data found...');
-                    } else {
+                    $keyword.empty();
+
+                    result.data.forEach(emp => {
+                        $keyword.append(
+                            `<option value="${emp.name}">${emp.name}</option>`
+                        );
+                    });
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+
+            // ===== SUBMIT =====
+
+            $submitBtn.on("click", function (e) {
+                e.preventDefault();
+
+                $loader.removeClass("hidden");
+
+                $submitBtn.text("Loading...").prop("disabled", true);
+
+                const payload = {
+                    keyword: $keyword.val(),
+                    startDate: $startInput.val(),
+                    endDate: $endInput.val()
+                };
+
+                $.ajax({
+                    url: "https://cron.sangnilaindonesia.com/get-attendances",
+                    method: "POST",
+                    headers: {
+                        "x-api-key": "your_super_secret_key"
+                    },
+                    contentType: "application/json",
+                    data: JSON.stringify(payload),
+
+                    success: function (result) {
+
+                        if (!result.success || !result.data || result.data.length === 0) {
+                            $resultContainer.html("<p>No data</p>");
+                            return;
+                        }
+
                         let rows = "";
 
                         result.data.forEach((item, index) => {
+                            const isLate = checkLateness(item.date, item.checkIn);
+                            const normalized = normalizeAttendance(item.date, item.checkIn, item.checkOut);
+                            const missingTimestamp = normalized.checkIn === '—' || normalized.checkOut === '—';
+
                             rows += `
-                                <tr class="${index % 2 === 0 ? 'bg-white' : ''}">
+                                <tr class="${isLate ? 'bg-red-200/50 text-red-600' : (missingTimestamp ? 'bg-yellow-200/50 text-amber-600' : (index % 2 === 0 ? 'bg-white' : ''))}">
                                     <td class="py-3 px-4 text-start">${item.User?.name || 'N/A'}</td>
                                     <td class="py-3 px-4 text-start">${formatDate(item.date)}</td>
-                                    <td class="py-3 px-4 text-start">${formatTime(item.checkIn)}</td>
-                                    <td class="py-3 px-4 text-start">${formatTime(item.checkOut)}</td>
+                                    <td class="py-3 px-4 text-start">${formatTime(normalized.checkIn)}</td>
+                                    <td class="py-3 px-4 text-start">${formatTime(normalized.checkOut)}</td>
                                 </tr>
                             `;
                         });
 
-                        resultContainer.innerHTML = `
+                        $resultContainer.html(`
                             <div class="overflow-x-auto">
                                 <table class="w-full">
                                     <thead>
@@ -194,23 +260,21 @@
                                     <tbody>${rows}</tbody>
                                 </table>
                             </div>
-                        `;
+                        `);
+                    },
 
-                        // console.log('🟢 Success!');
+                    error: function (err) {
+                        console.error(err);
+                        $resultContainer.html("<p>Error fetching data</p>");
+                    },
+
+                    complete: function () {
+                        $loader.addClass("hidden");
+                        $submitBtn.text("Fetch Attendance").prop("disabled", false);
                     }
-
-                }
-                catch (err) {
-                    // console.error('🔴 Failed/Error', err);
-                    resultContainer.innerHTML = "<p>Error fetching data</p>";
-                }
-                finally {
-                    if(loader) loader.classList.add('hidden');
-
-                    submitBtn.innerText = "Fetch Attendance";
-                    submitBtn.disabled = false;
-                }
+                });
             });
+
         });
     </script>
 @endsection
