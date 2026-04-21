@@ -11,7 +11,7 @@
     <div class="container-draft bg-[#FEFEFEB2] p-6 rounded-2xl w-full shadow-lg overflow-x-auto">
         <x-form-filter-all-data title="{{ $title }}" route="overtime.show" :status="$requestStatus" :type="$requestType" />
 
-        <!-- New Data Button -->
+        {{-- New Data Button --}}
         @if (auth()->user()->role === 'user')
             <x-anchor-button href="{{ route('overtime.form-view') }}" class="mt-6 xl:mt-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -21,7 +21,7 @@
             </x-anchor-button>
         @endif
 
-        <!-- Overtime Table -->
+        {{-- Overtime Table --}}
         <div class="mt-4 w-full overflow-x-auto overflow-y-auto max-h-[600px]">
         <table class="hidden sm:table w-full text-left justify-center text-sm sm:text-base" >
             <thead class="bg-transparent text-[#1e293b] border-b-2 border-slate-400">
@@ -65,7 +65,7 @@
                         </td>
                         <td>
                             <div class="flex justify-center items-center space-x-1">
-                                <!-- Show Details Button -->
+                                {{-- Show Details Button --}}
                                 <x-action-navigate :d="$d" :requestStatus="$requestStatus" />
                                 @if ($d->request_status === 'draft')
                                     <a href="{{ route('overtime.edit', $d->id) }}" title="Edit" class="transition hover:scale-105">
@@ -200,5 +200,5 @@
     <x-modal-reject/>
     <x-modal-choose/>
     <x-modal-success />
-    <x-manage-data />
+    <script src={{ asset('script/manage-data.js') }}></script>
 @endsection

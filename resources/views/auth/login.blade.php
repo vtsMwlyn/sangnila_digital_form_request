@@ -1,16 +1,16 @@
 <x-guest-layout>
-    <!-- Logo -->
+    {{-- Logo --}}
     <img
         src="{{ asset('img/sangnila_blue.webp') }}"
         alt="Logo"
         class="mx-auto mb-4 w-[110px] xl:w-[150px]"
     />
 
-    <!-- Form -->
+    {{-- Form --}}
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
+        {{-- Email Address --}}
         <div class="text-left mb-4">
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input
@@ -29,7 +29,7 @@
             />
         </div>
 
-        <!-- Password -->
+        {{-- Password --}}
         <div class="text-left mb-6">
             <x-input-label for="password" :value="__('Password')" />
             <div class="relative">
@@ -42,7 +42,7 @@
                     class="block mt-1 w-full rounded-lg bg-gray-200 px-4 py-2 pr-12"
                 />
 
-                <!-- Toggle Password -->
+                {{-- Toggle Password --}}
                 <button
                     type="button"
                     id="togglePassword"
@@ -65,7 +65,7 @@
             />
         </div>
 
-        <!-- Remember Me -->
+        {{-- Remember Me --}}
         <div class="block mb-6 text-left">
             <label for="remember_me" class="inline-flex items-center">
                 <input
@@ -80,7 +80,7 @@
             </label>
         </div>
 
-        <!-- Actions -->
+        {{-- Actions --}}
         <div class="flex flex-col sm:flex-row justify-between gap-3 sm:items-center">
             @if (Route::has('password.request'))
                 <a
@@ -103,7 +103,7 @@
         </div>
     </form>
 
-    <!-- Script -->
+    {{-- Script --}}
     <script>
         (function () {
             function initPasswordToggle() {

@@ -131,5 +131,5 @@
 </div>
 
 <x-preview-data title="draft" />
-<x-manage-data />
+<script src={{ asset('script/manage-data.js') }}></script>
 @endsection

@@ -17,7 +17,7 @@
             id="dashboard-preview-body"
             class="space-y-3 overflow-y-auto flex-1"
         >
-            <!-- content -->
+            {{-- content --}}
         </div>
     </div>
 </x-modal>
@@ -31,7 +31,7 @@
             <img src="{{ asset('img/close.svg') }}" alt="x" />
         </button>
         <div id="evidence-viewer-body" class="flex items-center justify-center">
-            <!-- media content -->
+            {{-- media content --}}
         </div>
         <button
             id="prev-evidence"

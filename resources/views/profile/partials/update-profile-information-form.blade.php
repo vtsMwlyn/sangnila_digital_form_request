@@ -13,17 +13,17 @@
         @csrf
     </form>
 
-    <!-- Tambahin enctype biar bisa upload file -->
+    {{-- Tambahin enctype biar bisa upload file --}}
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
-        <!-- Upload Foto -->
+        {{-- Upload Foto --}}
         <div>
             <x-input-label for="profile_photo" :value="__('Profile Photo')" />
 
             <div class="flex items-center gap-4 mt-2">
-                <!-- Preview Foto -->
+                {{-- Preview Foto --}}
                 @if ($user->profile_photo)
                     <img src="{{ asset($user->profile_photo) }}"
                         alt="Profile Photo"
@@ -34,14 +34,14 @@
                     </div>
                 @endif
 
-                <!-- Input File -->
+                {{-- Input File --}}
                 <input id="profile_photo" name="profile_photo" type="file" class="block w-full text-sm text-gray-500" />
             </div>
 
             <x-input-error class="mt-2" :messages="$errors->get('profile_photo')" />
         </div>
 
-        <!-- Name -->
+        {{-- Name --}}
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
@@ -49,7 +49,7 @@
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        <!-- Email -->
+        {{-- Email --}}
         <div>
             <x-input-label for="email" :value="__('Email')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
@@ -76,7 +76,7 @@
             @endif
         </div>
 
-        <!-- Tombol Save -->
+        {{-- Tombol Save --}}
         <div class="flex items-center gap-4">
             <x-button>{{ __('Save Profile') }}</x-button>
 

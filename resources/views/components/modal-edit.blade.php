@@ -118,7 +118,7 @@
                     <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
                 </div>
 
-                  <!-- DEPARTMENT -->
+                  {{-- DEPARTMENT --}}
                 <div class="mb-4">
                     <label for="departmentSelect" class="font-semibold text-sm block mb-1">Department</label>
 

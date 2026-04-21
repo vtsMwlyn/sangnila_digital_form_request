@@ -90,7 +90,7 @@
         class="p-6 bg-[#F0F3F8] rounded-2xl shadow-lg max-w-full mx-auto text-black"
         :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'max-w-full' : 'max-w-6xl'"
     >
-        <!-- Title -->
+        {{-- Title --}}
         <x-back-button onclick="history.back();" />
 
         <h2 class="text-[#042E66] text-3xl font-black mt-2 mb-1">
@@ -102,7 +102,7 @@
             <div class="w-full flex flex-col items-start">
                 <h3 class="font-semibold text-blue-800 mt-4 mb-4">Account Information</h3>
 
-                <!-- Name -->
+                {{-- Name --}}
                 <div class="w-full mb-4">
                     <label
                         for="name"
@@ -125,7 +125,7 @@
                     />
                 </div>
 
-                <!-- Email -->
+                {{-- Email --}}
                 <div class="w-full mb-4">
                     <label
                         for="email"
@@ -147,7 +147,7 @@
                     />
                 </div>
 
-                <!-- Password -->
+                {{-- Password --}}
                 <div class="w-full mb-4">
                     <label for="password" class="font-semibold text-sm block mb-1">Password</label>
 
@@ -192,7 +192,7 @@
                     <x-input-error :messages="$errors->get('password')" class="mt-1 text-red-600" />
                 </div>
 
-                <!-- Confirm Password -->
+                {{-- Confirm Password --}}
                 <div class="w-full mb-4">
                     <label
                         for="password_confirmation"
@@ -242,7 +242,7 @@
                     />
                 </div>
 
-                <!-- Phone Number -->
+                {{-- Phone Number --}}
                 <div class="w-full mb-4">
                     <label
                         for="phone"
@@ -264,7 +264,7 @@
                     />
                 </div>
 
-                <!-- Role -->
+                {{-- Role --}}
                 <div class="w-full mb-4">
                     <label for="Role" class="font-semibold text-sm block mb-1">Role</label>
                     <x-select
@@ -411,7 +411,7 @@
                     <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
                 </div>
 
-                    <!-- DEPARTMENT -->
+                    {{-- DEPARTMENT --}}
                 <div class="w-full mb-4">
                     <label for="departmentSelect" class="font-semibold text-sm block mb-1">Department</label>
 
@@ -449,7 +449,7 @@
             </div>
         </div>
 
-        <!-- Submit Button -->
+        {{-- Submit Button --}}
         <div class="text-right mt-6">
             <x-button class="inline-flex items-center gap-2">
                 <svg

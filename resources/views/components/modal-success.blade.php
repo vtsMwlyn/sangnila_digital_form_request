@@ -14,7 +14,7 @@
 
 <x-modal name="success-modal" maxWidth="2xl">
     <div class="p-4">
-        <!-- Tombol close -->
+        {{-- Tombol close --}}
         <div class="flex justify-end">
             <button
                 @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'success-modal' }))"
@@ -24,9 +24,9 @@
             </button>
         </div>
 
-        <!-- Konten utama -->
+        {{-- Konten utama --}}
         <div class="flex flex-col md:flex-row items-center justify-center p-5 text-center md:text-left">
-            <!-- Icon centang -->
+            {{-- Icon centang --}}
             <div class="flex-shrink-0">
                 @if (session('success'))
                     <svg class="xl:w-40 xl:h-40 w-20 h-20 text-green-500" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@
                 @endif
             </div>
 
-            <!-- Teks -->
+            {{-- Teks --}}
             <div class="mt-6 md:mt-0 md:ml-8">
                 @php
                 $success = session()->pull('success');

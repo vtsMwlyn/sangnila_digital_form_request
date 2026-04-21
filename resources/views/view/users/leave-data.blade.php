@@ -218,5 +218,5 @@
     <x-modal-choose/>
     <x-preview-data title="leave" />
     <x-modal-success />
-    <x-manage-data />
+    <script src={{ asset('script/manage-data.js') }}></script>
 @endsection

@@ -278,7 +278,7 @@
     <x-modal-reject/>
     <x-modal-choose/>
     <x-preview-data title="request" />
-    <x-manage-data />
+    <script src={{ asset('script/manage-data.js') }}></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
