@@ -66,6 +66,12 @@
             const $isRamadhan = $('#isRamadhan');
             const $fridayFellowship = $('#fridayFellowship');
 
+            // ===== GOOGLE HOLIDAY CONFIG =====
+            const API_KEY = "AIzaSyA4MmeGJ_-lmQP5jTi02YnBcM0rfoUuMko";
+            const calendarId = "en.indonesian#holiday@group.v.calendar.google.com";
+
+            let holidayEvents = [];
+
             // ===== INITIALIZE FULLCALENDAR =====
             let calendarEl = document.getElementById('calendar');
             let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -140,6 +146,40 @@
             // Move calendar to the start date initially
             calendar.gotoDate(startDate);
 
+            // ===== FETCH GOOGLE HOLIDAYS =====
+            async function fetchGoogleHolidays(startDate, endDate) {
+                try {
+                    const googleUrl =
+                        `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events` +
+                        `?key=${API_KEY}` +
+                        `&timeMin=${startDate}T00:00:00Z` +
+                        `&timeMax=${endDate}T23:59:59Z`;
+
+                    const res = await fetch(googleUrl);
+                    const data = await res.json();
+
+                    holidayEvents = (data.items || [])
+                        .filter(item => item.start && item.start.date)
+                        .map((item, i) => ({
+                            id: 'holiday-' + i,
+                            title: item.summary,
+                            start: item.start.date,
+                            end: item.end ? item.end.date : null,
+                            allDay: true,
+                            backgroundColor: '#696969',
+                            borderColor: '#696969',
+                            textColor: '#ffffff',
+                            extendedProps: {
+                                subtitle: 'Hari Libur Nasional',
+                                type: 'holiday'
+                            }
+                        }));
+
+                } catch (err) {
+                    console.error("Failed fetching holidays:", err);
+                }
+            }
+
             // ===== FETCH EMPLOYEES =====
             $.ajax({
                 url: "https://cron.sangnilaindonesia.com/get-employees",
@@ -154,6 +194,12 @@
                 },
                 error: function (err) { console.error(err); }
             });
+
+            // ===== PRELOAD HOLIDAYS =====
+            fetchGoogleHolidays(
+                formatInputDate(startDate),
+                formatInputDate(endDate)
+            );
 
             // ===== SUBMIT =====
             $submitBtn.on("click", function (e) {
@@ -179,15 +225,30 @@
 
                         if (!result.success || !result.data || result.data.length === 0) {
                             alert("No data found for this period.");
+                            // still show holidays
+                            calendar.addEventSource(holidayEvents);
                             return;
                         }
 
-                        let calendarEvents = [];
+                        let attendanceEvents = [];
 
                         result.data.forEach((item) => {
-                            const isLate = checkLateness(item.date, item.checkIn);
-                            const normalized = normalizeAttendance(item.date, item.checkIn, item.checkOut);
-                            const missingTimestamp = normalized.checkIn === '—' || normalized.checkOut === '—';
+                            const normalized = normalizeAttendance(
+                                item.date,
+                                item.checkIn,
+                                item.checkOut
+                            );
+
+                            const isLate = checkLateness(
+                                item.date,
+                                normalized.checkIn === '—'
+                                    ? null
+                                    : normalized.checkIn
+                            );
+
+                            const missingTimestamp =
+                                normalized.checkIn === '—' ||
+                                normalized.checkOut === '—';
 
                             // Determine event color based on your original logic
                             let bgColor = '#16a34a'; // Tailwind blue-500 (default)
@@ -198,7 +259,7 @@
                             }
 
                             // Create the FullCalendar event object
-                            calendarEvents.push({
+                            attendanceEvents.push({
                                 title: `In: ${formatTime(normalized.checkIn)} • Out: ${formatTime(normalized.checkOut)}`,
                                 start: item.date, // YYYY-MM-DD places it on the correct day
                                 allDay: true,     // Renders as a solid block on the day grid
@@ -208,8 +269,14 @@
                             });
                         });
 
-                        // Add new events to calendar and jump to the fetched month
-                        calendar.addEventSource(calendarEvents);
+                        // ===== MERGE HOLIDAYS + ATTENDANCE =====
+                        const mergedEvents = [
+                            ...holidayEvents,
+                            ...attendanceEvents
+                        ];
+
+                        calendar.addEventSource(mergedEvents);
+
                         calendar.gotoDate(payload.startDate);
                     },
                     error: function (err) {
