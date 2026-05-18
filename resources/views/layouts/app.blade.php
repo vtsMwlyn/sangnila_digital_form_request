@@ -16,10 +16,9 @@
             scroll-behavior: smooth;
         }
 
-        /* Untuk tablet (<=1024px) dan HP */
+        /* Tablet and mobile (<=1024px) */
         @media (max-width: 1024px) {
-            /* Sidebar */
-            [x-data] > .sidebar {
+            .sidebar {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -33,26 +32,22 @@
                 transition: transform 0.3s ease-in-out;
             }
 
-            [x-data] > .sidebar[x-show="sidebarOpen"] {
+            .sidebar.sidebar-open {
                 transform: translateX(0);
             }
 
-            /* Main content */
-            main {
+            main, #page-navbar, #page-footer {
                 margin-left: 0 !important;
-                width: 100%;
-                padding-left: 1rem;
-                padding-right: 1rem;
             }
 
-            /* Navbar and footer padding */
-            .navbar, .footer {
+            main {
+                width: 100%;
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
         }
 
-        /* Untuk layar sangat kecil (HP <640px) */
+        /* Mobile (<640px) */
         @media (max-width: 640px) {
             main {
                 padding-left: 0.75rem;
@@ -71,12 +66,12 @@
   <body>
     <x-header />
 
-    <div class="min-h-screen bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]" x-data="{ sidebarOpen: true }" x-on:open-sidebar.window="sidebarOpen = true" x-on:close-sidebar.window="sidebarOpen = false">
+    <div class="min-h-screen bg-gradient-to-r from-[#B3C4DE] to-[#EAEFF6]" id="app-wrapper">
       @include('layouts.navbar')
 
-      @include('layouts.sidebar', ['sidebarOpen' => 'sidebarOpen'])
+      @include('layouts.sidebar')
 
-      <main :class="sidebarOpen ? 'ml-0' : 'ml-[-0px]'" class="ml-72 transition-all duration-300 ease-in-out p-10 min-h-[90vh]">
+      <main id="main-content" class="ml-72 transition-all duration-300 ease-in-out p-10 min-h-[90vh]">
           @yield('content')
 
           @if (auth()->user()->role === 'user')
@@ -100,7 +95,6 @@
         loader.classList.add('hidden');
       }
 
-      // === 1. Tampilin spinner secepat mungkin pas halaman mulai load
       document.addEventListener('DOMContentLoaded', () => {
         showLoading();
         if (new URLSearchParams(window.location.search).size > 0) {
@@ -113,19 +107,16 @@
         }
       });
 
-      // === 2. Hilangin pas semua resource udah siap
       window.addEventListener('load', () => {
         hideLoading();
       });
 
-      // === 3. Tampil lagi kalau user submit form
-      document.addEventListener('submit', (e) => {
-        // biar gak bentrok sama ajax / validation JS
+      document.addEventListener('submit', () => {
         setTimeout(() => showLoading(), 50);
       });
 
       document.querySelectorAll('a[href]').forEach(a => {
-        a.addEventListener('click', e => {
+        a.addEventListener('click', () => {
           const href = a.getAttribute('href');
           if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
             showLoading();
@@ -135,14 +126,9 @@
 
       // Dropdowns
       $(".dropdown-toggler").click(function (e) {
-        e.stopPropagation(); // Prevent click from bubbling up
-
+        e.stopPropagation();
         let $dropdownMenu = $(this).closest(".dropdown-container").find(".dropdown-menu");
-
-        // Close all other dropdowns
         $(".dropdown-menu").not($dropdownMenu).hide();
-
-        // Toggle the current one
         $dropdownMenu.toggle();
       });
 
@@ -150,6 +136,51 @@
         if (!$(e.target).closest(".dropdown-menu, .dropdown-toggler").length) {
           $(".dropdown-menu").hide();
         }
+      });
+
+      // Desktop sidebar toggle
+      $(document).on('click', '#sidebar-toggle-btn', function () {
+        const $aside = $('#desktop-sidebar');
+        const $main = $('#main-content');
+        const $icon = $('#sidebar-toggle-icon');
+        const isOpen = $aside.hasClass('translate-x-0');
+
+        if (isOpen) {
+          $aside.removeClass('translate-x-0').addClass('-translate-x-full');
+          $(this).css('left', '0');
+          $icon.removeClass('rotate-180');
+          $main.add('#page-navbar').add('#page-footer').removeClass('ml-72').addClass('ml-0');
+          $(this).attr('aria-expanded', 'false');
+        } else {
+          $aside.removeClass('-translate-x-full').addClass('translate-x-0');
+          $(this).css('left', '18rem');
+          $icon.addClass('rotate-180');
+          $main.add('#page-navbar').add('#page-footer').removeClass('ml-0').addClass('ml-72');
+          $(this).attr('aria-expanded', 'true');
+        }
+      });
+
+      // Mobile sidebar toggle
+      $(document).on('click', '#mobile-menu-btn', function () {
+        const isOpen = $('#mobile-sidebar-menu').is(':visible');
+        if (isOpen) {
+          $('#mobile-sidebar-menu').hide();
+          $('#mobile-overlay').hide();
+          $('#mobile-icon-open').show();
+          $('#mobile-icon-close').hide();
+        } else {
+          $('#mobile-sidebar-menu').show();
+          $('#mobile-overlay').show();
+          $('#mobile-icon-open').hide();
+          $('#mobile-icon-close').show();
+        }
+      });
+
+      $(document).on('click', '#mobile-overlay', function () {
+        $('#mobile-sidebar-menu').hide();
+        $('#mobile-overlay').hide();
+        $('#mobile-icon-open').show();
+        $('#mobile-icon-close').hide();
       });
     </script>
   </body>
