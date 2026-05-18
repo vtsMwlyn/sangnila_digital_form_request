@@ -41,7 +41,7 @@
 
       @include('layouts.sidebar')
 
-      <main id="main-content" class="ml-72 transition-all duration-300 ease-in-out p-10 min-h-[90vh]">
+      <main id="main-content" class="ml-72 transition-all duration-300 ease-in-out p-5 xl:p-10 min-h-[90vh]">
           @yield('content')
 
           @if (auth()->user()->role === 'user')

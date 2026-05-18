@@ -12,7 +12,7 @@
                 <x-filter-data-toggle :status="$status" :type="$type" />
             @endif
 
-            <div class="flex w-full md:w-auto gap-2">
+            <div class="flex flex-wrap w-auto gap-2">
 
                 @if ($route !== 'dashboard' && $route !== 'draft')
                     <input type="hidden" name="status" value="{{$status}}">

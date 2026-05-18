@@ -2,9 +2,9 @@
 
     <div class="flex items-center space-x-4">
         <img
-        src="{{ asset('img/sangnila_blue.webp') }}"
-        alt="Logo"
-        class="cursor-pointer w-16 ml-3"
+            src="{{ asset('img/sangnila_blue.webp') }}"
+            alt="Logo"
+            class="cursor-pointer w-10 xl:w-14 ml-3 opacity-0 xl:opacity-100"
         />
         <div class="bg-[#344C9B] w-[2px] h-12"></div>
         <h1 class="text-md xl:text-lg text-[#344C9B] uppercase">Employee Management System</h1>

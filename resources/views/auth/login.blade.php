@@ -21,7 +21,7 @@
                 required
                 autofocus
                 autocorrect="off"
-                class="block mt-1 w-[280px] xl:w-full rounded-lg bg-gray-200 px-4 py-2"
+                class="block mt-1 w-full rounded-lg bg-gray-200 px-4 py-2"
             />
             <x-input-error
                 :messages="$errors->get('email')"

@@ -326,11 +326,24 @@
                     // 🔥 Merge with your Blade events
                     const mergedEvents = [...baseEvents, ...holidayEvents];
 
+                    // Determine initial view based on screen width
+                    const isMobile = window.innerWidth < 768;
+
                     const calendar = new FullCalendar.Calendar(calendarEl, {
-                        initialView: 'dayGridMonth',
+                        initialView: isMobile ? 'listMonth' : 'dayGridMonth',
                         height: 'auto',
                         events: mergedEvents,
                         firstDay: 1,
+
+                        // Handle resizing/device rotation
+                        windowResize: function(arg) {
+                            const isCurrentlyMobile = window.innerWidth < 768;
+                            if (isCurrentlyMobile && calendar.view.type !== 'listMonth') {
+                                calendar.changeView('listMonth');
+                            } else if (!isCurrentlyMobile && calendar.view.type !== 'dayGridMonth') {
+                                calendar.changeView('dayGridMonth');
+                            }
+                        },
 
                         eventContent: function(arg) {
                             const type = arg.event.extendedProps.type;

@@ -92,6 +92,19 @@
             <i class="bi bi-gear-fill text-2xl"></i>
             <span>Profile</span>
         </a>
+
+        <div class="sm:hidden border-t border-white/20 mt-2">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button
+                    type="submit"
+                    class="flex items-center space-x-4 px-5 py-3 w-full font-semibold transition-all duration-300 text-red-300 hover:bg-gradient-to-r hover:from-red-500/40 hover:to-red-500/10"
+                >
+                    <i class="bi bi-box-arrow-right text-2xl"></i>
+                    <span>Log Out</span>
+                </button>
+            </form>
+        </div>
     </nav>
 </aside>
 
