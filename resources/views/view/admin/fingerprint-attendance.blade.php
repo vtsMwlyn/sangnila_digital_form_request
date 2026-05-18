@@ -73,11 +73,22 @@
             let holidayEvents = [];
 
             // ===== INITIALIZE FULLCALENDAR =====
+            const isMobile = window.innerWidth < 768;
+
             let calendarEl = document.getElementById('calendar');
             let calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
+                initialView: isMobile ? 'listMonth' : 'dayGridMonth',
                 height: 'auto',
-                events: [] // We will populate this via AJAX
+                events: [], // We will populate this via AJAX
+                // Handle resizing/device rotation
+                windowResize: function(arg) {
+                    const isCurrentlyMobile = window.innerWidth < 768;
+                    if (isCurrentlyMobile && calendar.view.type !== 'listMonth') {
+                        calendar.changeView('listMonth');
+                    } else if (!isCurrentlyMobile && calendar.view.type !== 'dayGridMonth') {
+                        calendar.changeView('dayGridMonth');
+                    }
+                },
             });
             calendar.render();
 
