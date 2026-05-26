@@ -37,7 +37,7 @@ $(document).ready(function () {
         const balance = data.balance;
         const overtime = data.overtime;
         const changeby = data.admin_change;
-        const evidences = data.evidences ? JSON.parse(data.evidences) : [];
+        const evidences = data.evidences ?? [];
 
         const statusClass = getStatusClass(status);
 

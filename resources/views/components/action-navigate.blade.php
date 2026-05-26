@@ -81,7 +81,7 @@
     data-balance="{{ $formattedBalance }}"
     data-overtime="{{ $formattedOvertime }}"
     data-admin_note="{{ $adminNote }}"
-    @if($evidences) data-evidences="{{ $evidences }}" @endif
+    @if($evidences) data-evidences='{!! $evidences !!}' @endif
 >
     <img src="{{ asset('img/view.svg') }}" alt="view">
 </button>
