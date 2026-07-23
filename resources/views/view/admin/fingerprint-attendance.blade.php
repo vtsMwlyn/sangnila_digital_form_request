@@ -38,10 +38,16 @@
                 </label>
             </div>
 
-            <x-button type="button" id="submitBtn"
-                class="bg-blue-500 text-white px-4 py-2 rounded">
-                Fetch Attendance
-            </x-button>
+            <div class="flex gap-2">
+                <x-button type="button" id="exportBtn"
+                    class="bg-green-600 text-white px-4 py-2 rounded">
+                    Export CSV
+                </x-button>
+                <x-button type="button" id="submitBtn"
+                    class="bg-blue-500 text-white px-4 py-2 rounded">
+                    Fetch Attendance
+                </x-button>
+            </div>
         </div>
 
         {{-- Result --}}
@@ -65,6 +71,7 @@
             const $keyword = $("#keyword");
             const $isRamadhan = $('#isRamadhan');
             const $fridayFellowship = $('#fridayFellowship');
+            const $exportBtn = $('#exportBtn');
 
             // ===== GOOGLE HOLIDAY CONFIG =====
             const API_KEY = "AIzaSyA4MmeGJ_-lmQP5jTi02YnBcM0rfoUuMko";
@@ -299,6 +306,133 @@
                         $submitBtn.text("Fetch Attendance").prop("disabled", false);
                     }
                 });
+            });
+
+            // ===== EXPORT CSV =====
+            $exportBtn.on("click", async function () {
+                const sDate = $startInput.val();
+                const eDate = $endInput.val();
+                
+                if (!sDate || !eDate) {
+                    alert("Please select start and end dates.");
+                    return;
+                }
+
+                if($loader.length) $loader.removeClass("hidden");
+                $exportBtn.text("Exporting...").prop("disabled", true);
+
+                try {
+                    // 1. Get all employees
+                    const empRes = await $.ajax({
+                        url: "https://cron.sangnilaindonesia.com/get-employees",
+                        method: "POST",
+                        headers: { "x-api-key": "your_super_secret_key" },
+                    });
+
+                    if (!empRes.success || !empRes.data || empRes.data.length === 0) {
+                        alert("Could not fetch employees list.");
+                        return;
+                    }
+
+                    const employees = empRes.data;
+                    let allAttendances = [];
+
+                    // 2. Fetch attendance for each employee concurrently
+                    const fetchPromises = employees.map(emp => {
+                        return $.ajax({
+                            url: "https://cron.sangnilaindonesia.com/get-attendances",
+                            method: "POST",
+                            headers: { "x-api-key": "your_super_secret_key" },
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                keyword: emp.name,
+                                startDate: sDate,
+                                endDate: eDate
+                            })
+                        }).then(res => {
+                            if (res.success && res.data) {
+                                // Add employee name to each record
+                                return res.data.map(record => ({
+                                    ...record,
+                                    name: emp.name
+                                }));
+                            }
+                            return [];
+                        }).catch(err => {
+                            console.error(`Failed to fetch for ${emp.name}`, err);
+                            return [];
+                        });
+                    });
+
+                    const results = await Promise.all(fetchPromises);
+                    
+                    // Flatten results
+                    results.forEach(empRecords => {
+                        allAttendances = allAttendances.concat(empRecords);
+                    });
+
+                    if (allAttendances.length === 0) {
+                        alert("No data found for this period.");
+                        return;
+                    }
+
+                    // 3. Generate CSV
+                    let csvContent = "Employee Name,Date,Check In,Check Out,Status\n";
+
+                    // Sort by Date then Employee Name
+                    allAttendances.sort((a, b) => {
+                        if (a.date === b.date) {
+                            return a.name.localeCompare(b.name);
+                        }
+                        return a.date.localeCompare(b.date);
+                    });
+
+                    allAttendances.forEach(function (item) {
+                        const normalized = normalizeAttendance(
+                            item.date,
+                            item.checkIn,
+                            item.checkOut
+                        );
+
+                        const isLate = checkLateness(
+                            item.date,
+                            normalized.checkIn === '—' ? null : normalized.checkIn
+                        );
+
+                        const missingTimestamp =
+                            normalized.checkIn === '—' || normalized.checkOut === '—';
+
+                        let status = "On Time";
+                        if (missingTimestamp) {
+                            status = "Missing Timestamp";
+                        } else if (isLate) {
+                            status = "Late";
+                        }
+                        
+                        const empName = item.name || "Unknown";
+                        const checkInFormatted = formatTime(normalized.checkIn);
+                        const checkOutFormatted = formatTime(normalized.checkOut);
+
+                        csvContent += `"${empName}",${item.date},${checkInFormatted},${checkOutFormatted},${status}\n`;
+                    });
+
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    
+                    const link = document.createElement("a");
+                    link.setAttribute("href", url);
+                    link.setAttribute("download", `All_Attendances_${sDate}_to_${eDate}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                } catch (err) {
+                    console.error(err);
+                    alert("Error exporting CSV data");
+                } finally {
+                    if($loader.length) $loader.addClass("hidden");
+                    $exportBtn.text("Export CSV").prop("disabled", false);
+                }
             });
         });
     </script>
