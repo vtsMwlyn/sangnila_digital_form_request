@@ -41,7 +41,7 @@
             <div class="flex gap-2">
                 <x-button type="button" id="exportBtn"
                     class="bg-green-600 text-white px-4 py-2 rounded">
-                    Export CSV
+                    Export Excel
                 </x-button>
                 <x-button type="button" id="submitBtn"
                     class="bg-blue-500 text-white px-4 py-2 rounded">
@@ -61,6 +61,9 @@
         </div>
 
     </section>
+
+    <!-- SheetJS -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -376,62 +379,84 @@
                         return;
                     }
 
-                    // 3. Generate CSV
-                    let csvContent = "Employee Name,Date,Check In,Check Out,Status\n";
+                    // 3. Generate Excel
+                    const wb = XLSX.utils.book_new();
 
-                    // Sort by Date then Employee Name
-                    allAttendances.sort((a, b) => {
-                        if (a.date === b.date) {
-                            return a.name.localeCompare(b.name);
-                        }
-                        return a.date.localeCompare(b.date);
-                    });
-
-                    allAttendances.forEach(function (item) {
-                        const normalized = normalizeAttendance(
-                            item.date,
-                            item.checkIn,
-                            item.checkOut
-                        );
-
-                        const isLate = checkLateness(
-                            item.date,
-                            normalized.checkIn === '—' ? null : normalized.checkIn
-                        );
-
-                        const missingTimestamp =
-                            normalized.checkIn === '—' || normalized.checkOut === '—';
-
-                        let status = "On Time";
-                        if (missingTimestamp) {
-                            status = "Missing Timestamp";
-                        } else if (isLate) {
-                            status = "Late";
-                        }
-                        
+                    // Group by employee
+                    const groupedAttendances = {};
+                    allAttendances.forEach(item => {
                         const empName = item.name || "Unknown";
-                        const checkInFormatted = formatTime(normalized.checkIn);
-                        const checkOutFormatted = formatTime(normalized.checkOut);
-
-                        csvContent += `"${empName}",${item.date},${checkInFormatted},${checkOutFormatted},${status}\n`;
+                        if (!groupedAttendances[empName]) {
+                            groupedAttendances[empName] = [];
+                        }
+                        groupedAttendances[empName].push(item);
                     });
 
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const url = URL.createObjectURL(blob);
-                    
-                    const link = document.createElement("a");
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", `All_Attendances_${sDate}_to_${eDate}.csv`);
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    // For each employee, create a sheet
+                    Object.keys(groupedAttendances).forEach(empName => {
+                        const employeeData = groupedAttendances[empName];
+                        
+                        // Sort by Date for this employee
+                        employeeData.sort((a, b) => a.date.localeCompare(b.date));
+
+                        const sheetData = [
+                            ["Employee Name", "Date", "Check In", "Check Out", "Status"]
+                        ];
+
+                        employeeData.forEach(function (item) {
+                            const normalized = normalizeAttendance(
+                                item.date,
+                                item.checkIn,
+                                item.checkOut
+                            );
+
+                            const isLate = checkLateness(
+                                item.date,
+                                normalized.checkIn === '—' ? null : normalized.checkIn
+                            );
+
+                            const missingTimestamp =
+                                normalized.checkIn === '—' || normalized.checkOut === '—';
+
+                            let status = "On Time";
+                            if (missingTimestamp) {
+                                status = "Missing Timestamp";
+                            } else if (isLate) {
+                                status = "Late";
+                            }
+                            
+                            const checkInFormatted = formatTime(normalized.checkIn) === '—' ? '' : formatTime(normalized.checkIn);
+                            const checkOutFormatted = formatTime(normalized.checkOut) === '—' ? '' : formatTime(normalized.checkOut);
+
+                            sheetData.push([empName, item.date, checkInFormatted, checkOutFormatted, status]);
+                        });
+
+                        const ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+                        // Sheet names must be <= 31 chars and not contain special chars like \ / ? * [ ] :
+                        let sheetName = empName.replace(/[\\\/\?\*\[\]\:]/g, '').substring(0, 31);
+                        if (!sheetName) sheetName = "Unknown";
+                        
+                        // Ensure unique sheet names if duplicates exist after truncation
+                        let counter = 1;
+                        let finalSheetName = sheetName;
+                        while (wb.SheetNames.includes(finalSheetName)) {
+                            const suffix = `_${counter}`;
+                            finalSheetName = sheetName.substring(0, 31 - suffix.length) + suffix;
+                            counter++;
+                        }
+
+                        XLSX.utils.book_append_sheet(wb, ws, finalSheetName);
+                    });
+
+                    XLSX.writeFile(wb, `All_Attendances_${sDate}_to_${eDate}.xlsx`);
 
                 } catch (err) {
                     console.error(err);
-                    alert("Error exporting CSV data");
+                    alert("Error exporting Excel data");
                 } finally {
                     if($loader.length) $loader.addClass("hidden");
-                    $exportBtn.text("Export CSV").prop("disabled", false);
+                    $exportBtn.text("Export Excel").prop("disabled", false);
                 }
             });
         });
