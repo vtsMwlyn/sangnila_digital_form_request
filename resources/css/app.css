@@ -3,17 +3,19 @@
 @tailwind utilities;
 
 body {
-    font-family: 'Geologica';
+  font-family: "Geologica";
 }
 
-button, a {
-    @apply cursor-pointer;
+button,
+a {
+  @apply cursor-pointer;
 }
 
-th, td {
-    @apply py-3 px-4;
+th,
+td {
+  @apply py-3 px-4;
 }
 
 .fc-toolbar-title {
-    @apply !text-base xl:!text-xl text-blue-900 font-bold;
-  }
+  @apply !text-base xl:!text-xl text-blue-900 font-bold;
+}

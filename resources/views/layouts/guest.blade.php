@@ -1,121 +1,125 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
-        <link rel="icon" href="{{ asset('img/icon.png') }}" type="image/png">
-        <title>Sangnila E-form</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
+  <link rel="icon" href="{{ asset('img/icon.png') }}" type="image/png" />
+  <title>Sangnila E-form</title>
 
-        <style>
-            body {
-                font-family: 'Geologica', sans-serif;
-                scroll-behavior: smooth;
-            }
+  <style>
+    body {
+      font-family: "Geologica", sans-serif;
+      scroll-behavior: smooth;
+    }
 
-            /* Untuk tablet (<=1024px) dan HP */
-            @media (max-width: 1024px) {
-                /* Sidebar */
-                [x-data] > .sidebar {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 70%;
-                    max-width: 280px;
-                    height: 100%;
-                    background-color: #fff;
-                    box-shadow: 0 0 10px rgba(0,0,0,0.2);
-                    z-index: 50;
-                    transform: translateX(-100%);
-                    transition: transform 0.3s ease-in-out;
-                }
+    /* Untuk tablet (<=1024px) dan HP */
+    @media (max-width: 1024px) {
+      /* Sidebar */
+      [x-data] > .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 70%;
+        max-width: 280px;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 50;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+      }
 
-                [x-data] > .sidebar[x-show="sidebarOpen"] {
-                    transform: translateX(0);
-                }
+      [x-data] > .sidebar[x-show="sidebarOpen"] {
+        transform: translateX(0);
+      }
 
-                /* Main content */
-                main {
-                    margin-left: 0 !important;
-                    width: 100%;
-                    padding-left: 1rem;
-                    padding-right: 1rem;
-                }
+      /* Main content */
+      main {
+        margin-left: 0 !important;
+        width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
 
-                /* Navbar and footer padding */
-                .navbar, .footer {
-                    padding-left: 1rem;
-                    padding-right: 1rem;
-                }
-            }
+      /* Navbar and footer padding */
+      .navbar,
+      .footer {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
 
-            /* Untuk layar sangat kecil (HP <640px) */
-            @media (max-width: 640px) {
-                main {
-                    padding-left: 0.75rem;
-                    padding-right: 0.75rem;
-                }
-            }
-        </style>
+    /* Untuk layar sangat kecil (HP <640px) */
+    @media (max-width: 640px) {
+      main {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+    }
+  </style>
 
+  {{-- Fonts --}}
+  <link rel="preconnect" href="https://fonts.bunny.net" />
+  <link
+    href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap"
+    rel="stylesheet"
+  />
 
-        {{-- Fonts --}}
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link
-            href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap"
-            rel="stylesheet"
-        />
-
-        {{-- Scripts --}}
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body
-        class="font-sans text-gray-900 antialiased max-h-screen"
-        style="background: url('{{ asset('img/bg.webp') }}') no-repeat center center / cover;"
+  {{-- Scripts --}}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  @vite (['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body
+  class="font-sans text-gray-900 antialiased max-h-screen"
+  style="background: url('{{ asset('img/bg.webp') }}') no-repeat center center / cover;"
+>
+  <div
+    class="min-h-screen flex flex-col justify-center items-center pt-6 sm:pt-0"
+  >
+    <div
+      class="bg-white rounded-3xl p-10 xl:p-8 w-full max-w-sm sm:max-w-md md:w-[500px] xl:w-[900px] mx-4 sm:mx-0 shadow-lg"
     >
-        <div class="min-h-screen flex flex-col justify-center items-center pt-6 sm:pt-0">
-            <div class="bg-white rounded-3xl p-10 xl:p-8 w-full max-w-sm sm:max-w-md md:w-[500px] xl:w-[900px] mx-4 sm:mx-0 shadow-lg">
-                {{ $slot }}
-            </div>
-        </div>
-        <x-global-loading/>
+      {{ $slot }}
+    </div>
+  </div>
+  <x-global-loading />
 
-        {{-- Script --}}
-        <script>
-            const loader = document.getElementById('global-loading');
+  {{-- Script --}}
+  <script>
+    const loader = document.getElementById("global-loading");
 
-            function showLoading() {
-                loader.classList.remove('hidden');
-            }
-            function hideLoading() {
-                loader.classList.add('hidden');
-            }
+    function showLoading() {
+      loader.classList.remove("hidden");
+    }
+    function hideLoading() {
+      loader.classList.add("hidden");
+    }
 
-            // === 1. Tampilin spinner secepat mungkin pas halaman mulai load
-            document.addEventListener('DOMContentLoaded', () => {
-                showLoading();
-            });
+    // === 1. Tampilin spinner secepat mungkin pas halaman mulai load
+    document.addEventListener("DOMContentLoaded", () => {
+      showLoading();
+    });
 
-            // === 2. Hilangin pas semua resource udah siap
-            window.addEventListener('load', () => {
-                hideLoading();
-            });
+    // === 2. Hilangin pas semua resource udah siap
+    window.addEventListener("load", () => {
+      hideLoading();
+    });
 
-            // === 3. Tampil lagi kalau user submit form
-            document.addEventListener('submit', (e) => {
-                // biar gak bentrok sama ajax / validation JS
-                setTimeout(() => showLoading(), 50);
-            });
-            
-            document.querySelectorAll('a[href]').forEach(a => {
-                a.addEventListener('click', e => {
-                    const href = a.getAttribute('href');
-                    if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
-                        showLoading();
-                    }
-                });
-            });
-        </script>
-    </body>
+    // === 3. Tampil lagi kalau user submit form
+    document.addEventListener("submit", (e) => {
+      // biar gak bentrok sama ajax / validation JS
+      setTimeout(() => showLoading(), 50);
+    });
+
+    document.querySelectorAll("a[href]").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        const href = a.getAttribute("href");
+        if (href && !href.startsWith("#") && !href.startsWith("javascript:")) {
+          showLoading();
+        }
+      });
+    });
+  </script>
+</body>
 </html>

@@ -65,65 +65,72 @@
 
 {{-- Clean HTML Section --}}
 <button
-    class="eye-preview-btn transition hover:scale-105"
-    title="Show Details"
-    data-id="{{ $d->id }}"
-    data-date="{{ $createdDate }}"
-    data-overtime_date="{{ $overtimeDate }}"
-    data-start="{{ $startDateStr }}"
-    data-finished="{{ $finishDateStr }}"
-    data-type="{{ $d->type }}"
-    data-description="{{ $description }}"
-    data-status="{{ $d->request_status }}"
-    data-duration="{{ $durationStr }}"
-    data-admin_change="{{ $d->action_by ?? '—' }}"
-    data-admin_role="{{ $d->role }}"
-    data-balance="{{ $formattedBalance }}"
-    data-overtime="{{ $formattedOvertime }}"
-    data-admin_note="{{ $adminNote }}"
-    @if($evidences) data-evidences='{!! $evidences !!}' @endif
+  class="eye-preview-btn transition hover:scale-105"
+  title="Show Details"
+  data-id="{{ $d->id }}"
+  data-date="{{ $createdDate }}"
+  data-overtime_date="{{ $overtimeDate }}"
+  data-start="{{ $startDateStr }}"
+  data-finished="{{ $finishDateStr }}"
+  data-type="{{ $d->type }}"
+  data-description="{{ $description }}"
+  data-status="{{ $d->request_status }}"
+  data-duration="{{ $durationStr }}"
+  data-admin_change="{{ $d->action_by ?? '—' }}"
+  data-admin_role="{{ $d->role }}"
+  data-balance="{{ $formattedBalance }}"
+  data-overtime="{{ $formattedOvertime }}"
+  data-admin_note="{{ $adminNote }}"
+  @if ($evidences) data-evidences='{!! $evidences !!}' @endif
 >
-    <img src="{{ asset('img/view.svg') }}" alt="view">
+  <img src="{{ asset('img/view.svg') }}" alt="view" />
 </button>
 
-@if(auth()->user()->role === 'admin')
-    <form
-        action="{{ route('request.edit', ['id' => $d->id, 'userId' => $d->user_id]) }}"
-        method="post"
-        class="flex justify-between gap-1"
+@if (auth()->user()->role === 'admin')
+  <form
+    action="{{ route('request.edit', ['id' => $d->id, 'userId' => $d->user_id]) }}"
+    method="post"
+    class="flex justify-between gap-1"
+  >
+    @csrf
+    <input
+      type="hidden"
+      name="this_leave_period"
+      value="{{ $d->leave_period }}"
+    />
+
+    {{-- Approve Button --}}
+    <button
+      type="submit"
+      name="approved"
+      id="approved-{{ $d->id }}"
+      data-leaveId="{{ $d->id }}"
+      data-leavePeriod="{{ $d->leave_period }}"
+      data-user="{{ $d->user }}"
+      value="{{ $d->type }}"
+      class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }} transition hover:scale-105"
+      title="Accept"
+      @if ($isOvertime)
+        onclick="return confirm('Are you sure want to accept this request?');"
+      @else
+        onclick="
+          event.preventDefault();
+          openChooseModal(this);
+        "
+      @endif
     >
-        @csrf
-        <input type="hidden" name="this_leave_period" value="{{ $d->leave_period }}" />
+      <img src="{{ asset('img/yesbox.svg') }}" alt="accept" />
+    </button>
 
-        {{-- Approve Button --}}
-        <button
-            type="submit"
-            name="approved"
-            id="approved-{{ $d->id }}"
-            data-leaveId="{{ $d->id }}"
-            data-leavePeriod="{{ $d->leave_period }}"
-            data-user="{{ $d->user }}"
-            value="{{ $d->type }}"
-            class="approved {{ $d->request_status === 'approved' ? 'hidden' : 'flex' }} transition hover:scale-105"
-            title="Accept"
-            @if($isOvertime)
-                onclick="return confirm('Are you sure want to accept this request?')"
-            @else
-                onclick="event.preventDefault(); openChooseModal(this);"
-            @endif
-        >
-            <img src="{{ asset('img/yesbox.svg') }}" alt="accept" >
-        </button>
-
-        {{-- Reject Button --}}
-        <button
-            type="button"
-            value="{{ $d->type }}"
-            id="rejectButton-{{ $d->id }}"
-            class="rejectButton {{ $d->request_status === 'rejected' ? 'hidden' : 'flex' }} transition hover:scale-105"
-            title="Reject"
-        >
-            <img src="{{ asset('img/exit.svg') }}" alt="reject" >
-        </button>
-    </form>
+    {{-- Reject Button --}}
+    <button
+      type="button"
+      value="{{ $d->type }}"
+      id="rejectButton-{{ $d->id }}"
+      class="rejectButton {{ $d->request_status === 'rejected' ? 'hidden' : 'flex' }} transition hover:scale-105"
+      title="Reject"
+    >
+      <img src="{{ asset('img/exit.svg') }}" alt="reject" />
+    </button>
+  </form>
 @endif

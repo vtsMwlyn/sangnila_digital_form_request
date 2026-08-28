@@ -1,5 +1,5 @@
-@props(['field'])
+@props (['field'])
 
-@error($field)
-    <div style="color: red">{{ $message }}</div>
+@error ($field)
+  <div style="color: red">{{ $message }}</div>
 @enderror

@@ -86,13 +86,13 @@ class RequestController extends Controller
                     if ($status && $status != 'all') {
                         $data = $data->where('request_status', $status);
                     }
-                    return view('view.users.overtime-data', compact('data'));
+                    return view('view.overtime-index', compact('data'));
                 } else {
                     $data = $this->applyFilters($data, $month, $search)->where('type', 'leave')->where('user_id', Auth::id());
                     if ($status && $status != 'all') {
                         $data = $data->where('request_status', $status);
                     }
-                    return view('view.users.leave-data', compact('data'));
+                    return view('view.leave-index', compact('data'));
                 }
             } else {
                 $data = $this->applyFilters($data, $month, $search)->where('request_status', '!=', 'draft')->where('user_id', Auth::id());
@@ -105,13 +105,13 @@ class RequestController extends Controller
                     if ($status && $status !== 'all') {
                         $data = $data->where('request_status', $status);
                     }
-                    return view('view.users.overtime-data', compact('data'));
+                    return view('view.overtime-index', compact('data'));
                 } else {
                     $data = $this->applyFilters($data, $month, $employeeSearch)->where('type', 'leave')->where('request_status', '!=', 'draft');
                     if ($status && $status !== 'all') {
                         $data = $data->where('request_status', $status);
                     }
-                    return view('view.users.leave-data', compact('data'));
+                    return view('view.leave-index', compact('data'));
                 }
             } else {
                 $data = $this->applyFilters($data, $month, $search);

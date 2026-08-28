@@ -1,19 +1,19 @@
-@push('styles')
-<style>
+@push ('styles')
+  <style>
     .ts-wrapper {
-        border: none;
+      border: none;
     }
 
     .ts-wrapper .ts-control {
-        padding-inline: 11px;
-        padding-block: 13px;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
+      padding-inline: 11px;
+      padding-block: 13px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
     }
 
     .ts-wrapper.focus .ts-control {
-        border-color: #6366f1;
-        border-width: 2px;
+      border-color: #6366f1;
+      border-width: 2px;
     }
 
     /* .ts-wrapper .ts-control .item,
@@ -21,59 +21,59 @@
         font-size: 16px;
     } */
 
-
     .ts-wrapper {
-        border: none;
+      border: none;
     }
 
     .ts-wrapper .ts-control {
-        padding-inline: 11px;
-        padding-block: 13px;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
+      padding-inline: 11px;
+      padding-block: 13px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
     }
 
     .ts-wrapper.focus .ts-control {
-        border-color: #6366f1;
-        border-width: 2px;
+      border-color: #6366f1;
+      border-width: 2px;
     }
 
     /* ✅ RESPONSIVE FORM (MOBILE & TABLET) */
     @media (max-width: 1024px) {
-        table {
-            display: block;
-            width: 100%;
-        }
+      table {
+        display: block;
+        width: 100%;
+      }
 
-        table tbody,
-        table tr,
-        table td {
-            display: block;
-            width: 100%;
-        }
+      table tbody,
+      table tr,
+      table td {
+        display: block;
+        width: 100%;
+      }
 
-        td {
-            padding-right: 0 !important;
-            padding-left: 0 !important;
-        }
+      td {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+      }
 
-        .p-6 {
-            padding: 1rem;
-        }
+      .p-6 {
+        padding: 1rem;
+      }
 
-        .text-right {
-            text-align: center;
-        }
+      .text-right {
+        text-align: center;
+      }
 
-        .text-right button {
-            width: 100%;
-            justify-content: center;
-        }
+      .text-right button {
+        width: 100%;
+        justify-content: center;
+      }
     }
-</style>
+  </style>
 @endpush
- @extends('layouts.app') @section('content')
-{{-- @if ($errors->any())
+@extends ('layouts.app')
+@section ('content')
+  {{-- @if ($errors->any())
 <div class="alert alert-danger">
     <ul>
         @foreach ($errors->all() as $error)
@@ -83,395 +83,418 @@
 </div>
 @endif --}}
 
-<form method="POST" action="{{ route('register') }}" autocomplete="off">
+  <form method="POST" action="{{ route('register') }}" autocomplete="off">
     @csrf
 
     <div
-        class="p-6 bg-[#F0F3F8] rounded-2xl shadow-lg max-w-full mx-auto text-black"
-        :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen ? 'max-w-full' : 'max-w-6xl'"
+      class="p-6 bg-[#F0F3F8] rounded-2xl shadow-lg max-w-full mx-auto text-black"
+      :class="$el.closest('[x-data]')?.__x.$data.sidebarOpen
+        ? 'max-w-full'
+        : 'max-w-6xl'"
     >
-        {{-- Title --}}
-        <x-back-button onclick="history.back();" />
+      {{-- Title --}}
+      <x-back-button onclick="history.back()" />
 
-        <h2 class="text-[#042E66] text-3xl font-black mt-2 mb-1">
-            Add New Account
-        </h2>
-        <x-separator-line/>
+      <h2 class="text-[#042E66] text-3xl font-black mt-2 mb-1">
+        Add New Account
+      </h2>
+      <x-separator-line />
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-10">
-            <div class="w-full flex flex-col items-start">
-                <h3 class="font-semibold text-blue-800 mt-4 mb-4">Account Information</h3>
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-10">
+        <div class="w-full flex flex-col items-start">
+          <h3 class="font-semibold text-blue-800 mt-4 mb-4">
+            Account Information
+          </h3>
 
-                {{-- Name --}}
-                <div class="w-full mb-4">
-                    <label
-                        for="name"
-                        class="font-semibold text-sm block mb-1"
-                        >Name</label
-                    >
-                    <x-text-input
-                        placeholder="New User's Fullname"
-                        id="name"
-                        type="text"
-                        name="name"
-                        :value="old('name')"
-                        required
-                        autofocus
-                        class="w-full rounded border px-3 py-2"
-                    />
-                    <x-input-error
-                        :messages="$errors->get('name')"
-                        class="mt-1 text-red-600"
-                    />
-                </div>
+          {{-- Name --}}
+          <div class="w-full mb-4">
+            <label for="name" class="font-semibold text-sm block mb-1"
+              >Name</label
+            >
+            <x-text-input
+              placeholder="New User's Fullname"
+              id="name"
+              type="text"
+              name="name"
+              :value="old('name')"
+              required
+              autofocus
+              class="w-full rounded border px-3 py-2"
+            />
+            <x-input-error
+              :messages="$errors->get('name')"
+              class="mt-1 text-red-600"
+            />
+          </div>
 
-                {{-- Email --}}
-                <div class="w-full mb-4">
-                    <label
-                        for="email"
-                        class="font-semibold text-sm block mb-1"
-                        >Email</label
-                    >
-                    <x-text-input
-                        placeholder="New User's Email"
-                        id="email"
-                        type="email"
-                        name="email"
-                        :value="old('email')"
-                        required
-                        class=" w-full rounded border border-black px-3 py-2"
-                    />
-                    <x-input-error
-                        :messages="$errors->get('email')"
-                        class="mt-1 text-red-600"
-                    />
-                </div>
+          {{-- Email --}}
+          <div class="w-full mb-4">
+            <label for="email" class="font-semibold text-sm block mb-1"
+              >Email</label
+            >
+            <x-text-input
+              placeholder="New User's Email"
+              id="email"
+              type="email"
+              name="email"
+              :value="old('email')"
+              required
+              class="w-full rounded border border-black px-3 py-2"
+            />
+            <x-input-error
+              :messages="$errors->get('email')"
+              class="mt-1 text-red-600"
+            />
+          </div>
 
-                {{-- Password --}}
-                <div class="w-full mb-4">
-                    <label for="password" class="font-semibold text-sm block mb-1">Password</label>
+          {{-- Password --}}
+          <div class="w-full mb-4">
+            <label for="password" class="font-semibold text-sm block mb-1"
+              >Password</label
+            >
 
-                    <div class="relative">
-                        <x-text-input
-                            id="password"
-                            type="password"
-                            name="password"
-                            placeholder="Create Password"
-                            required
-                            class=" w-full rounded border border-black px-3 py-2 pr-10"
-                        />
+            <div class="relative">
+              <x-text-input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Create Password"
+                required
+                class="w-full rounded border border-black px-3 py-2 pr-10"
+              />
 
-                        <button
-                            type="button"
-                            id="togglePassword"
-                            aria-label="Show password"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-5 w-5"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                            >
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                />
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"
-                                />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <x-input-error :messages="$errors->get('password')" class="mt-1 text-red-600" />
-                </div>
-
-                {{-- Confirm Password --}}
-                <div class="w-full mb-4">
-                    <label
-                        for="password_confirmation"
-                        class="font-semibold text-sm block mb-1"
-                        >Confirm Password</label
-                    >
-                    <div class="relative">
-                    <x-text-input
-                        placeholder="confirm the password"
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        required
-                        class=" w-full rounded border border-black px-3 py-2 pr-10"
-                    />
-
-                    <button
-                        type="button"
-                        id="togglePasswordConfirm"
-                        aria-label="Show password"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-5 w-5"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="1.5"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"
-                            />
-                        </svg>
-                    </button>
-                    </div>
-                    <x-input-error
-                        :messages="$errors->get('password_confirmation')"
-                        class="mt-1"
-                    />
-                </div>
-
-                {{-- Phone Number --}}
-                <div class="w-full mb-4">
-                    <label
-                        for="phone"
-                        class="font-semibold text-sm block mb-1"
-                        >Phone Number</label
-                    >
-                    <x-text-input
-                        placeholder="New User's Phone Number"
-                        id="phone"
-                        type="text"
-                        name="phone_number"
-                        :value="old('phone_number')"
-                        required
-                        class=" w-full rounded border border-black px-3 py-2"
-                    />
-                    <x-input-error
-                        :messages="$errors->get('phone')"
-                        class="mt-1 text-red-600"
-                    />
-                </div>
-
-                {{-- Role --}}
-                <div class="w-full mb-4">
-                    <label for="Role" class="font-semibold text-sm block mb-1">Role</label>
-                    <x-select
-                        id="role"
-                        name="role"
-                        required
-                        placeholder="Select New User Role"
-                        class="w-full"
-                    >
-                        <option disabled hidden selected >Select New User Role</option>
-                        <option value="admin">Admin</option>
-                        <option value="user">User</option>
-                    </x-select>
-                    <x-input-error
-                        :messages="$errors->get('role')"
-                        class="mt-1 text-red-600"
-                    />
-                </div>
-            </div>
-
-            <div class="w-full flex flex-col items-start">
-                <h3 class="font-semibold text-blue-800 mt-4 mb-4">Employee Information</h3>
-
-                {{-- status employee --}}
-                <div class="w-full mb-4">
-                    <label
-                        for="status"
-                        class="font-semibold text-sm block mb-1"
-                        >Status Employee</label
-                    >
-                    <x-select
-                        id="status"
-                        name="status"
-                        required
-                        placeholder="Select New User Status"
-                        class=" w-full"
-                    >
-                        <option disabled hidden selected >Select New User Status</option>
-                        <option value="Employee">Employee</option>
-                        <option value="intern">Intern</option>
-                    </x-select>
-                    <x-input-error
-                        :messages="$errors->get('status')"
-                        class="mt-1 text-red-600"
-                    />
-                </div>
-            
-                <div class="mb-4 w-full">
-                    <label
-                        for="overtime_allowance"
-                        class="font-semibold text-sm block mb-1"
-                        >Leave Balance</label
-                    >
-                    <div class="flex flex-col md:flex-row gap-4">
-                    <x-text-input
-                        placeholder="Enter Leave Balance in Days"
-                        id="Leave_Balance"
-                        type="text"
-                        name="Leave_Balance_Day"
-                        :value="old('Leave_Balance')"
-                        required
-                        autofocus
-                        class=" w-full rounded border px-3 py-2"
-                    />
-                    <x-text-input
-                        placeholder="Enter Leave Balance in hours"
-                        id="Leave_Balance"
-                        type="text"
-                        name="Leave_Balance_Hour"
-                        :value="old('Leave_Balance')"
-
-                        autofocus
-                        class=" w-full rounded border px-3 py-2"
-                    />
-                    </div>
-                    <x-input-error
-                        :messages="$errors->get('Leave_Balance')"
-                        class="mt-1 text-red-600"
-                    />
-                </div>
-
-                <div class="mb-4 w-full">
-                    <label for="Total_Overtime" class="font-semibold text-sm block mb-1">
-                        Total Overtime
-                    </label>
-
-                    <div class="flex flex-col md:flex-row gap-4">
-                        <x-text-input
-                            placeholder="Enter Total Overtime in Days"
-                            id="Total_Overtime_Day"
-                            type="text"
-                            name="Total_Overtime_Day"
-                            :value="old('Total_Overtime_Day')"
-                            required
-                            class=" w-full md:w-1/2 rounded border px-3 py-2"
-                        />
-
-                        <x-text-input
-                            placeholder="Enter Total Overtime in Hours"
-                            id="Total_Overtime_Hour"
-                            type="text"
-                            name="Total_Overtime_Hour"
-                            :value="old('Total_Overtime_Hour')"
-
-                            class=" w-full md:w-1/2 rounded border px-3 py-2"
-                        />
-                    </div>
-
-                    <x-input-error :messages="$errors->get('Total_Overtime')" class="mt-1 text-red-600" />
-                </div>
-
-                <div class="w-full mb-4">
-                    <label for="positionSelect" class="font-semibold text-sm block mb-1">Position</label>
-
-                    <select
-                        id="positionSelect"
-                        name="position"
-                        required
-                        onchange="handleSelectChange('position')"
-                        placeholder= "Select Position"
-                        class=" w-full border-slate-400 focus:border-cyan-500 focus:ring-0 rounded-2xl shadow-sm focus:outline-none py-2 px-4 disabled:cursor-not-allowed transition duration-300 border-[3px]"
-                    >
-                        <option disabled hidden selected>Select Position</option>
-                        <option value="Admin">Admin</option>
-                        <option value="CEO/Director">CEO/Director</option>
-                        <option value="Human Resources">Human Resources</option>
-                        <option value="3D Artist">3D Artist</option>
-                        <option value="Finance and Accountant">Finance and Accountant</option>
-                        <option value="Concept Artist">Concept Artist</option>
-                        <option value="Animator">Animator</option>
-                        <option value="Graphic Designer">Graphic Designer</option>
-                        <option value="Sales and Marketing">Sales and Marketing</option>
-                        <option value="other">Other</option>
-                    </select>
-
-                    <x-text-input
-                        type="text"
-                        id="positionInput"
-                        name="position_other"
-                        placeholder="Enter custom position"
-                        class="hidden  w-full"
-                    />
-
-                    <x-input-error :messages="$errors->get('position')" class="mt-1 text-red-600"/>
-                </div>
-
-                    {{-- DEPARTMENT --}}
-                <div class="w-full mb-4">
-                    <label for="departmentSelect" class="font-semibold text-sm block mb-1">Department</label>
-
-                    <select
-                        id="departmentSelect"
-                        name="department"
-                        required
-                        onchange="handleSelectChange('department')"
-                        placeholder= "Select Department"
-                        class=" w-full border-slate-400 focus:border-cyan-500 focus:ring-0 rounded-2xl shadow-sm focus:outline-none py-2 px-4 disabled:cursor-not-allowed transition duration-300 border-[3px]"
-                    >
-                        <option disabled hidden selected> Select Department</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Executive">Executive</option>
-                        <option value="Human Resources">Human Resources</option>
-                        <option value="Finance">Finance</option>
-                        <option value="3D">3D</option>
-                        <option value="Concept Art">Concept Art</option>
-                        <option value="Animation">Animation</option>
-                        <option value="Graphic Design">Graphic Design</option>
-                        <option value="Marketing">Marketing</option>
-                        <option value="other">Other</option>
-                    </select>
-
-                    <x-text-input
-                        type="text"
-                        id="departmentInput"
-                        name="department_other"
-                        placeholder="Enter custom department"
-                        class="hidden  w-full"
-                    />
-
-                    <x-input-error :messages="$errors->get('department')" class="mt-1 text-red-600"/>
-                </div>
-            </div>
-        </div>
-
-        {{-- Submit Button --}}
-        <div class="text-right mt-6">
-            <x-button class="inline-flex items-center gap-2">
+              <button
+                type="button"
+                id="togglePassword"
+                aria-label="Show password"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
+              >
                 <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-5 w-5 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    stroke-width="2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
                 >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 4v16m8-8H4"
-                    />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"
+                  />
                 </svg>
-                Add Account
-            </x-button>
+              </button>
+            </div>
+
+            <x-input-error
+              :messages="$errors->get('password')"
+              class="mt-1 text-red-600"
+            />
+          </div>
+
+          {{-- Confirm Password --}}
+          <div class="w-full mb-4">
+            <label
+              for="password_confirmation"
+              class="font-semibold text-sm block mb-1"
+              >Confirm Password</label
+            >
+            <div class="relative">
+              <x-text-input
+                placeholder="confirm the password"
+                id="password_confirmation"
+                type="password"
+                name="password_confirmation"
+                required
+                class="w-full rounded border border-black px-3 py-2 pr-10"
+              />
+
+              <button
+                type="button"
+                id="togglePasswordConfirm"
+                aria-label="Show password"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <x-input-error
+              :messages="$errors->get('password_confirmation')"
+              class="mt-1"
+            />
+          </div>
+
+          {{-- Phone Number --}}
+          <div class="w-full mb-4">
+            <label for="phone" class="font-semibold text-sm block mb-1"
+              >Phone Number</label
+            >
+            <x-text-input
+              placeholder="New User's Phone Number"
+              id="phone"
+              type="text"
+              name="phone_number"
+              :value="old('phone_number')"
+              required
+              class="w-full rounded border border-black px-3 py-2"
+            />
+            <x-input-error
+              :messages="$errors->get('phone')"
+              class="mt-1 text-red-600"
+            />
+          </div>
+
+          {{-- Role --}}
+          <div class="w-full mb-4">
+            <label for="Role" class="font-semibold text-sm block mb-1"
+              >Role</label
+            >
+            <x-select
+              id="role"
+              name="role"
+              required
+              placeholder="Select New User Role"
+              class="w-full"
+            >
+              <option disabled hidden selected>Select New User Role</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </x-select>
+            <x-input-error
+              :messages="$errors->get('role')"
+              class="mt-1 text-red-600"
+            />
+          </div>
         </div>
+
+        <div class="w-full flex flex-col items-start">
+          <h3 class="font-semibold text-blue-800 mt-4 mb-4">
+            Employee Information
+          </h3>
+
+          {{-- status employee --}}
+          <div class="w-full mb-4">
+            <label for="status" class="font-semibold text-sm block mb-1"
+              >Status Employee</label
+            >
+            <x-select
+              id="status"
+              name="status"
+              required
+              placeholder="Select New User Status"
+              class="w-full"
+            >
+              <option disabled hidden selected>Select New User Status</option>
+              <option value="Employee">Employee</option>
+              <option value="intern">Intern</option>
+            </x-select>
+            <x-input-error
+              :messages="$errors->get('status')"
+              class="mt-1 text-red-600"
+            />
+          </div>
+
+          <div class="mb-4 w-full">
+            <label
+              for="overtime_allowance"
+              class="font-semibold text-sm block mb-1"
+              >Leave Balance</label
+            >
+            <div class="flex flex-col md:flex-row gap-4">
+              <x-text-input
+                placeholder="Enter Leave Balance in Days"
+                id="Leave_Balance"
+                type="text"
+                name="Leave_Balance_Day"
+                :value="old('Leave_Balance')"
+                required
+                autofocus
+                class="w-full rounded border px-3 py-2"
+              />
+              <x-text-input
+                placeholder="Enter Leave Balance in hours"
+                id="Leave_Balance"
+                type="text"
+                name="Leave_Balance_Hour"
+                :value="old('Leave_Balance')"
+                autofocus
+                class="w-full rounded border px-3 py-2"
+              />
+            </div>
+            <x-input-error
+              :messages="$errors->get('Leave_Balance')"
+              class="mt-1 text-red-600"
+            />
+          </div>
+
+          <div class="mb-4 w-full">
+            <label
+              for="Total_Overtime"
+              class="font-semibold text-sm block mb-1"
+            >
+              Total Overtime
+            </label>
+
+            <div class="flex flex-col md:flex-row gap-4">
+              <x-text-input
+                placeholder="Enter Total Overtime in Days"
+                id="Total_Overtime_Day"
+                type="text"
+                name="Total_Overtime_Day"
+                :value="old('Total_Overtime_Day')"
+                required
+                class="w-full md:w-1/2 rounded border px-3 py-2"
+              />
+
+              <x-text-input
+                placeholder="Enter Total Overtime in Hours"
+                id="Total_Overtime_Hour"
+                type="text"
+                name="Total_Overtime_Hour"
+                :value="old('Total_Overtime_Hour')"
+                class="w-full md:w-1/2 rounded border px-3 py-2"
+              />
+            </div>
+
+            <x-input-error
+              :messages="$errors->get('Total_Overtime')"
+              class="mt-1 text-red-600"
+            />
+          </div>
+
+          <div class="w-full mb-4">
+            <label for="positionSelect" class="font-semibold text-sm block mb-1"
+              >Position</label
+            >
+
+            <select
+              id="positionSelect"
+              name="position"
+              required
+              onchange="handleSelectChange('position')"
+              placeholder="Select Position"
+              class="w-full border-slate-400 focus:border-cyan-500 focus:ring-0 rounded-2xl shadow-sm focus:outline-none py-2 px-4 disabled:cursor-not-allowed transition duration-300 border-[3px]"
+            >
+              <option disabled hidden selected>Select Position</option>
+              <option value="Admin">Admin</option>
+              <option value="CEO/Director">CEO/Director</option>
+              <option value="Human Resources">Human Resources</option>
+              <option value="3D Artist">3D Artist</option>
+              <option value="Finance and Accountant">
+                Finance and Accountant
+              </option>
+              <option value="Concept Artist">Concept Artist</option>
+              <option value="Animator">Animator</option>
+              <option value="Graphic Designer">Graphic Designer</option>
+              <option value="Sales and Marketing">Sales and Marketing</option>
+              <option value="other">Other</option>
+            </select>
+
+            <x-text-input
+              type="text"
+              id="positionInput"
+              name="position_other"
+              placeholder="Enter custom position"
+              class="hidden w-full"
+            />
+
+            <x-input-error
+              :messages="$errors->get('position')"
+              class="mt-1 text-red-600"
+            />
+          </div>
+
+          {{-- DEPARTMENT --}}
+          <div class="w-full mb-4">
+            <label
+              for="departmentSelect"
+              class="font-semibold text-sm block mb-1"
+              >Department</label
+            >
+
+            <select
+              id="departmentSelect"
+              name="department"
+              required
+              onchange="handleSelectChange('department')"
+              placeholder="Select Department"
+              class="w-full border-slate-400 focus:border-cyan-500 focus:ring-0 rounded-2xl shadow-sm focus:outline-none py-2 px-4 disabled:cursor-not-allowed transition duration-300 border-[3px]"
+            >
+              <option disabled hidden selected>Select Department</option>
+              <option value="Admin">Admin</option>
+              <option value="Executive">Executive</option>
+              <option value="Human Resources">Human Resources</option>
+              <option value="Finance">Finance</option>
+              <option value="3D">3D</option>
+              <option value="Concept Art">Concept Art</option>
+              <option value="Animation">Animation</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Marketing">Marketing</option>
+              <option value="other">Other</option>
+            </select>
+
+            <x-text-input
+              type="text"
+              id="departmentInput"
+              name="department_other"
+              placeholder="Enter custom department"
+              class="hidden w-full"
+            />
+
+            <x-input-error
+              :messages="$errors->get('department')"
+              class="mt-1 text-red-600"
+            />
+          </div>
+        </div>
+      </div>
+
+      {{-- Submit Button --}}
+      <div class="text-right mt-6">
+        <x-button class="inline-flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Add Account
+        </x-button>
+      </div>
     </div>
-</form>
-{{-- <script>
+  </form>
+  {{-- <script>
 (function () {
   function initToggle(btnId, inputId, labelShow, labelHide) {
     const btn = document.getElementById(btnId);
@@ -515,49 +538,49 @@
 </script> --}}
 
 <script>
-    function toggleOther(field) {
-        const select = document.getElementById(field);
-        const input = document.getElementById(field + '_other');
+  function toggleOther(field) {
+    const select = document.getElementById(field);
+    const input = document.getElementById(field + "_other");
 
-        if (select.value === 'other') {
-            input.classList.remove('hidden');
-            input.name = field;
-            select.name = '';
-        } else {
-            input.classList.add('hidden');
-            select.name = field;
-            input.name = field + '_other';
-        }
+    if (select.value === "other") {
+      input.classList.remove("hidden");
+      input.name = field;
+      select.name = "";
+    } else {
+      input.classList.add("hidden");
+      select.name = field;
+      input.name = field + "_other";
     }
-    </script>
+  }
+</script>
 
 <script>
-    function handleSelectChange(field) {
-      const selectEl = document.getElementById(field + "Select");
-      const inputEl = document.getElementById(field + "Input");
+  function handleSelectChange(field) {
+    const selectEl = document.getElementById(field + "Select");
+    const inputEl = document.getElementById(field + "Input");
 
-      if (selectEl.value === "other") {
-        selectEl.classList.add("hidden");
-        inputEl.classList.remove("hidden");
-        inputEl.focus();
-      } else {
-        inputEl.classList.add("hidden");
-        selectEl.classList.remove("hidden");
-        inputEl.value = "";
-      }
+    if (selectEl.value === "other") {
+      selectEl.classList.add("hidden");
+      inputEl.classList.remove("hidden");
+      inputEl.focus();
+    } else {
+      inputEl.classList.add("hidden");
+      selectEl.classList.remove("hidden");
+      inputEl.value = "";
     }
-  </script>
+  }
+</script>
 
 <script>
-    // ======================
-    // PASSWORD TOGGLE (UNIVERSAL)
-    // ======================
-    function initPasswordToggle(buttonId, inputId) {
-        const btn = document.getElementById(buttonId);
-        const input = document.getElementById(inputId);
-        if (!btn || !input) return;
+  // ======================
+  // PASSWORD TOGGLE (UNIVERSAL)
+  // ======================
+  function initPasswordToggle(buttonId, inputId) {
+    const btn = document.getElementById(buttonId);
+    const input = document.getElementById(inputId);
+    if (!btn || !input) return;
 
-        const eye = `
+    const eye = `
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18"/>
@@ -569,7 +592,7 @@
                     1.4 0 2.9-.2 4.2-.6"/>
             </svg>`;
 
-        const eyeOff = `
+    const eyeOff = `
              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -579,39 +602,36 @@
                     9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z"/>
             </svg>`;
 
+    btn.innerHTML = eye;
 
-        btn.innerHTML = eye;
-
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const isHidden = input.type === "password";
-            input.type = isHidden ? "text" : "password";
-            btn.innerHTML = isHidden ? eyeOff : eye;
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        initPasswordToggle("togglePassword", "password");
-        initPasswordToggle("togglePasswordConfirm", "password_confirmation");
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      btn.innerHTML = isHidden ? eyeOff : eye;
     });
+  }
 
+  document.addEventListener("DOMContentLoaded", () => {
+    initPasswordToggle("togglePassword", "password");
+    initPasswordToggle("togglePasswordConfirm", "password_confirmation");
+  });
 
-    // ======================
-    // SELECT → OTHER HANDLER
-    // ======================
-    function handleSelectChange(field) {
-        const select = document.getElementById(field + "Select");
-        const input = document.getElementById(field + "Input");
+  // ======================
+  // SELECT → OTHER HANDLER
+  // ======================
+  function handleSelectChange(field) {
+    const select = document.getElementById(field + "Select");
+    const input = document.getElementById(field + "Input");
 
-        if (select.value === "other") {
-            select.classList.add("hidden");
-            input.classList.remove("hidden");
-            input.focus();
-        } else {
-            input.classList.add("hidden");
-            select.classList.remove("hidden");
-            input.value = "";
-        }
+    if (select.value === "other") {
+      select.classList.add("hidden");
+      input.classList.remove("hidden");
+      input.focus();
+    } else {
+      input.classList.add("hidden");
+      select.classList.remove("hidden");
+      input.value = "";
     }
-    </script>
-
+  }
+</script>
