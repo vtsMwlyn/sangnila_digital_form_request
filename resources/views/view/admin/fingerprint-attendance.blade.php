@@ -392,16 +392,15 @@
             allAttendances = allAttendances.concat(empRecords);
           });
 
-          if (allAttendances.length === 0) {
-            alert("No data found for this period.");
-            return;
-          }
-
           // 3. Generate Excel
           const wb = XLSX.utils.book_new();
 
           // Group by employee
           const groupedAttendances = {};
+          employees.forEach((emp) => {
+            groupedAttendances[emp.name] = [];
+          });
+
           allAttendances.forEach((item) => {
             const empName = item.name || "Unknown";
             if (!groupedAttendances[empName]) {
@@ -414,52 +413,70 @@
           Object.keys(groupedAttendances).forEach((empName) => {
             const employeeData = groupedAttendances[empName];
 
-            // Sort by Date for this employee
-            employeeData.sort((a, b) => a.date.localeCompare(b.date));
-
             const sheetData = [
               ["Employee Name", "Date", "Check In", "Check Out", "Status"],
             ];
 
-            employeeData.forEach(function (item) {
-              const normalized = normalizeAttendance(
-                item.date,
-                item.checkIn,
-                item.checkOut,
-              );
-
-              const isLate = checkLateness(
-                item.date,
-                normalized.checkIn === "—" ? null : normalized.checkIn,
-              );
-
-              const missingTimestamp =
-                normalized.checkIn === "—" || normalized.checkOut === "—";
-
-              let status = "On Time";
-              if (missingTimestamp) {
-                status = "Missing Timestamp";
-              } else if (isLate) {
-                status = "Late";
-              }
-
-              const checkInFormatted =
-                formatTime(normalized.checkIn) === "—"
-                  ? ""
-                  : formatTime(normalized.checkIn);
-              const checkOutFormatted =
-                formatTime(normalized.checkOut) === "—"
-                  ? ""
-                  : formatTime(normalized.checkOut);
-
-              sheetData.push([
-                empName,
-                item.date,
-                checkInFormatted,
-                checkOutFormatted,
-                status,
-              ]);
+            const empDataByDate = {};
+            employeeData.forEach((item) => {
+              empDataByDate[item.date] = item;
             });
+
+            const startDateObj = new Date(sDate);
+            const endDateObj = new Date(eDate);
+
+            for (
+              let d = new Date(startDateObj);
+              d <= endDateObj;
+              d.setDate(d.getDate() + 1)
+            ) {
+              if (d.getDay() === 0) continue; // Skip Sunday
+
+              const dateStr = formatInputDate(d);
+
+              if (empDataByDate[dateStr]) {
+                const item = empDataByDate[dateStr];
+                const normalized = normalizeAttendance(
+                  item.date,
+                  item.checkIn,
+                  item.checkOut,
+                );
+
+                const isLate = checkLateness(
+                  item.date,
+                  normalized.checkIn === "—" ? null : normalized.checkIn,
+                );
+
+                const missingTimestamp =
+                  normalized.checkIn === "—" || normalized.checkOut === "—";
+
+                let status = "On Time";
+                if (missingTimestamp) {
+                  status = "Missing Timestamp";
+                } else if (isLate) {
+                  status = "Late";
+                }
+
+                const checkInFormatted =
+                  formatTime(normalized.checkIn) === "—"
+                    ? ""
+                    : formatTime(normalized.checkIn);
+                const checkOutFormatted =
+                  formatTime(normalized.checkOut) === "—"
+                    ? ""
+                    : formatTime(normalized.checkOut);
+
+                sheetData.push([
+                  empName,
+                  item.date,
+                  checkInFormatted,
+                  checkOutFormatted,
+                  status,
+                ]);
+              } else {
+                sheetData.push([empName, dateStr, "", "", ""]);
+              }
+            }
 
             const ws = XLSX.utils.aoa_to_sheet(sheetData);
 
