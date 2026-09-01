@@ -23,7 +23,6 @@
         autocorrect="off"
         class="block mt-1 w-full rounded-lg bg-gray-200 px-4 py-2"
       />
-      <x-input-error :messages="$errors->get('email')" class="mt-2" />
     </div>
 
     {{-- Password --}}
@@ -67,8 +66,22 @@
           </svg>
         </button>
       </div>
-      <x-input-error :messages="$errors->get('password')" class="mt-2" />
     </div>
+
+    {{-- Generic/Global Error Messages --}}
+    @if (session('error'))
+      <div class="mb-4 font-medium text-sm text-red-600 text-left">
+        {{ session('error') }}
+      </div>
+    @endif
+
+    @if ($errors->any())
+      <div class="mb-4 font-medium text-sm text-red-600 text-left">
+          @foreach ($errors->all() as $error)
+            <p>{{ $error }}</p>
+          @endforeach
+      </div>
+    @endif
 
     {{-- Remember Me --}}
     <div class="block mb-6 text-left">

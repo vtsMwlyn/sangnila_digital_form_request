@@ -32,7 +32,11 @@ class AuthenticatedSessionController extends Controller
 
 			if ($user) {
 				Auth::login($user);
-			}
+			} else {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'email' => trans('auth.failed'),
+                ]);
+            }
 		}
         else {
             $request->authenticate();

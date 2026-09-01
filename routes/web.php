@@ -24,11 +24,6 @@ Route::get('/', function () {
     return redirect($view);
 });
 
-// Login
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
 // Account Suspended
 Route::middleware(['active'])->group(function () {
     Route::prefix('info')->name('info.')->group(function () {
